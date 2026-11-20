@@ -67,7 +67,7 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      max-width: 960px;
+      max-width: 1440px;
       height: 100%;
       height: 100dvh;
       margin: 0 auto;
@@ -294,35 +294,37 @@
     }
 
     /* ==========================================================================
-       3. THANH TIÊU ĐỀ TRÊN CÙNG (SIÊU GỌN 42PX)
+       3. THANH TIÊU ĐỀ TRÊN CÙNG (CO GIÃN ĐA MÀN HÌNH, CHỐNG CHỒNG CHÉO)
        ========================================================================== */
     .app-header {
       flex-shrink: 0;
-      height: 42px;
+      height: clamp(44px, 6.2dvh, 58px);
       background: #0f172a;
       color: #ffffff;
-      padding: 0 6px;
+      padding: 0 clamp(6px, 1.4vw, 16px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: clamp(4px, 1vw, 12px);
       border-bottom: 1px solid #334155;
       z-index: 20;
+      overflow: hidden;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: clamp(4px, 0.9vw, 10px);
       min-width: 0;
-      flex: 1;
+      flex: 1 1 auto;
+      overflow: hidden;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
+      gap: clamp(4px, 0.8vw, 8px);
+      flex: 0 0 auto;
     }
 
     .sync-pill {
@@ -330,14 +332,25 @@
       border: 1px solid rgba(255, 255, 255, 0.25);
       background: rgba(255, 255, 255, 0.1);
       color: #e2e8f0;
-      font-size: 10.5px;
+      font-size: clamp(10.5px, 1.35vmin, 13px);
       font-weight: 800;
-      height: 26px;
-      padding: 0 6px;
+      height: clamp(28px, 3.8dvh, 36px);
+      padding: 0 clamp(6px, 1vw, 11px);
       border-radius: 999px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       white-space: nowrap;
       flex-shrink: 0;
+    }
+
+    .sync-pill .sync-text-full { display: none; }
+    .sync-pill .sync-text-short { display: inline; }
+
+    @media (min-width: 640px) {
+      .sync-pill .sync-text-full { display: inline; }
+      .sync-pill .sync-text-short { display: none; }
     }
 
     .sync-pill.online {
@@ -359,34 +372,44 @@
     }
 
     .active-pill {
-      font-size: 10.5px;
+      font-size: clamp(10.5px, 1.35vmin, 13px);
       font-weight: 800;
       color: #cbd5e1;
       background: rgba(255, 255, 255, 0.08);
-      padding: 3px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      height: clamp(28px, 3.8dvh, 36px);
+      padding: 0 clamp(6px, 0.9vw, 10px);
       border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    @media (max-width: 360px) {
-      .active-pill {
-        display: none;
-      }
+    .active-pill .active-text-full { display: none; }
+    .active-pill .active-text-short { display: inline; }
+
+    @media (min-width: 480px) {
+      .active-pill .active-text-full { display: inline; }
+      .active-pill .active-text-short { display: none; }
     }
 
     .grand-total-btn {
       appearance: none;
       display: inline-flex;
       align-items: baseline;
-      gap: 3px;
+      gap: clamp(3px, 0.6vw, 6px);
       background: rgba(255, 255, 255, 0.13);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 7px;
-      padding: 2px 6px;
+      border-radius: 8px;
+      height: clamp(30px, 4.1dvh, 40px);
+      padding: 0 clamp(6px, 1.1vw, 12px);
       cursor: pointer;
       color: #ffffff;
       min-width: 0;
+      flex: 0 1 auto;
+      overflow: hidden;
     }
 
     .grand-total-btn:hover {
@@ -398,37 +421,51 @@
     }
 
     .grand-total-label {
-      font-size: 9.5px;
+      font-size: clamp(9.5px, 1.2vmin, 12.5px);
       font-weight: 800;
       color: #cbd5e1;
       text-transform: uppercase;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .grand-total-value {
-      font-size: 15.5px;
+      font-size: clamp(14px, 2vmin, 22px);
       font-weight: 900;
       color: #4ade80;
       letter-spacing: -0.3px;
+      font-variant-numeric: tabular-nums;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .manager-badge-pill {
       display: none;
       align-items: center;
-      gap: 2px;
-      font-size: 10px;
+      gap: 3px;
+      font-size: clamp(10px, 1.25vmin, 12.5px);
       font-weight: 900;
       background: rgba(251, 191, 36, 0.22);
       color: #fde047;
       border: 1px solid rgba(251, 191, 36, 0.5);
-      padding: 2px 6px;
+      height: clamp(28px, 3.8dvh, 36px);
+      padding: 0 clamp(6px, 0.9vw, 10px);
       border-radius: 999px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .manager-badge-pill.open {
       display: inline-flex;
+    }
+
+    .manager-badge-pill .mgr-text-full { display: none; }
+    .manager-badge-pill .mgr-text-short { display: inline; }
+
+    @media (min-width: 560px) {
+      .manager-badge-pill .mgr-text-full { display: inline; }
+      .manager-badge-pill .mgr-text-short { display: none; }
     }
 
     .btn-quick-lock {
@@ -437,15 +474,17 @@
       border: 1px solid #f87171;
       background: rgba(220, 38, 38, 0.28);
       color: #fecaca;
-      height: 30px;
-      padding: 0 7px;
+      height: clamp(30px, 4.1dvh, 38px);
+      padding: 0 clamp(6px, 1vw, 11px);
       border-radius: 7px;
-      font-size: 11px;
+      font-size: clamp(10.5px, 1.3vmin, 13px);
       font-weight: 800;
       align-items: center;
       justify-content: center;
+      gap: 3px;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .btn-quick-lock.open {
@@ -457,10 +496,10 @@
       border: 1px solid #38bdf8;
       background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
-      height: 30px;
-      padding: 0 8px;
+      height: clamp(30px, 4.1dvh, 38px);
+      padding: 0 clamp(7px, 1.1vw, 13px);
       border-radius: 7px;
-      font-size: 11.5px;
+      font-size: clamp(11px, 1.35vmin, 13.5px);
       font-weight: 800;
       display: inline-flex;
       align-items: center;
@@ -478,6 +517,28 @@
 
     .btn-settings-main:active {
       transform: scale(0.95);
+    }
+
+    /* Tối ưu riêng cho màn hình điện thoại siêu hẹp (<= 380px) chống tràn ngang */
+    @media (max-width: 380px) {
+      .app-header {
+        padding: 0 4px;
+        gap: 3px;
+      }
+      .header-left, .header-right {
+        gap: 3px;
+      }
+      .grand-total-label {
+        display: none;
+      }
+      .sync-pill, .active-pill, .manager-badge-pill {
+        padding: 0 5px;
+        font-size: 10px;
+      }
+      .btn-quick-lock, .btn-settings-main {
+        padding: 0 6px;
+        font-size: 10.5px;
+      }
     }
 
     /* ==========================================================================
@@ -560,19 +621,20 @@
     }
 
     /* ==========================================================================
-       5. THANH HƯỚNG DẪN ĐỔI CHỖ & THANH SỬA SƠ ĐỒ
+       5. THANH HƯỚNG DẪN ĐỔI CHỖ & THANH CÔNG CỤ SỬA SƠ ĐỒ BÀN
        ========================================================================== */
     .swap-banner {
-      flex-shrink: 0;
       display: none;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 5px 8px;
-      background: linear-gradient(90deg, #d97706 0%, #ea580c 100%);
-      color: #ffffff;
-      font-size: 11.5px;
+      background: #fef3c7;
+      border-bottom: 1.5px solid #f59e0b;
+      color: #92400e;
+      padding: 6px 10px;
+      font-size: 12px;
       font-weight: 800;
+      flex-shrink: 0;
       z-index: 18;
     }
 
@@ -582,26 +644,27 @@
 
     .swap-cancel-btn {
       appearance: none;
-      border: 1px solid #ffffff;
-      background: rgba(0, 0, 0, 0.25);
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 999px;
+      border: 1px solid #d97706;
+      background: #ffffff;
+      color: #b45309;
+      font-size: 11.5px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 6px;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .edit-toolbar {
-      flex-shrink: 0;
       display: none;
       flex-direction: column;
-      gap: 4px;
-      padding: 5px 6px;
+      gap: 5px;
       background: #fffbeb;
-      border-bottom: 2px solid #f59e0b;
-      z-index: 16;
+      border-bottom: 1.5px solid #fcd34d;
+      padding: 6px 8px;
+      flex-shrink: 0;
+      z-index: 17;
     }
 
     .edit-toolbar.open {
@@ -612,7 +675,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -630,34 +693,28 @@
       color: #0f172a;
       font-size: 11px;
       font-weight: 800;
-      padding: 4px 7px;
-      border-radius: 5px;
+      padding: 4px 8px;
+      border-radius: 6px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
       white-space: nowrap;
     }
 
-    .tool-chip-btn:active {
-      transform: scale(0.95);
-    }
-
-    .tool-chip-btn.blue   { background: #0284c7; border-color: #0369a1; color: #ffffff; }
-    .tool-chip-btn.amber  { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
-    .tool-chip-btn.red    { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
-    .tool-chip-btn.green  { background: #16a34a; border-color: #15803d; color: #ffffff; padding: 4px 10px; }
+    .tool-chip-btn:active { transform: scale(0.96); }
+    .tool-chip-btn.blue  { background: #e0f2fe; border-color: #7dd3fc; color: #0369a1; }
+    .tool-chip-btn.green { background: #16a34a; border-color: #15803d; color: #ffffff; }
+    .tool-chip-btn.amber { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    .tool-chip-btn.red   { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
 
     /* ==========================================================================
-       6. SƠ ĐỒ BÀN ĂN TRỰC QUAN (15 BÀN × 4 GHẾ VỪA KHÍT MÀN HÌNH)
+       6. SƠ ĐỒ BÀN ĂN TRỰC QUAN (CO GIÃN TỰ ĐỘNG THEO TỶ LỆ & KÍCH THƯỚC MÀN HÌNH)
        ========================================================================== */
     .map-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: stretch;
-      padding: 3px 4px;
-      gap: 3px;
+      padding: clamp(3px, 0.8vmin, 12px);
+      gap: clamp(3px, 0.8vmin, 12px);
       overflow-y: auto;
       overflow-x: hidden;
       min-height: 0;
@@ -666,28 +723,28 @@
 
     .row-section {
       flex: 1 1 0;
-      min-height: 62px;
+      min-height: 60px;
       display: flex;
       flex-direction: column;
       background-color: var(--bg-card);
       border: 1px solid #94a3b8;
-      border-radius: 7px;
+      border-radius: clamp(7px, 1vmin, 14px);
       overflow: hidden;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
-    .row-section[data-row-mod="1"] { border-right: 4px solid #0284c7; border-left: 3px solid #38bdf8; }
-    .row-section[data-row-mod="2"] { border-right: 4px solid #7c3aed; border-left: 3px solid #a78bfa; }
-    .row-section[data-row-mod="3"] { border-right: 4px solid #0d9488; border-left: 3px solid #2dd4bf; }
-    .row-section[data-row-mod="4"] { border-right: 4px solid #ea580c; border-left: 3px solid #fb923c; }
-    .row-section[data-row-mod="0"] { border-right: 4px solid #db2777; border-left: 3px solid #f472b6; }
+    .row-section[data-row-mod="1"] { border-right: clamp(4px, 0.5vmin, 7px) solid #0284c7; border-left: clamp(3px, 0.4vmin, 6px) solid #38bdf8; }
+    .row-section[data-row-mod="2"] { border-right: clamp(4px, 0.5vmin, 7px) solid #7c3aed; border-left: clamp(3px, 0.4vmin, 6px) solid #a78bfa; }
+    .row-section[data-row-mod="3"] { border-right: clamp(4px, 0.5vmin, 7px) solid #0d9488; border-left: clamp(3px, 0.4vmin, 6px) solid #2dd4bf; }
+    .row-section[data-row-mod="4"] { border-right: clamp(4px, 0.5vmin, 7px) solid #ea580c; border-left: clamp(3px, 0.4vmin, 6px) solid #fb923c; }
+    .row-section[data-row-mod="0"] { border-right: clamp(4px, 0.5vmin, 7px) solid #db2777; border-left: clamp(3px, 0.4vmin, 6px) solid #f472b6; }
 
     .tables-grid {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(var(--grid-cols, 3), minmax(0, 1fr));
-      gap: 4px;
-      padding: 2px 3px;
+      gap: clamp(4px, 0.9vmin, 14px);
+      padding: clamp(2px, 0.6vmin, 10px) clamp(3px, 0.7vmin, 12px);
       align-items: stretch;
       min-height: 0;
     }
@@ -696,29 +753,30 @@
       overflow-x: auto;
     }
     .map-container.scrollable-cols .row-section {
-      min-width: calc(var(--grid-cols, 3) * 106px);
+      min-width: calc(var(--grid-cols, 3) * clamp(104px, 13vw, 165px));
     }
 
     .map-container.zoom-compact .row-section {
       flex: 0 0 auto;
-      height: 70px;
+      height: clamp(70px, 11dvh, 105px);
     }
 
     .map-container.zoom-large .row-section {
       flex: 0 0 auto;
-      height: 120px;
+      height: clamp(120px, 21dvh, 195px);
     }
 
     .table-unit {
       position: relative;
+      container-type: inline-size;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 2px;
+      gap: clamp(2px, 0.45vmin, 7px);
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 2px;
+      border-radius: clamp(6px, 0.9vmin, 12px);
+      padding: clamp(2px, 0.5vmin, 8px);
       min-width: 0;
       min-height: 0;
       transition: transform 0.12s ease, box-shadow 0.12s ease;
@@ -726,7 +784,7 @@
 
     .table-unit.unit-active {
       background: var(--green-tint);
-      border: 1.5px solid var(--green-main);
+      border: clamp(1.5px, 0.2vmin, 2.5px) solid var(--green-main);
     }
 
     .edit-mode-on .table-unit {
@@ -747,16 +805,16 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: clamp(2px, 0.4vmin, 6px);
       min-width: 0;
       min-height: 0;
       width: 100%;
       height: 100%;
-      border-radius: 6px;
+      border-radius: clamp(6px, 0.9vmin, 12px);
       border: 1.5px dashed #94a3b8;
       background: rgba(248, 250, 252, 0.78);
       color: #64748b;
-      padding: 2px;
+      padding: clamp(2px, 0.5vmin, 8px);
       cursor: pointer;
     }
 
@@ -770,17 +828,17 @@
     }
 
     .empty-slot-coord {
-      font-size: 11px;
+      font-size: clamp(11px, 1.5vmin, 17px);
       font-weight: 900;
       color: #64748b;
     }
 
     .empty-slot-tag {
-      font-size: 9.5px;
+      font-size: clamp(9.5px, 1.25vmin, 14px);
       font-weight: 800;
       color: #0284c7;
       background: #e0f2fe;
-      padding: 1px 5px;
+      padding: clamp(1px, 0.3vmin, 4px) clamp(5px, 0.8vw, 10px);
       border-radius: 999px;
     }
 
@@ -798,11 +856,11 @@
 
     .table-edit-overlay {
       position: absolute;
-      inset: 1px 1px auto 1px;
+      inset: clamp(1px, 0.3vmin, 4px) clamp(1px, 0.3vmin, 4px) auto clamp(1px, 0.3vmin, 4px);
       display: none;
       align-items: center;
       justify-content: space-between;
-      gap: 1px;
+      gap: 2px;
       z-index: 8;
       pointer-events: none;
     }
@@ -814,17 +872,17 @@
     .overlay-badge-btn {
       pointer-events: auto;
       appearance: none;
-      height: 20px;
-      min-width: 20px;
+      height: clamp(20px, 2.5vmin, 28px);
+      min-width: clamp(20px, 2.5vmin, 28px);
       border-radius: 999px;
-      font-size: 9.5px;
+      font-size: clamp(9.5px, 1.2vmin, 13.5px);
       font-weight: 900;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       border: 1px solid #ffffff;
-      padding: 0 4px;
+      padding: 0 clamp(4px, 0.5vw, 8px);
       color: #ffffff;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
     }
@@ -840,22 +898,22 @@
     .badge-delete { background: #dc2626; }
 
     /* ==========================================================================
-       7. GHẾ 4 PHÍA & MẶT BÀN CHỮ TO, ĐẬM, RÕ NÉT
+       7. GHẾ 4 PHÍA & MẶT BÀN CO GIÃN ĐA TỶ LỆ (MOBILE -> TABLET -> DESKTOP)
        ========================================================================== */
     .chairs-row {
       display: flex;
       align-items: stretch;
       justify-content: center;
-      gap: 3px;
+      gap: clamp(3px, 0.5vmin, 9px);
       padding: 0 1px;
       flex: 0 0 27%;
       min-height: 17px;
-      max-height: 25px;
+      max-height: clamp(26px, 4.4dvh, 46px);
     }
 
     .chairs-row .chair-btn {
       flex: 1 1 0;
-      max-width: 88px;
+      max-width: clamp(88px, 14vw, 180px);
       min-width: 18px;
     }
 
@@ -864,7 +922,7 @@
       display: flex;
       align-items: stretch;
       justify-content: center;
-      gap: 2px;
+      gap: clamp(2px, 0.45vmin, 8px);
       min-height: 24px;
       width: 100%;
     }
@@ -873,10 +931,10 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 2px;
+      gap: clamp(2px, 0.4vmin, 6px);
       width: 26%;
-      min-width: 22px;
-      max-width: 38px;
+      min-width: clamp(22px, 3vw, 44px);
+      max-width: clamp(38px, 5.2vw, 76px);
       flex-shrink: 0;
     }
 
@@ -891,12 +949,13 @@
       border: 1px solid var(--border-chair-empty);
       background-color: var(--bg-chair-empty);
       color: #475569;
-      font-size: 11px;
+      font-size: clamp(10.5px, 1.55vmin, 18px);
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 1px;
+      padding: 0 2px;
       cursor: pointer;
       overflow: hidden;
       white-space: nowrap;
@@ -908,10 +967,10 @@
       background-color: #f0f9ff;
     }
 
-    .chairs-row.top-chairs .chair-btn    { border-radius: 5px 5px 2px 2px; }
-    .chairs-row.bottom-chairs .chair-btn { border-radius: 2px 2px 5px 5px; }
-    .chairs-col.left-chairs .chair-btn   { border-radius: 5px 2px 2px 5px; }
-    .chairs-col.right-chairs .chair-btn  { border-radius: 2px 5px 5px 2px; }
+    .chairs-row.top-chairs .chair-btn    { border-radius: clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px) 2px 2px; }
+    .chairs-row.bottom-chairs .chair-btn { border-radius: 2px 2px clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px); }
+    .chairs-col.left-chairs .chair-btn   { border-radius: clamp(5px, 0.7vmin, 9px) 2px 2px clamp(5px, 0.7vmin, 9px); }
+    .chairs-col.right-chairs .chair-btn  { border-radius: 2px clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px) 2px; }
 
     .chair-btn:active {
       transform: scale(0.93);
@@ -921,7 +980,7 @@
       background-color: var(--green-main);
       border-color: var(--green-border);
       color: #ffffff;
-      font-size: 12px;
+      font-size: clamp(11.5px, 1.8vmin, 21px);
       font-weight: 900;
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     }
@@ -934,18 +993,18 @@
       appearance: none;
       flex: 1;
       width: 100%;
-      border-radius: 5px;
-      border: 1.5px solid #475569;
+      border-radius: clamp(5px, 0.8vmin, 11px);
+      border: clamp(1.5px, 0.2vmin, 2.5px) solid #475569;
       background-color: #ffffff;
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1px 5px;
-      gap: 3px;
+      padding: clamp(2px, 0.5vmin, 8px) clamp(5px, 1vmin, 14px);
+      gap: clamp(3px, 0.6vmin, 10px);
       cursor: pointer;
       overflow: hidden;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
     .table-surface-btn:hover {
@@ -961,8 +1020,8 @@
     .table-unit.has-side-chairs .table-surface-btn {
       flex-direction: column;
       justify-content: center;
-      padding: 1px 2px;
-      gap: 1px;
+      padding: clamp(2px, 0.4vmin, 6px);
+      gap: clamp(1px, 0.3vmin, 5px);
     }
 
     .table-unit.orient-vertical:not(.has-side-chairs) .table-surface-btn {
@@ -973,20 +1032,21 @@
     }
 
     .table-code-badge {
-      font-size: 13px;
+      font-size: clamp(12.5px, 1.85vmin, 22px);
       font-weight: 900;
       color: #0f172a;
       background: #e2e8f0;
-      padding: 1px 5px;
-      border-radius: 4px;
+      padding: clamp(1px, 0.35vmin, 5px) clamp(5px, 0.8vmin, 12px);
+      border-radius: clamp(4px, 0.55vmin, 8px);
       line-height: 1.1;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
     .table-amount-display {
-      font-size: 14.5px;
+      font-size: clamp(14px, 2.35vmin, 28px);
       font-weight: 900;
+      font-variant-numeric: tabular-nums;
       line-height: 1.1;
       color: #64748b;
       white-space: nowrap;
@@ -1007,8 +1067,27 @@
 
     .table-surface-btn.table-has-money .table-amount-display {
       color: #ffffff;
-      font-size: 15.5px;
+      font-size: clamp(15px, 2.75vmin, 33px);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Tối ưu theo tỷ lệ ô bàn (Container Queries) trên Tablet & Desktop rộng */
+    @container (min-width: 190px) {
+      .table-code-badge {
+        font-size: clamp(15px, 8.2cqi, 24px);
+      }
+      .table-amount-display {
+        font-size: clamp(18px, 11.2cqi, 32px);
+      }
+      .table-surface-btn.table-has-money .table-amount-display {
+        font-size: clamp(20px, 12.8cqi, 36px);
+      }
+      .chair-btn {
+        font-size: clamp(12px, 6.2cqi, 19px);
+      }
+      .chair-btn.has-amount {
+        font-size: clamp(13px, 7.2cqi, 22px);
+      }
     }
 
     @keyframes quickClearFlash {
@@ -1062,7 +1141,7 @@
 
     .modal-card {
       width: 100%;
-      max-width: 460px;
+      max-width: clamp(440px, 44vw, 580px);
       background-color: #ffffff;
       border-radius: 14px;
       box-shadow: 0 14px 32px rgba(15, 23, 42, 0.35);
@@ -1073,7 +1152,7 @@
     }
 
     .modal-card.modal-wide {
-      max-width: 600px;
+      max-width: clamp(580px, 60vw, 800px);
     }
 
     .modal-header {
@@ -2125,9 +2204,14 @@
     <header class="app-header">
       <div class="header-left">
         <button type="button" id="syncStatusBadge" class="sync-pill" data-action="manual-sync" title="Trạng thái đồng bộ dữ liệu">
-          ⚪ Cục bộ
+          <span id="syncStatusIcon">⚪</span>
+          <span id="syncStatusShort" class="sync-text-short">Cục bộ</span>
+          <span id="syncStatusFull" class="sync-text-full">Cục bộ</span>
         </button>
-        <span id="activeTablesBadge" class="active-pill">🟢 0/15 bàn</span>
+        <span id="activeTablesBadge" class="active-pill" title="Số bàn đang có khách">
+          <span id="activeTablesShort" class="active-text-short">0/15</span>
+          <span id="activeTablesFull" class="active-text-full">🟢 0/15 bàn</span>
+        </span>
         <button type="button" class="grand-total-btn" data-action="open-stats" title="Chạm để xem Bảng thống kê">
           <span class="grand-total-label">Tổng:</span>
           <span id="grandTotalValue" class="grand-total-value">0₫</span>
@@ -2135,7 +2219,10 @@
       </div>
 
       <div class="header-right">
-        <span id="managerUnlockedBadge" class="manager-badge-pill">🔓 Quản lý</span>
+        <span id="managerUnlockedBadge" class="manager-badge-pill">
+          <span class="mgr-text-short">🔓 QL</span>
+          <span class="mgr-text-full">🔓 Quản lý</span>
+        </span>
         <button type="button" id="btnQuickLock" class="btn-quick-lock" data-action="lock-manager" title="Khóa quyền Quản lý ngay">
           🔒 Khóa
         </button>
@@ -2715,8 +2802,8 @@
       /* ======================================================================
          CẤU HÌNH BẢO MẬT & FIREBASE (CHỦ QUÁN CÓ THỂ DÁN SẴN TRƯỚC KHI UP GITHUB)
          ====================================================================== */
-      const DEFAULT_FIREBASE_URL = "https://tinh-tien-quan-an-default-rtdb.asia-southeast1.firebasedatabase.app/";
-      const DEFAULT_FIREBASE_API_KEY = "AIzaSyChAcKb0_GgPuoyezarbmkoSkCoqwMod0U";
+      const DEFAULT_FIREBASE_URL = "";
+      const DEFAULT_FIREBASE_API_KEY = "";
       const DEFAULT_MANAGER_PIN = "1234";
 
       const STATE_STORAGE_KEY = "quan_an_pos_state_v4";
@@ -3046,109 +3133,89 @@
         const badge = el("syncStatusBadge");
         if (!badge) return;
         badge.className = "sync-pill" + (statusType ? (" " + statusType) : "");
-        badge.textContent = text;
+
+        const raw = String(text || "").trim();
+        const spaceIdx = raw.indexOf(" ");
+        const icon = spaceIdx !== -1 ? raw.slice(0, spaceIdx) : "⚪";
+        const fullLabel = spaceIdx !== -1 ? raw.slice(spaceIdx + 1).trim() : raw;
+
+        let shortLabel = fullLabel;
+        if (fullLabel.indexOf("Firebase") !== -1) shortLabel = "Cloud";
+        else if (fullLabel.indexOf("Wi-Fi") !== -1) shortLabel = "Wi-Fi";
+        else if (fullLabel.indexOf("Đang") !== -1) shortLabel = "Đồng bộ";
+        else if (fullLabel.indexOf("Lỗi") !== -1 || fullLabel.indexOf("Mất") !== -1) shortLabel = "Lỗi";
+
+        const iconEl = el("syncStatusIcon");
+        const shortEl = el("syncStatusShort");
+        const fullEl = el("syncStatusFull");
+        if (iconEl && shortEl && fullEl) {
+          iconEl.textContent = icon;
+          shortEl.textContent = shortLabel;
+          fullEl.textContent = fullLabel;
+        } else {
+          badge.textContent = raw;
+        }
       }
 
       /* ======================================================================
          QUẢN LÝ CẤU HÌNH FIREBASE & ĐĂNG NHẬP AUTHENTICATION (LỚP 1)
          ====================================================================== */
-      function saveFirebaseConfig(nextCfg) {
-        fbConfig = {
-          url: normalizeFirebaseUrl(nextCfg.url),
-          apiKey: String(nextCfg.apiKey || "").trim(),
-          mode: nextCfg.mode || "auto"
-        };
-        try {
-          localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(fbConfig));
-        } catch (err) {}
-        syncAuthInputsFromConfig();
-      }
-
-      function syncAuthInputsFromConfig() {
-        const urlInput = el("authFbUrlInput");
-        const keyInput = el("authFbKeyInput");
-        const toggleBtn = el("btnAuthConfigToggle");
-        const toggleText = el("authConfigToggleText");
-        const toggleAction = el("authConfigToggleAction");
-        const cfgBody = el("authConfigBody");
-
-        if (urlInput) urlInput.value = fbConfig.url || "";
-        if (keyInput) keyInput.value = fbConfig.apiKey || "";
-
-        const hasFullConfig = Boolean(fbConfig.url && fbConfig.apiKey);
-        if (toggleBtn) toggleBtn.classList.toggle("configured", hasFullConfig);
-
-        if (hasFullConfig) {
-          if (toggleText) toggleText.textContent = "✓ Đã cấu hình sẵn máy chủ Firebase";
-          if (cfgBody) cfgBody.classList.remove("open");
-          if (toggleAction) toggleAction.textContent = "Xem / Sửa URL & API Key ▼";
-        } else {
-          if (toggleText) toggleText.textContent = "⚙️ Nhập Firebase URL & Web API Key";
-          if (cfgBody) cfgBody.classList.add("open");
-          if (toggleAction) toggleAction.textContent = "Thu gọn ▲";
-        }
+      function parseHashParams() {
+        const result = {};
+        const rawHash = String(window.location.hash || "").replace(/^#/, "");
+        if (!rawHash) return result;
+        rawHash.split("&").forEach(function (pair) {
+          const idx = pair.indexOf("=");
+          if (idx === -1) return;
+          const k = decodeURIComponent(pair.slice(0, idx)).trim();
+          const v = decodeURIComponent(pair.slice(idx + 1)).trim();
+          if (k) result[k] = v;
+        });
+        return result;
       }
 
       function loadFirebaseConfigAndHash() {
-        const codeUrl = normalizeFirebaseUrl(DEFAULT_FIREBASE_URL);
-        const codeKey = String(DEFAULT_FIREBASE_API_KEY || "").trim();
-
-        let storedUrl = "";
-        let storedKey = "";
-        let storedMode = "";
+        let saved = { url: "", apiKey: "", mode: "auto" };
         try {
           const raw = localStorage.getItem(FB_CFG_STORAGE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && typeof parsed === "object") {
-              if (parsed.url) storedUrl = normalizeFirebaseUrl(parsed.url);
-              if (parsed.apiKey) storedKey = String(parsed.apiKey).trim();
-              if (parsed.mode === "firebase" || parsed.mode === "local") storedMode = parsed.mode;
+              saved.url = normalizeFirebaseUrl(parsed.url || "");
+              saved.apiKey = String(parsed.apiKey || "").trim();
+              saved.mode = parsed.mode || "auto";
             }
           }
         } catch (err) {}
 
-        let hashUrl = "";
-        let hashKey = "";
+        const hashParams = parseHashParams();
+        const hashUrl = normalizeFirebaseUrl(hashParams.fb || "");
+        const hashKey = String(hashParams.key || "").trim();
+
+        const codeUrl = normalizeFirebaseUrl(DEFAULT_FIREBASE_URL);
+        const codeKey = String(DEFAULT_FIREBASE_API_KEY || "").trim();
+
+        const finalUrl = hashUrl || codeUrl || saved.url || "";
+        const finalKey = hashKey || codeKey || saved.apiKey || "";
+        const finalMode = (hashUrl && hashKey)
+          ? "firebase"
+          : ((finalUrl && finalKey && saved.mode !== "local") ? "firebase" : "local");
+
+        fbConfig = { url: finalUrl, apiKey: finalKey, mode: finalMode };
         try {
-          const hashStr = window.location.hash || "";
-          if (hashStr.length > 1) {
-            const params = new URLSearchParams(hashStr.slice(1));
-            const rawHashFb = params.get("fb");
-            const rawHashKey = params.get("key");
-            if (rawHashFb) hashUrl = normalizeFirebaseUrl(rawHashFb);
-            if (rawHashKey) hashKey = String(rawHashKey).trim();
-            if (hashUrl || hashKey) {
-              if (window.history && typeof window.history.replaceState === "function") {
-                window.history.replaceState(null, "", window.location.pathname + window.location.search);
-              }
-            }
-          }
+          localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(fbConfig));
         } catch (err) {}
+      }
 
-        const resolvedUrl = hashUrl || codeUrl || storedUrl || "";
-        const resolvedKey = hashKey || codeKey || storedKey || "";
-
-        let resolvedMode = "auto";
-        if ((hashUrl && hashKey) || (codeUrl && codeKey)) {
-          resolvedMode = "firebase";
-        } else if (resolvedUrl && resolvedKey) {
-          resolvedMode = storedMode === "local" ? "local" : "firebase";
-        }
-
+      function saveFirebaseConfig(nextCfg) {
         fbConfig = {
-          url: resolvedUrl,
-          apiKey: resolvedKey,
-          mode: resolvedMode
+          url: normalizeFirebaseUrl(nextCfg.url || ""),
+          apiKey: String(nextCfg.apiKey || "").trim(),
+          mode: nextCfg.mode || "local"
         };
-
-        if (hashUrl || hashKey || (resolvedUrl && resolvedKey && (storedUrl !== resolvedUrl || storedKey !== resolvedKey))) {
-          try {
-            localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(fbConfig));
-          } catch (err) {}
-        }
-
-        syncAuthInputsFromConfig();
+        try {
+          localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(fbConfig));
+        } catch (err) {}
       }
 
       function loadAuthSession() {
@@ -3168,124 +3235,48 @@
         } catch (err) {}
       }
 
-      function saveAuthSession(nextSession) {
-        authSession = {
-          email: String(nextSession.email || ""),
-          idToken: String(nextSession.idToken || ""),
-          refreshToken: String(nextSession.refreshToken || ""),
-          expiresAt: Number(nextSession.expiresAt) || 0
-        };
+      function saveAuthSession() {
         try {
           localStorage.setItem(FB_AUTH_STORAGE_KEY, JSON.stringify(authSession));
         } catch (err) {}
       }
 
       function clearAuthSession() {
-        authSession = { email: "", idToken: "", refreshToken: "", expiresAt: 0 };
+        authSession = { email: authSession.email || "", idToken: "", refreshToken: "", expiresAt: 0 };
         try {
-          localStorage.removeItem(FB_AUTH_STORAGE_KEY);
+          localStorage.setItem(FB_AUTH_STORAGE_KEY, JSON.stringify(authSession));
         } catch (err) {}
-      }
-
-      function mapFirebaseAuthError(code) {
-        const c = String(code || "").toUpperCase();
-        if (c.indexOf("INVALID_LOGIN_CREDENTIALS") !== -1 || c.indexOf("INVALID_PASSWORD") !== -1 || c.indexOf("EMAIL_NOT_FOUND") !== -1) {
-          return "Sai Email hoặc Mật khẩu đăng nhập. Vui lòng kiểm tra lại!";
-        }
-        if (c.indexOf("INVALID_EMAIL") !== -1) {
-          return "Định dạng Email không hợp lệ!";
-        }
-        if (c.indexOf("USER_DISABLED") !== -1) {
-          return "Tài khoản này đã bị vô hiệu hóa trên Firebase!";
-        }
-        if (c.indexOf("TOO_MANY_ATTEMPTS") !== -1) {
-          return "Nhập sai quá nhiều lần. Vui lòng đợi ít phút rồi thử lại!";
-        }
-        if (c.indexOf("API_KEY_INVALID") !== -1) {
-          return "Firebase Web API Key không hợp lệ! Hãy bấm 'Xem / Sửa URL & API Key' để kiểm tra.";
-        }
-        if (c.indexOf("OPERATION_NOT_ALLOWED") !== -1) {
-          return "Chưa bật đăng nhập Email/Password trong Firebase Console -> Authentication!";
-        }
-        if (c.indexOf("CONFIGURATION_NOT_FOUND") !== -1) {
-          return "Dự án Firebase chưa bật Authentication! Hãy vào Firebase Console -> Build -> Authentication -> Get started.";
-        }
-        return "Không thể đăng nhập (" + (code || "Lỗi kết nối mạng") + ").";
-      }
-
-      async function firebaseSignInEmailPassword(email, password) {
-        const apiKey = String(fbConfig.apiKey || "").trim();
-        const dbUrl = normalizeFirebaseUrl(fbConfig.url);
-        if (!dbUrl || !apiKey) {
-          throw new Error("Vui lòng nhập đầy đủ Firebase URL và Web API Key!");
-        }
-
-        const endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + encodeURIComponent(apiKey);
-        const resp = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-            returnSecureToken: true
-          })
-        });
-
-        const data = await resp.json();
-        if (!resp.ok || !data || !data.idToken) {
-          const errCode = data && data.error && data.error.message ? data.error.message : "AUTH_FAILED";
-          throw new Error(mapFirebaseAuthError(errCode));
-        }
-
-        const expiresInSec = Math.max(300, Number(data.expiresIn) || 3600);
-        saveAuthSession({
-          email: data.email || email,
-          idToken: data.idToken,
-          refreshToken: data.refreshToken || "",
-          expiresAt: Date.now() + (expiresInSec - 120) * 1000
-        });
-      }
-
-      async function refreshFirebaseIdToken() {
-        if (!fbConfig.apiKey || !authSession.refreshToken) return false;
-        try {
-          const endpoint = "https://securetoken.googleapis.com/v1/token?key=" + encodeURIComponent(fbConfig.apiKey);
-          const body = "grant_type=refresh_token&refresh_token=" + encodeURIComponent(authSession.refreshToken);
-          const resp = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: body
-          });
-          const data = await resp.json();
-          if (!resp.ok || !data || !data.id_token) return false;
-
-          const expiresInSec = Math.max(300, Number(data.expires_in) || 3600);
-          saveAuthSession({
-            email: authSession.email,
-            idToken: data.id_token,
-            refreshToken: data.refresh_token || authSession.refreshToken,
-            expiresAt: Date.now() + (expiresInSec - 120) * 1000
-          });
-          return true;
-        } catch (err) {
-          return false;
-        }
-      }
-
-      async function ensureValidFirebaseToken() {
-        if (!authSession.idToken) return false;
-        if (Date.now() < authSession.expiresAt - 60000) return true;
-        return await refreshFirebaseIdToken();
       }
 
       function showLoginScreen(errorMsg) {
         const screen = el("authLoginScreen");
         if (!screen) return;
-        syncAuthInputsFromConfig();
-        if (el("authEmailInput") && authSession.email) {
-          el("authEmailInput").value = authSession.email;
-        }
+
+        const urlInp = el("authFbUrlInput");
+        const keyInp = el("authFbKeyInput");
+        const emailInp = el("authEmailInput");
+        const passInp = el("authPassInput");
         const errBox = el("authErrorBox");
+        const cfgToggle = el("btnAuthConfigToggle");
+        const cfgText = el("authConfigToggleText");
+        const cfgAction = el("authConfigToggleAction");
+        const cfgBody = el("authConfigBody");
+
+        if (urlInp) urlInp.value = fbConfig.url || "";
+        if (keyInp) keyInp.value = fbConfig.apiKey || "";
+        if (emailInp && authSession.email && !emailInp.value) emailInp.value = authSession.email;
+        if (passInp) passInp.value = "";
+
+        const hasConfig = Boolean(fbConfig.url && fbConfig.apiKey);
+        if (cfgToggle) cfgToggle.classList.toggle("configured", hasConfig);
+        if (cfgText) {
+          cfgText.textContent = hasConfig
+            ? "✓ Đã cấu hình sẵn máy chủ Firebase"
+            : "⚙️ Nhập Firebase URL & Web API Key";
+        }
+        if (cfgBody) cfgBody.classList.toggle("open", !hasConfig);
+        if (cfgAction) cfgAction.textContent = hasConfig ? "Xem / Sửa ▼" : "Thu gọn ▲";
+
         if (errBox) {
           if (errorMsg) {
             errBox.textContent = errorMsg;
@@ -3295,6 +3286,7 @@
             errBox.classList.remove("open");
           }
         }
+
         screen.classList.add("open");
       }
 
@@ -3303,178 +3295,77 @@
         if (screen) screen.classList.remove("open");
       }
 
-      /* ======================================================================
-         ĐỒNG BỘ DỮ LIỆU FIREBASE REALTIME DATABASE & MÁY CHỦ WI-FI LAN
-         ====================================================================== */
-      function getFirebaseDataEndpoint() {
-        return fbConfig.url + "/quan_an_v1.json?auth=" + encodeURIComponent(authSession.idToken);
+      function mapFirebaseAuthError(code) {
+        const c = String(code || "");
+        if (c.indexOf("INVALID_LOGIN_CREDENTIALS") !== -1 || c.indexOf("INVALID_PASSWORD") !== -1 || c.indexOf("EMAIL_NOT_FOUND") !== -1) {
+          return "Sai Email hoặc Mật khẩu đăng nhập!";
+        }
+        if (c.indexOf("INVALID_EMAIL") !== -1) return "Định dạng Email không hợp lệ!";
+        if (c.indexOf("USER_DISABLED") !== -1) return "Tài khoản này đã bị khóa trên Firebase!";
+        if (c.indexOf("TOO_MANY_ATTEMPTS") !== -1) return "Thử sai quá nhiều lần. Vui lòng đợi ít phút rồi thử lại!";
+        if (c.indexOf("API_KEY_INVALID") !== -1) return "Web API Key không chính xác. Kiểm tra lại cấu hình!";
+        return "Lỗi xác thực Firebase: " + (c || "Không thể kết nối máy chủ");
       }
 
-      async function pullStateFromFirebase(isInitial) {
-        if (!fbConfig.url || !authSession.idToken) return;
-        const okToken = await ensureValidFirebaseToken();
-        if (!okToken) {
-          stopSyncTimers();
-          clearAuthSession();
-          showLoginScreen("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
-          return;
-        }
+      function firebaseSignInEmailPassword(email, password) {
+        const endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" +
+          encodeURIComponent(fbConfig.apiKey);
 
-        try {
-          if (isInitial) updateSyncBadge("syncing", "🔄 Đang tải...");
-          const resp = await fetch(getFirebaseDataEndpoint(), { cache: "no-store" });
-          if (resp.status === 401 || resp.status === 403) {
-            const refreshed = await refreshFirebaseIdToken();
-            if (!refreshed) {
-              stopSyncTimers();
-              clearAuthSession();
-              showLoginScreen("Không có quyền truy cập Firebase (401/403). Hãy kiểm tra Rules hoặc đăng nhập lại!");
-              return;
-            }
-            return;
-          }
-
-          if (!resp.ok) {
-            updateSyncBadge("error", "⚠️ Lỗi Cloud");
-            return;
-          }
-
-          const remoteData = await resp.json();
-          if (remoteData && typeof remoteData === "object" && Array.isArray(remoteData.slots)) {
-            const serialized = JSON.stringify(remoteData);
-            if (serialized !== lastRemoteHash) {
-              const remoteUpdated = Number(remoteData.updatedAt) || 0;
-              const localUpdated = Number(state.updatedAt) || 0;
-              if (isInitial || remoteUpdated >= localUpdated) {
-                state = sanitizeState(remoteData);
-                lastRemoteHash = JSON.stringify(state);
-                try {
-                  localStorage.setItem(STATE_STORAGE_KEY, lastRemoteHash);
-                } catch (err) {}
-                renderMap();
-                updateManagerUI();
+        return fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            returnSecureToken: true
+          })
+        })
+          .then(function (res) {
+            return res.json().then(function (data) {
+              if (!res.ok) {
+                const errCode = data && data.error && data.error.message ? data.error.message : "AUTH_FAILED";
+                throw new Error(mapFirebaseAuthError(errCode));
               }
-            }
-          } else if (isInitial) {
-            await pushStateToFirebase();
-          }
-
-          updateSyncBadge("online", "🟢 Firebase Cloud");
-        } catch (err) {
-          updateSyncBadge("error", "⚠️ Mất mạng");
-        }
-      }
-
-      async function pushStateToFirebase() {
-        if (!fbConfig.url || !authSession.idToken) return;
-        if (isPushingRemote) {
-          pendingPush = true;
-          return;
-        }
-        isPushingRemote = true;
-        updateSyncBadge("syncing", "🔄 Đang đồng bộ...");
-
-        try {
-          const okToken = await ensureValidFirebaseToken();
-          if (!okToken) return;
-
-          const bodyStr = JSON.stringify(state);
-          const resp = await fetch(getFirebaseDataEndpoint(), {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: bodyStr
+              return data;
+            });
+          })
+          .then(function (data) {
+            const expiresInSec = Math.max(300, Number(data.expiresIn) || 3600);
+            authSession = {
+              email: data.email || email,
+              idToken: data.idToken || "",
+              refreshToken: data.refreshToken || "",
+              expiresAt: Date.now() + (expiresInSec * 1000) - 60000
+            };
+            saveAuthSession();
+            return authSession;
           });
-
-          if (resp.ok) {
-            lastRemoteHash = bodyStr;
-            updateSyncBadge("online", "🟢 Firebase Cloud");
-          } else {
-            updateSyncBadge("error", "⚠️ Lỗi ghi Cloud");
-          }
-        } catch (err) {
-          updateSyncBadge("error", "⚠️ Lỗi mạng");
-        } finally {
-          isPushingRemote = false;
-          if (pendingPush) {
-            pendingPush = false;
-            pushStateToFirebase();
-          }
-        }
       }
 
-      async function detectAndStartLanSync() {
-        if (window.location.protocol === "file:") {
-          syncMode = "local";
-          updateSyncBadge("", "⚪ Cục bộ");
-          return;
+      function refreshFirebaseIdToken() {
+        if (!fbConfig.apiKey || !authSession.refreshToken) {
+          return Promise.reject(new Error("NO_REFRESH_TOKEN"));
         }
-        try {
-          const resp = await fetch("/api/version", { cache: "no-store" });
-          if (!resp.ok) throw new Error("No LAN API");
-          const verData = await resp.json();
-          if (verData && verData.ok) {
-            syncMode = "lan";
-            updateSyncBadge("online", "🟢 Đồng bộ Wi-Fi");
-            await pullStateFromLanServer();
-            stopSyncTimers();
-            syncPollTimer = setInterval(pullStateFromLanServer, 1200);
-            return;
-          }
-        } catch (err) {}
-        syncMode = "local";
-        updateSyncBadge("", "⚪ Cục bộ");
-      }
+        const endpoint = "https://securetoken.googleapis.com/v1/token?key=" +
+          encodeURIComponent(fbConfig.apiKey);
 
-      async function pullStateFromLanServer() {
-        if (syncMode !== "lan" || isPushingRemote) return;
-        try {
-          const resp = await fetch("/api/state", { cache: "no-store" });
-          if (!resp.ok) return;
-          const payload = await resp.json();
-          if (payload && payload.ok && payload.state && typeof payload.state === "object") {
-            const remoteStr = JSON.stringify(payload.state);
-            if (remoteStr !== lastRemoteHash) {
-              state = sanitizeState(payload.state);
-              lastRemoteHash = JSON.stringify(state);
-              try {
-                localStorage.setItem(STATE_STORAGE_KEY, lastRemoteHash);
-              } catch (err) {}
-              renderMap();
-              updateManagerUI();
-            }
-          }
-          updateSyncBadge("online", "🟢 Đồng bộ Wi-Fi");
-        } catch (err) {
-          updateSyncBadge("error", "⚠️ Mất Wi-Fi");
-        }
-      }
-
-      async function pushStateToLanServer() {
-        if (syncMode !== "lan") return;
-        if (isPushingRemote) {
-          pendingPush = true;
-          return;
-        }
-        isPushingRemote = true;
-        try {
-          const resp = await fetch("/api/state", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ state: state })
+        return fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "grant_type=refresh_token&refresh_token=" + encodeURIComponent(authSession.refreshToken)
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("REFRESH_FAILED");
+            return res.json();
+          })
+          .then(function (data) {
+            const expiresInSec = Math.max(300, Number(data.expires_in) || 3600);
+            authSession.idToken = data.id_token || authSession.idToken;
+            authSession.refreshToken = data.refresh_token || authSession.refreshToken;
+            authSession.expiresAt = Date.now() + (expiresInSec * 1000) - 60000;
+            saveAuthSession();
+            return authSession.idToken;
           });
-          if (resp.ok) {
-            lastRemoteHash = JSON.stringify(state);
-            updateSyncBadge("online", "🟢 Đồng bộ Wi-Fi");
-          }
-        } catch (err) {
-          updateSyncBadge("error", "⚠️ Lỗi Wi-Fi");
-        } finally {
-          isPushingRemote = false;
-          if (pendingPush) {
-            pendingPush = false;
-            pushStateToLanServer();
-          }
-        }
       }
 
       function stopSyncTimers() {
@@ -3488,96 +3379,296 @@
         }
       }
 
-      async function startFirebaseCloudSession() {
-        syncMode = "firebase";
-        hideLoginScreen();
+      function startFirebaseCloudSession() {
         stopSyncTimers();
-        await pullStateFromFirebase(true);
-        syncPollTimer = setInterval(function () {
-          pullStateFromFirebase(false);
-        }, 2000);
-        tokenRefreshTimer = setInterval(function () {
-          refreshFirebaseIdToken();
-        }, 45 * 60 * 1000);
+        hideLoginScreen();
+        syncMode = "firebase";
+        updateSyncBadge("syncing", "🔄 Đang đồng bộ...");
+
+        const ensureValidToken = (Date.now() >= authSession.expiresAt && authSession.refreshToken)
+          ? refreshFirebaseIdToken().catch(function () { return authSession.idToken; })
+          : Promise.resolve(authSession.idToken);
+
+        return ensureValidToken
+          .then(function () {
+            return pullStateFromFirebase(true);
+          })
+          .then(function () {
+            syncPollTimer = setInterval(function () {
+              if (syncMode === "firebase" && !isPushingRemote) {
+                pullStateFromFirebase(false);
+              }
+            }, 2200);
+
+            tokenRefreshTimer = setInterval(function () {
+              if (syncMode === "firebase" && authSession.refreshToken) {
+                refreshFirebaseIdToken().catch(function () {});
+              }
+            }, 40 * 60 * 1000);
+          });
+      }
+
+      function pullStateFromFirebase(forceApply, isRetry) {
+        if (!fbConfig.url || !authSession.idToken) return Promise.resolve();
+        const dbUrl = fbConfig.url + "/quan_an_v1.json?auth=" + encodeURIComponent(authSession.idToken);
+
+        return fetch(dbUrl, { cache: "no-store" })
+          .then(function (res) {
+            if ((res.status === 401 || res.status === 403) && !isRetry && authSession.refreshToken) {
+              return refreshFirebaseIdToken().then(function () {
+                return pullStateFromFirebase(forceApply, true);
+              });
+            }
+            if (res.status === 401 || res.status === 403) {
+              stopSyncTimers();
+              clearAuthSession();
+              showLoginScreen("Phiên đăng nhập hết hạn hoặc bị từ chối quyền truy cập. Vui lòng đăng nhập lại!");
+              throw new Error("UNAUTHORIZED");
+            }
+            if (!res.ok) throw new Error("HTTP_" + res.status);
+            return res.json();
+          })
+          .then(function (remoteData) {
+            if (remoteData === undefined) return;
+            updateSyncBadge("online", "🟢 Firebase Cloud");
+
+            if (!remoteData || typeof remoteData !== "object") {
+              pushStateToFirebase();
+              return;
+            }
+
+            const remoteSanitized = sanitizeState(remoteData);
+            const remoteHash = JSON.stringify(remoteSanitized);
+            if (remoteHash === lastRemoteHash) return;
+
+            if (forceApply || remoteSanitized.updatedAt > state.updatedAt) {
+              lastRemoteHash = remoteHash;
+              state = remoteSanitized;
+              saveState(true);
+              renderMap();
+              if (el("statsModal") && el("statsModal").classList.contains("open")) {
+                renderStatsModal();
+              }
+            }
+          })
+          .catch(function (err) {
+            if (err && err.message === "UNAUTHORIZED") return;
+            updateSyncBadge("error", "🔴 Mất kết nối Cloud");
+          });
+      }
+
+      function pushStateToFirebase(isRetry) {
+        if (!fbConfig.url || !authSession.idToken) return;
+        if (isPushingRemote) {
+          pendingPush = true;
+          return;
+        }
+        isPushingRemote = true;
+        pendingPush = false;
+
+        const payloadJson = JSON.stringify(state);
+        const dbUrl = fbConfig.url + "/quan_an_v1.json?auth=" + encodeURIComponent(authSession.idToken);
+
+        fetch(dbUrl, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: payloadJson
+        })
+          .then(function (res) {
+            if ((res.status === 401 || res.status === 403) && !isRetry && authSession.refreshToken) {
+              isPushingRemote = false;
+              return refreshFirebaseIdToken().then(function () {
+                pushStateToFirebase(true);
+              });
+            }
+            if (!res.ok) throw new Error("PUSH_FAILED");
+            lastRemoteHash = payloadJson;
+            updateSyncBadge("online", "🟢 Firebase Cloud");
+          })
+          .catch(function () {
+            updateSyncBadge("error", "🔴 Lỗi đồng bộ Cloud");
+          })
+          .finally(function () {
+            isPushingRemote = false;
+            if (pendingPush) {
+              pendingPush = false;
+              pushStateToFirebase();
+            }
+          });
       }
 
       /* ======================================================================
-         QUẢN LÝ MÃ PIN & PHÂN QUYỀN QUẢN LÝ (LỚP BẢO MẬT 2)
+         ĐỒNG BỘ WI-FI NỘI BỘ (PYTHON SERVER.PY)
          ====================================================================== */
+      let lastLanVersion = -1;
+
+      function detectAndStartLanSync() {
+        stopSyncTimers();
+        if (window.location.protocol === "file:") {
+          syncMode = "local";
+          updateSyncBadge("", "⚪ Cục bộ");
+          return;
+        }
+
+        fetch("/api/version", { cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("NO_LAN_SERVER");
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || !data.ok) throw new Error("INVALID_LAN");
+            syncMode = "lan";
+            updateSyncBadge("online", "🟢 Wi-Fi nội bộ");
+            pullStateFromLanServer();
+
+            syncPollTimer = setInterval(function () {
+              if (syncMode !== "lan" || isPushingRemote) return;
+              fetch("/api/version", { cache: "no-store" })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (vData) {
+                  if (vData && vData.ok && typeof vData.version === "number" && vData.version !== lastLanVersion) {
+                    pullStateFromLanServer();
+                  }
+                })
+                .catch(function () {
+                  updateSyncBadge("error", "🔴 Mất kết nối Wi-Fi");
+                });
+            }, 1300);
+          })
+          .catch(function () {
+            syncMode = "local";
+            updateSyncBadge("", "⚪ Cục bộ");
+          });
+      }
+
+      function pullStateFromLanServer() {
+        fetch("/api/state", { cache: "no-store" })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (data) {
+            if (!data || !data.ok) return;
+            updateSyncBadge("online", "🟢 Wi-Fi nội bộ");
+            lastLanVersion = Number(data.version) || 0;
+            if (data.state && typeof data.state === "object") {
+              state = sanitizeState(data.state);
+              saveState(true);
+              renderMap();
+              if (el("statsModal") && el("statsModal").classList.contains("open")) {
+                renderStatsModal();
+              }
+            } else {
+              pushStateToLanServer();
+            }
+          })
+          .catch(function () {
+            updateSyncBadge("error", "🔴 Lỗi Wi-Fi nội bộ");
+          });
+      }
+
+      function pushStateToLanServer() {
+        if (isPushingRemote) {
+          pendingPush = true;
+          return;
+        }
+        isPushingRemote = true;
+        pendingPush = false;
+
+        fetch("/api/state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state: state })
+        })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (data) {
+            if (data && data.ok) {
+              lastLanVersion = Number(data.version) || lastLanVersion;
+              updateSyncBadge("online", "🟢 Wi-Fi nội bộ");
+            }
+          })
+          .catch(function () {
+            updateSyncBadge("error", "🔴 Lỗi gửi Wi-Fi");
+          })
+          .finally(function () {
+            isPushingRemote = false;
+            if (pendingPush) {
+              pendingPush = false;
+              pushStateToLanServer();
+            }
+          });
+      }
+
+      /* ======================================================================
+         PHÂN QUYỀN MÃ PIN QUẢN LÝ (LỚP BẢO MẬT 2), MODAL & TOAST HOÀN TÁC
+         ====================================================================== */
+      function openModal(id) {
+        const modal = el(id);
+        if (modal) modal.classList.add("open");
+      }
+
+      function closeModal(id) {
+        const modal = el(id);
+        if (modal) modal.classList.remove("open");
+      }
+
       function updateManagerUI() {
         const badge = el("managerUnlockedBadge");
         const lockBtn = el("btnQuickLock");
         const settingsBtn = el("btnMainSettings");
-        const entryEditMenuBtn = el("btnEntryEditMenu");
-        const drawerBtn = el("btnToggleLayoutDrawer");
+        const entryMenuBtn = el("btnEntryEditMenu");
 
         if (badge) badge.classList.toggle("open", isManagerUnlocked);
         if (lockBtn) lockBtn.classList.toggle("open", isManagerUnlocked);
+
         if (settingsBtn) {
-          settingsBtn.classList.toggle("unlocked-style", isManagerUnlocked);
           settingsBtn.textContent = isManagerUnlocked ? "⚙️ Cài đặt" : "🔒 Cài đặt";
+          settingsBtn.classList.toggle("unlocked-style", isManagerUnlocked);
         }
-        if (entryEditMenuBtn) {
-          entryEditMenuBtn.textContent = isManagerUnlocked ? "⚙️ Sửa menu" : "🔒 Sửa menu";
+        if (entryMenuBtn) {
+          entryMenuBtn.textContent = isManagerUnlocked ? "✏️ Sửa menu" : "🔒 Sửa menu";
         }
-        if (drawerBtn) {
-          drawerBtn.textContent = isManagerUnlocked ? "🪑 Ghế & Bàn" : "🔒 Ghế & Bàn";
-        }
-
-        if (!isManagerUnlocked && isEditMode) {
-          isEditMode = false;
-          swapSourceIndex = null;
-          renderMap();
-        }
-      }
-
-      function requireManagerPin(callback) {
-        if (isManagerUnlocked) {
-          if (typeof callback === "function") callback();
-          return;
-        }
-        pendingPinAction = callback || null;
-        pinBuffer = "";
-        renderPinDots(false);
-        const errEl = el("pinErrorText");
-        if (errEl) errEl.textContent = "";
-        openModal("pinModal");
       }
 
       function renderPinDots(isError) {
-        const container = el("pinDotsRow");
-        if (!container) return;
-        const targetLen = Math.max(4, state.managerPin.length, pinBuffer.length);
+        const row = el("pinDotsRow");
+        if (!row) return;
+        const targetLen = Math.max(4, state.managerPin.length);
         let html = "";
         for (let i = 0; i < targetLen; i++) {
           const filled = i < pinBuffer.length ? " filled" : "";
           const errCls = isError ? " error" : "";
           html += '<span class="pin-dot' + filled + errCls + '"></span>';
         }
-        container.innerHTML = html;
+        row.innerHTML = html;
+      }
+
+      function requireManagerPin(callback) {
+        if (isManagerUnlocked) {
+          callback();
+          return;
+        }
+        pendingPinAction = callback;
+        pinBuffer = "";
+        const errEl = el("pinErrorText");
+        if (errEl) errEl.textContent = "";
+        renderPinDots(false);
+        openModal("pinModal");
       }
 
       function verifyPinInput() {
-        if (!pinBuffer) {
-          const errEl = el("pinErrorText");
-          if (errEl) errEl.textContent = "Vui lòng nhập mã PIN!";
-          return;
-        }
+        const errEl = el("pinErrorText");
         if (pinBuffer === state.managerPin) {
           isManagerUnlocked = true;
           pinBuffer = "";
           closeModal("pinModal");
           updateManagerUI();
-          showToast("🔓 Đã mở khóa quyền Quản lý");
+          renderMap();
           const cb = pendingPinAction;
           pendingPinAction = null;
           if (typeof cb === "function") cb();
         } else {
-          renderPinDots(true);
-          const errEl = el("pinErrorText");
           if (errEl) errEl.textContent = "❌ Sai mã PIN Quản lý! Vui lòng thử lại.";
+          renderPinDots(true);
           if (navigator.vibrate) {
-            try { navigator.vibrate([40, 40, 40]); } catch (e) {}
+            try { navigator.vibrate([40, 40, 40]); } catch (err) {}
           }
           setTimeout(function () {
             pinBuffer = "";
@@ -3590,20 +3681,36 @@
         isManagerUnlocked = false;
         isEditMode = false;
         swapSourceIndex = null;
-        entryCtx.showLayoutDrawer = false;
-        const drawer = el("layoutDrawer");
-        if (drawer) drawer.classList.remove("open");
         closeModal("settingsModal");
-        closeModal("menuModal");
         updateManagerUI();
         renderMap();
         showToast("🔒 Đã khóa quyền Quản lý");
       }
 
-      /* ======================================================================
-         HIỂN THỊ THÔNG BÁO TOAST & HOÀN TÁC (UNDO)
-         ====================================================================== */
-      function showToast(message, enableUndo) {
+      function captureUndoSnapshot() {
+        try {
+          undoSnapshot = JSON.parse(JSON.stringify(state.slots));
+        } catch (err) {
+          undoSnapshot = null;
+        }
+      }
+
+      function restoreUndoSnapshot() {
+        if (!Array.isArray(undoSnapshot)) return;
+        state.slots = sanitizeState({
+          cols: state.cols,
+          zoom: state.zoom,
+          managerPin: state.managerPin,
+          menu: state.menu,
+          slots: undoSnapshot
+        }).slots;
+        undoSnapshot = null;
+        saveState();
+        renderMap();
+        showToast("↶ Đã khôi phục số tiền vừa xoá");
+      }
+
+      function showToast(message, allowUndo) {
         const toast = el("toastMsg");
         if (!toast) return;
         if (toastTimer) {
@@ -3611,7 +3718,7 @@
           toastTimer = null;
         }
 
-        if (enableUndo && undoSnapshot) {
+        if (allowUndo && undoSnapshot) {
           toast.classList.add("has-undo");
           toast.innerHTML =
             '<span>' + escapeHtml(message) + '</span>' +
@@ -3624,73 +3731,26 @@
         toast.classList.add("open");
         toastTimer = setTimeout(function () {
           toast.classList.remove("open", "has-undo");
-          if (enableUndo) undoSnapshot = null;
-        }, enableUndo ? 3600 : 2200);
-      }
-
-      function captureUndoSnapshot() {
-        undoSnapshot = JSON.parse(JSON.stringify(state));
-      }
-
-      function restoreUndoSnapshot() {
-        if (!undoSnapshot) return;
-        state = sanitizeState(undoSnapshot);
-        undoSnapshot = null;
-        saveState();
-        renderMap();
-        if (el("entryModal") && el("entryModal").classList.contains("open")) {
-          renderEntryModal();
-        }
-        showToast("↶ Đã hoàn tác khôi phục số tiền");
+          toastTimer = null;
+        }, allowUndo ? 3600 : 2200);
       }
 
       /* ======================================================================
-         QUẢN LÝ MỞ / ĐÓNG HỘP THOẠI MODAL
-         ====================================================================== */
-      function openModal(id) {
-        if (pendingSingleTapTimer) {
-          clearTimeout(pendingSingleTapTimer);
-          pendingSingleTapTimer = null;
-        }
-        const m = el(id);
-        if (m) m.classList.add("open");
-      }
-
-      function closeModal(id) {
-        const m = el(id);
-        if (m) m.classList.remove("open");
-      }
-
-      /* ======================================================================
-         DỰNG SƠ ĐỒ BÀN ĂN & GHẾ 4 PHÍA (ĐÁNH TỪ PHẢI SANG TRÁI: 1A ← 1B ← 1C)
+         DỰNG SƠ ĐỒ BÀN GHẾ TRỰC QUAN (ĐÁNH TỪ PHẢI SANG TRÁI: 1A ← 1B ← 1C)
          ====================================================================== */
       function renderMap() {
-        const container = el("mapContainer");
-        if (!container) return;
+        const mapEl = el("mapContainer");
+        if (!mapEl) return;
 
-        const cols = state.cols;
-        const totalRows = Math.max(1, Math.ceil(state.slots.length / cols));
-
-        container.style.setProperty("--grid-cols", String(cols));
-        container.classList.toggle("scrollable-cols", cols >= 5);
-        container.classList.toggle("zoom-compact", state.zoom === "compact");
-        container.classList.toggle("zoom-large", state.zoom === "large");
-        container.classList.toggle("edit-mode-on", isEditMode);
-
-        // Cập nhật thanh công cụ sửa sơ đồ & hướng dẫn đổi chỗ
-        const editToolbar = el("editToolbar");
-        if (editToolbar) editToolbar.classList.toggle("open", isEditMode);
-        const colLabel = el("toolbarColLabel");
-        if (colLabel) colLabel.textContent = cols + " cột";
-
+        const editActive = Boolean(isEditMode && isManagerUnlocked);
         const swapBanner = el("swapBanner");
+        const swapBannerText = el("swapBannerText");
         if (swapBanner) {
           if (swapSourceIndex !== null && state.slots[swapSourceIndex]) {
-            const src = state.slots[swapSourceIndex];
-            const srcLabel = src.isEmpty ? ("Ô trống " + getCoordLabel(swapSourceIndex, cols)) : ("Bàn " + src.name);
-            const bannerText = el("swapBannerText");
-            if (bannerText) {
-              bannerText.textContent = "⇄ Đang chọn [" + srcLabel + "] — Chạm vào bàn hoặc ô trống đích để đổi chỗ";
+            const srcSlot = state.slots[swapSourceIndex];
+            const srcLabel = srcSlot.isEmpty ? ("Ô trống " + getCoordLabel(swapSourceIndex, state.cols)) : ("Bàn " + srcSlot.name);
+            if (swapBannerText) {
+              swapBannerText.textContent = "⇄ Đang chuyển " + srcLabel + " — Chạm vào bàn hoặc ô trống đích";
             }
             swapBanner.classList.add("open");
           } else {
@@ -3698,128 +3758,116 @@
           }
         }
 
-        const dragAttr = isEditMode ? ' draggable="true"' : "";
+        const editToolbar = el("editToolbar");
+        const colLabel = el("toolbarColLabel");
+        if (editToolbar) editToolbar.classList.toggle("open", editActive);
+        if (colLabel) colLabel.textContent = state.cols + " cột";
 
-        let html = "";
+        mapEl.classList.toggle("edit-mode-on", editActive);
+        mapEl.classList.toggle("zoom-compact", state.zoom === "compact");
+        mapEl.classList.toggle("zoom-large", state.zoom === "large");
+        mapEl.classList.toggle("scrollable-cols", state.cols >= 5);
+        mapEl.style.setProperty("--grid-cols", String(state.cols));
+
+        const totalRows = Math.max(1, Math.ceil(state.slots.length / state.cols));
+        let mapHtml = "";
+
         for (let r = 0; r < totalRows; r++) {
-          const rowNum = r + 1;
-          const rowMod = rowNum % 5;
-          html += '<section class="row-section" data-row-mod="' + rowMod + '">';
-          html += '<div class="tables-grid">';
+          const rowMod = (r + 1) % 5;
+          mapHtml += '<section class="row-section" data-row-mod="' + rowMod + '"><div class="tables-grid">';
 
-          // Hiển thị từ phải sang trái: visCol = 0 (trái) là cột lớn nhất (C), visCol = cols-1 (phải) là cột 0 (A)
-          for (let visCol = 0; visCol < cols; visCol++) {
-            const logicalCol = cols - 1 - visCol;
-            const slotIdx = r * cols + logicalCol;
+          // Đánh thứ tự cột từ Phải sang Trái (c = cols - 1 -> 0) để cột A nằm bên phải
+          for (let c = state.cols - 1; c >= 0; c--) {
+            const slotIdx = r * state.cols + c;
             const slot = state.slots[slotIdx] || createEmptySlot();
-            const coord = getCoordLabel(slotIdx, cols);
-
+            const coord = getCoordLabel(slotIdx, state.cols);
             const isSelectedMove = swapSourceIndex === slotIdx;
             const isSwapTarget = swapSourceIndex !== null && swapSourceIndex !== slotIdx;
-            const moveCls = (isSelectedMove ? " slot-selected-move" : "") + (isSwapTarget ? " slot-swap-target" : "");
 
             if (slot.isEmpty) {
-              html +=
-                '<button type="button" class="empty-slot-btn' + moveCls + '"' + dragAttr + ' data-action="tap-empty-slot" data-slot="' + slotIdx + '">' +
+              const emptyCls = "empty-slot-btn" +
+                (isSelectedMove ? " slot-selected-move" : "") +
+                (isSwapTarget ? " slot-swap-target" : "");
+              const tagTxt = isSwapTarget ? "⇄ Chuyển tới đây" : "+ Đặt bàn";
+              mapHtml +=
+                '<button type="button" class="' + emptyCls + '" data-action="tap-empty-slot" data-slot="' + slotIdx + '">' +
                   '<span class="empty-slot-coord">' + escapeHtml(coord) + '</span>' +
-                  '<span class="empty-slot-tag">' + (isSwapTarget ? "⇄ Đặt vào đây" : "+ Đặt bàn") + '</span>' +
+                  '<span class="empty-slot-tag">' + tagTxt + '</span>' +
                 '</button>';
-            } else {
-              const tTotal = getTableTotal(slot);
-              const hasMoney = tTotal > 0;
-              const isVert = slot.orientation === "vertical";
+              continue;
+            }
 
-              const chairsBySide = { top: [], bottom: [], left: [], right: [] };
-              (slot.chairs || []).forEach(function (ch, chIdx) {
-                const s = SIDE_ORDER.indexOf(ch.side) !== -1 ? ch.side : "top";
-                chairsBySide[s].push({ chair: ch, index: chIdx });
-              });
+            const totalTable = getTableTotal(slot);
+            const hasMoney = totalTable > 0;
+            const chairs = slot.chairs || [];
 
-              const hasSideChairs = chairsBySide.left.length > 0 || chairsBySide.right.length > 0;
-              const unitCls =
-                "table-unit" +
-                (hasMoney ? " unit-active" : "") +
-                (isVert ? " orient-vertical" : "") +
-                (hasSideChairs ? " has-side-chairs" : "") +
-                moveCls;
+            let topHtml = "";
+            let bottomHtml = "";
+            let leftHtml = "";
+            let rightHtml = "";
+            let hasSideChairs = false;
 
-              html += '<div class="' + unitCls + '"' + dragAttr + ' data-slot="' + slotIdx + '">';
+            chairs.forEach(function (ch, chIdx) {
+              const chBtn = renderChairButtonHtml(slotIdx, chIdx, ch);
+              if (ch.side === "top") topHtml += chBtn;
+              else if (ch.side === "bottom") bottomHtml += chBtn;
+              else if (ch.side === "left") { leftHtml += chBtn; hasSideChairs = true; }
+              else if (ch.side === "right") { rightHtml += chBtn; hasSideChairs = true; }
+            });
 
-              // Lớp nút chỉnh sửa nhanh khi bật Sửa sơ đồ
-              html +=
+            const unitClasses = [
+              "table-unit",
+              hasMoney ? "unit-active" : "",
+              slot.orientation === "vertical" ? "orient-vertical" : "",
+              hasSideChairs ? "has-side-chairs" : "",
+              isSelectedMove ? "slot-selected-move" : "",
+              isSwapTarget ? "slot-swap-target" : ""
+            ].filter(Boolean).join(" ");
+
+            const surfaceCls = "table-surface-btn" + (hasMoney ? " table-has-money" : "");
+            const dragAttr = editActive ? ' draggable="true"' : "";
+
+            mapHtml +=
+              '<div class="' + unitClasses + '" data-slot="' + slotIdx + '"' + dragAttr + '>' +
                 '<div class="table-edit-overlay">' +
                   '<div style="display:flex; gap:2px;">' +
                     '<button type="button" class="overlay-badge-btn badge-rename" data-action="overlay-rename" data-slot="' + slotIdx + '" title="Đổi tên bàn">✎</button>' +
                     '<button type="button" class="overlay-badge-btn badge-rotate" data-action="overlay-rotate" data-slot="' + slotIdx + '" title="Xoay bàn 90°">↻</button>' +
-                    '<button type="button" class="overlay-badge-btn badge-chairs" data-action="overlay-chairs" data-slot="' + slotIdx + '" title="Chỉnh ghế">🪑' + slot.chairs.length + '</button>' +
+                    '<button type="button" class="overlay-badge-btn badge-chairs" data-action="overlay-chairs" data-slot="' + slotIdx + '" title="Chỉnh ghế">🪑' + chairs.length + '</button>' +
                   '</div>' +
                   '<div style="display:flex; gap:2px;">' +
                     '<button type="button" class="overlay-badge-btn badge-move" data-action="overlay-move" data-slot="' + slotIdx + '" title="Đổi chỗ bàn">⇄</button>' +
-                    '<button type="button" class="overlay-badge-btn badge-delete" data-action="overlay-delete" data-slot="' + slotIdx + '" title="Xoá bàn (Để trống ô)">×</button>' +
+                    '<button type="button" class="overlay-badge-btn badge-delete" data-action="overlay-delete" data-slot="' + slotIdx + '" title="Xoá bàn (để trống ô)">×</button>' +
                   '</div>' +
-                '</div>';
-
-              // Hàng ghế TRÊN
-              if (chairsBySide.top.length > 0) {
-                html += '<div class="chairs-row top-chairs">';
-                chairsBySide.top.forEach(function (item) {
-                  html += renderChairButtonHtml(slotIdx, item.index, item.chair);
-                });
-                html += '</div>';
-              }
-
-              // Vùng giữa: Ghế TRÁI + Mặt bàn + Ghế PHẢI
-              html += '<div class="table-middle-zone">';
-
-              if (chairsBySide.left.length > 0) {
-                html += '<div class="chairs-col left-chairs">';
-                chairsBySide.left.forEach(function (item) {
-                  html += renderChairButtonHtml(slotIdx, item.index, item.chair);
-                });
-                html += '</div>';
-              }
-
-              const surfCls = "table-surface-btn" + (hasMoney ? " table-has-money" : "");
-              html +=
-                '<button type="button" class="' + surfCls + '" data-action="tap-table" data-slot="' + slotIdx + '">' +
-                  '<span class="table-code-badge">' + escapeHtml(slot.name) + '</span>' +
-                  '<span class="table-amount-display">' + formatMoney(tTotal) + '</span>' +
-                '</button>';
-
-              if (chairsBySide.right.length > 0) {
-                html += '<div class="chairs-col right-chairs">';
-                chairsBySide.right.forEach(function (item) {
-                  html += renderChairButtonHtml(slotIdx, item.index, item.chair);
-                });
-                html += '</div>';
-              }
-
-              html += '</div>'; // end table-middle-zone
-
-              // Hàng ghế DƯỚI
-              if (chairsBySide.bottom.length > 0) {
-                html += '<div class="chairs-row bottom-chairs">';
-                chairsBySide.bottom.forEach(function (item) {
-                  html += renderChairButtonHtml(slotIdx, item.index, item.chair);
-                });
-                html += '</div>';
-              }
-
-              html += '</div>'; // end table-unit
-            }
+                '</div>' +
+                (topHtml ? ('<div class="chairs-row top-chairs">' + topHtml + '</div>') : '') +
+                '<div class="table-middle-zone">' +
+                  (leftHtml ? ('<div class="chairs-col left-chairs">' + leftHtml + '</div>') : '') +
+                  '<button type="button" class="' + surfaceCls + '" data-action="tap-table" data-slot="' + slotIdx + '">' +
+                    '<span class="table-code-badge">' + escapeHtml(slot.name) + '</span>' +
+                    '<span class="table-amount-display">' + formatMoney(totalTable) + '</span>' +
+                  '</button>' +
+                  (rightHtml ? ('<div class="chairs-col right-chairs">' + rightHtml + '</div>') : '') +
+                '</div>' +
+                (bottomHtml ? ('<div class="chairs-row bottom-chairs">' + bottomHtml + '</div>') : '') +
+              '</div>';
           }
 
-          html += '</div></section>';
+          mapHtml += '</div></section>';
         }
 
-        container.innerHTML = html;
+        mapEl.innerHTML = mapHtml;
 
         // Cập nhật thanh tổng tiền & số bàn có khách
         const summary = getGrandSummary();
-        const activeBadge = el("activeTablesBadge");
+        const activeShort = el("activeTablesShort");
+        const activeFull = el("activeTablesFull");
         const grandVal = el("grandTotalValue");
-        if (activeBadge) {
-          activeBadge.textContent = "🟢 " + summary.activeTables + "/" + summary.totalTables + " bàn";
+        if (activeShort) {
+          activeShort.textContent = summary.activeTables + "/" + summary.totalTables;
+        }
+        if (activeFull) {
+          activeFull.textContent = "🟢 " + summary.activeTables + "/" + summary.totalTables + " bàn";
         }
         if (grandVal) {
           grandVal.textContent = formatMoney(summary.totalMoney);
