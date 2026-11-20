@@ -6,25 +6,34 @@
   <title>Tính Tiền Quán Ăn - Sơ Đồ Trực Quan &amp; Bảo Mật 2 Lớp</title>
   <style>
     /* ==========================================================================
-       1. BIẾN MÀU SẮC & THIẾT LẬP MOBILE-FIRST + DESKTOP CHỐNG KẸT THAO TÁC
+       1. BẢNG MÀU SLATE & DEEP TEAL TỐI GIẢN (MẶT BÀN LUÔN NỔI BẬT HƠN GHẾ)
        ========================================================================== */
     :root {
-      --bg-app: #cbd5e1;
+      --bg-app: #f4f5f7;
       --bg-card: #ffffff;
-      --bg-chair-empty: #f8fafc;
-      --border-chair-empty: #94a3b8;
+      --bg-unit: #f8fafc;
+      --border-subtle: #cbd5e1;
+
+      /* Khi trống (0₫): Mặt bàn xám xanh vững chắc, ghế nền trắng nhẹ lùi về sau */
+      --table-empty-bg: #e2e8f0;
+      --table-empty-border: #94a3b8;
+      --table-badge-empty: #334155;
+
+      --chair-empty-bg: #ffffff;
+      --chair-empty-border: #cbd5e1;
+      --chair-empty-text: #64748b;
+
+      /* Khi có tiền (> 0₫): Mặt bàn xanh ngọc đậm (Deep Teal), ghế xanh ngọc nhạt cùng tông */
+      --table-active-bg: #0f766e;
+      --table-active-border: #115e59;
+      --table-active-tint: #f0fdfa;
+
+      --chair-active-bg: #ccfbf1;
+      --chair-active-border: #2dd4bf;
+      --chair-active-text: #115e59;
+
       --text-main: #0f172a;
-      --text-muted: #475569;
-
-      --green-main: #16a34a;
-      --green-dark: #15803d;
-      --green-border: #14532d;
-      --green-tint: #dcfce7;
-
-      --blue-main: #0284c7;
-      --blue-dark: #0369a1;
-      --red-main: #dc2626;
-      --amber-main: #d97706;
+      --text-muted: #64748b;
     }
 
     * {
@@ -32,47 +41,16 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    input {
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    button {
-      touch-action: manipulation;
-      font-family: inherit;
-    }
-
-    .map-container,
-    .table-unit,
-    .table-surface-btn,
-    .chair-btn,
-    .empty-slot-btn {
-      touch-action: manipulation;
     }
 
     html, body {
-      width: 100%;
       height: 100%;
-      height: 100dvh;
+      width: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-app);
       color: var(--text-main);
       overflow: hidden;
-    }
-
-    .app-shell {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 1440px;
-      height: 100%;
-      height: 100dvh;
-      margin: 0 auto;
-      background-color: var(--bg-app);
-      overflow: hidden;
+      user-select: none;
     }
 
     /* ==========================================================================
@@ -81,7 +59,7 @@
     .auth-screen {
       position: fixed;
       inset: 0;
-      background: linear-gradient(145deg, #0f172a 0%, #1e293b 55%, #0f172a 100%);
+      background: #e2e8f0;
       display: none;
       align-items: center;
       justify-content: center;
@@ -96,10 +74,11 @@
 
     .auth-card {
       width: 100%;
-      max-width: 410px;
+      max-width: 400px;
       background: #ffffff;
       border-radius: 16px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
       padding: 18px 16px;
       display: flex;
       flex-direction: column;
@@ -110,32 +89,32 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     .auth-brand-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #16a34a 0%, #0284c7 100%);
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: #15803d;
       color: #ffffff;
       font-size: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
     }
 
     .auth-brand-title {
-      font-size: 17px;
-      font-weight: 900;
+      font-size: 16px;
+      font-weight: 800;
       color: #0f172a;
       line-height: 1.2;
     }
 
     .auth-brand-sub {
       font-size: 11.5px;
-      font-weight: 600;
       color: #64748b;
       margin-top: 2px;
     }
@@ -148,7 +127,7 @@
 
     .auth-label {
       font-size: 11.5px;
-      font-weight: 800;
+      font-weight: 700;
       color: #334155;
     }
 
@@ -159,36 +138,34 @@
     }
 
     .password-input-wrap .text-input-clean {
-      padding-right: 40px;
+      padding-right: 38px;
     }
 
     .btn-toggle-pass {
       appearance: none;
       position: absolute;
       right: 4px;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border: none;
       background: transparent;
-      color: #475569;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
     }
 
     .auth-error-box {
       display: none;
       background: #fef2f2;
-      border: 1px solid #fca5a5;
+      border: 1px solid #fecaca;
       color: #b91c1c;
       font-size: 12px;
       font-weight: 700;
-      line-height: 1.35;
-      padding: 8px 10px;
       border-radius: 8px;
+      padding: 7px 9px;
+      line-height: 1.35;
     }
 
     .auth-error-box.open {
@@ -198,29 +175,28 @@
     .auth-primary-btn {
       appearance: none;
       border: none;
-      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+      background: #15803d;
       color: #ffffff;
-      font-size: 14.5px;
-      font-weight: 900;
-      padding: 12px;
-      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 11px 12px;
+      border-radius: 9px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.28);
     }
 
-    .auth-primary-btn:active {
-      transform: scale(0.98);
+    .auth-primary-btn:hover {
+      background: #166534;
     }
 
     .auth-primary-btn:disabled {
-      opacity: 0.65;
-      cursor: wait;
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .auth-config-drawer {
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
       background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
       overflow: hidden;
     }
 
@@ -228,32 +204,32 @@
       appearance: none;
       width: 100%;
       border: none;
-      background: #f1f5f9;
-      color: #0369a1;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 9px 10px;
-      text-align: left;
-      cursor: pointer;
+      background: transparent;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
+      cursor: pointer;
+      text-align: left;
     }
 
     .auth-config-toggle.configured {
       background: #f0fdf4;
-      color: #15803d;
+      color: #166534;
     }
 
     .auth-config-action-pill {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
-      background: #ffffff;
-      color: #0369a1;
-      border: 1px solid #bae6fd;
       padding: 2px 7px;
       border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #334155;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -261,10 +237,9 @@
     .auth-config-body {
       display: none;
       flex-direction: column;
-      gap: 8px;
-      padding: 10px;
+      gap: 7px;
+      padding: 8px 10px 10px;
       border-top: 1px solid #e2e8f0;
-      background: #ffffff;
     }
 
     .auth-config-body.open {
@@ -273,48 +248,50 @@
 
     .auth-offline-btn {
       appearance: none;
-      width: 100%;
       border: 1px solid #cbd5e1;
-      background: #f8fafc;
+      background: #ffffff;
       color: #475569;
       font-size: 12px;
-      font-weight: 800;
-      padding: 9px 10px;
-      border-radius: 9px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 8px;
       cursor: pointer;
-      text-align: center;
     }
 
     .auth-offline-btn:hover {
-      background: #f1f5f9;
-    }
-
-    .auth-offline-btn:active {
-      background: #e2e8f0;
+      background: #f8fafc;
     }
 
     /* ==========================================================================
-       3. THANH TIÊU ĐỀ TRÊN CÙNG (CO GIÃN ĐA MÀN HÌNH, CHỐNG CHỒNG CHÉO)
+       3. KHUNG ỨNG DỤNG CHÍNH & THANH TIÊU ĐỀ ĐA TỶ LỆ MÀN HÌNH
        ========================================================================== */
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
     .app-header {
       flex-shrink: 0;
-      height: clamp(44px, 6.2dvh, 58px);
-      background: #0f172a;
+      background-color: #0f172a;
       color: #ffffff;
-      padding: 0 clamp(6px, 1.4vw, 16px);
+      padding: clamp(5px, 0.9dvh, 9px) clamp(8px, 1.5vw, 18px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: clamp(4px, 1vw, 12px);
-      border-bottom: 1px solid #334155;
-      z-index: 20;
+      gap: clamp(4px, 0.8vw, 10px);
+      min-height: clamp(42px, 5.6dvh, 54px);
+      z-index: 25;
       overflow: hidden;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: clamp(4px, 0.9vw, 10px);
+      gap: clamp(4px, 0.7vw, 10px);
       min-width: 0;
       flex: 1 1 auto;
       overflow: hidden;
@@ -323,19 +300,18 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: clamp(4px, 0.8vw, 8px);
-      flex: 0 0 auto;
+      gap: clamp(4px, 0.6vw, 8px);
+      flex-shrink: 0;
     }
 
     .sync-pill {
       appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       background: rgba(255, 255, 255, 0.1);
       color: #e2e8f0;
       font-size: clamp(10.5px, 1.35vmin, 13px);
-      font-weight: 800;
-      height: clamp(28px, 3.8dvh, 36px);
-      padding: 0 clamp(6px, 1vw, 11px);
+      font-weight: 700;
+      padding: clamp(3px, 0.5dvh, 5px) clamp(6px, 0.9vw, 10px);
       border-radius: 999px;
       cursor: pointer;
       display: inline-flex;
@@ -345,97 +321,70 @@
       flex-shrink: 0;
     }
 
-    .sync-pill .sync-text-full { display: none; }
-    .sync-pill .sync-text-short { display: inline; }
-
-    @media (min-width: 640px) {
-      .sync-pill .sync-text-full { display: inline; }
-      .sync-pill .sync-text-short { display: none; }
-    }
-
     .sync-pill.online {
-      background: rgba(22, 163, 74, 0.25);
-      border-color: #4ade80;
-      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.26);
+      border-color: rgba(134, 239, 172, 0.55);
+      color: #dcfce7;
     }
 
     .sync-pill.syncing {
-      background: rgba(2, 132, 199, 0.3);
-      border-color: #38bdf8;
-      color: #bae6fd;
+      background: rgba(2, 132, 199, 0.28);
+      border-color: rgba(125, 211, 252, 0.55);
+      color: #e0f2fe;
     }
 
     .sync-pill.error {
-      background: rgba(220, 38, 38, 0.3);
-      border-color: #f87171;
-      color: #fecaca;
+      background: rgba(220, 38, 38, 0.28);
+      border-color: rgba(252, 165, 165, 0.55);
+      color: #fee2e2;
+    }
+
+    .sync-text-full,
+    .active-text-full,
+    .mgr-text-full {
+      display: none;
     }
 
     .active-pill {
       font-size: clamp(10.5px, 1.35vmin, 13px);
-      font-weight: 800;
-      color: #cbd5e1;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      height: clamp(28px, 3.8dvh, 36px);
-      padding: 0 clamp(6px, 0.9vw, 10px);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      background-color: rgba(255, 255, 255, 0.12);
+      color: #f1f5f9;
+      padding: clamp(3px, 0.5dvh, 5px) clamp(6px, 0.9vw, 10px);
       border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
       white-space: nowrap;
       flex-shrink: 0;
-    }
-
-    .active-pill .active-text-full { display: none; }
-    .active-pill .active-text-short { display: inline; }
-
-    @media (min-width: 480px) {
-      .active-pill .active-text-full { display: inline; }
-      .active-pill .active-text-short { display: none; }
     }
 
     .grand-total-btn {
       appearance: none;
-      display: inline-flex;
-      align-items: baseline;
-      gap: clamp(3px, 0.6vw, 6px);
-      background: rgba(255, 255, 255, 0.13);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 8px;
-      height: clamp(30px, 4.1dvh, 40px);
-      padding: 0 clamp(6px, 1.1vw, 12px);
-      cursor: pointer;
+      border: 1px solid rgba(94, 234, 212, 0.45);
+      background-color: rgba(15, 118, 110, 0.38);
       color: #ffffff;
+      border-radius: 8px;
+      padding: clamp(3px, 0.5dvh, 5px) clamp(7px, 1vw, 12px);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      white-space: nowrap;
       min-width: 0;
-      flex: 0 1 auto;
+      flex-shrink: 1;
       overflow: hidden;
     }
 
-    .grand-total-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .grand-total-btn:active {
-      transform: scale(0.97);
-    }
-
     .grand-total-label {
-      font-size: clamp(9.5px, 1.2vmin, 12.5px);
-      font-weight: 800;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      white-space: nowrap;
-      flex-shrink: 0;
+      font-size: clamp(10.5px, 1.35vmin, 13px);
+      color: #99f6e4;
+      font-weight: 700;
     }
 
     .grand-total-value {
-      font-size: clamp(14px, 2vmin, 22px);
-      font-weight: 900;
-      color: #4ade80;
-      letter-spacing: -0.3px;
+      font-size: clamp(13.5px, 1.9vmin, 19px);
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
-      white-space: nowrap;
+      color: #5eead4;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -443,199 +392,91 @@
     .manager-badge-pill {
       display: none;
       align-items: center;
-      gap: 3px;
-      font-size: clamp(10px, 1.25vmin, 12.5px);
-      font-weight: 900;
-      background: rgba(251, 191, 36, 0.22);
-      color: #fde047;
-      border: 1px solid rgba(251, 191, 36, 0.5);
-      height: clamp(28px, 3.8dvh, 36px);
-      padding: 0 clamp(6px, 0.9vw, 10px);
+      font-size: clamp(10.5px, 1.3vmin, 12.5px);
+      font-weight: 800;
+      padding: clamp(3px, 0.5dvh, 5px) clamp(6px, 0.8vw, 9px);
       border-radius: 999px;
+      background: rgba(21, 128, 61, 0.34);
+      border: 1px solid rgba(134, 239, 172, 0.55);
+      color: #dcfce7;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
     .manager-badge-pill.open {
       display: inline-flex;
     }
 
-    .manager-badge-pill .mgr-text-full { display: none; }
-    .manager-badge-pill .mgr-text-short { display: inline; }
-
-    @media (min-width: 560px) {
-      .manager-badge-pill .mgr-text-full { display: inline; }
-      .manager-badge-pill .mgr-text-short { display: none; }
-    }
-
     .btn-quick-lock {
-      appearance: none;
       display: none;
-      border: 1px solid #f87171;
-      background: rgba(220, 38, 38, 0.28);
-      color: #fecaca;
-      height: clamp(30px, 4.1dvh, 38px);
-      padding: 0 clamp(6px, 1vw, 11px);
+      appearance: none;
+      border: 1px solid rgba(253, 224, 71, 0.5);
+      background: rgba(161, 98, 7, 0.35);
+      color: #fef08a;
+      font-size: clamp(10.5px, 1.3vmin, 12.5px);
+      font-weight: 700;
+      padding: clamp(4px, 0.6dvh, 6px) clamp(6px, 0.9vw, 10px);
       border-radius: 7px;
-      font-size: clamp(10.5px, 1.3vmin, 13px);
-      font-weight: 800;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
       cursor: pointer;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
     .btn-quick-lock.open {
       display: inline-flex;
+      align-items: center;
     }
 
     .btn-settings-main {
       appearance: none;
-      border: 1px solid #38bdf8;
-      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.14);
       color: #ffffff;
-      height: clamp(30px, 4.1dvh, 38px);
-      padding: 0 clamp(7px, 1.1vw, 13px);
-      border-radius: 7px;
-      font-size: clamp(11px, 1.35vmin, 13.5px);
+      font-size: clamp(11px, 1.4vmin, 13.5px);
       font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
+      padding: clamp(4px, 0.6dvh, 7px) clamp(8px, 1.1vw, 13px);
+      border-radius: 8px;
       cursor: pointer;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
     .btn-settings-main.unlocked-style {
-      border-color: #fbbf24;
-      background: linear-gradient(180deg, #d97706 0%, #b45309 100%);
+      background: #15803d;
+      border-color: #4ade80;
     }
 
-    .btn-settings-main:active {
-      transform: scale(0.95);
+    @media (min-width: 640px) {
+      .sync-text-short,
+      .active-text-short,
+      .mgr-text-short {
+        display: none;
+      }
+      .sync-text-full,
+      .active-text-full,
+      .mgr-text-full {
+        display: inline;
+      }
     }
 
-    /* Tối ưu riêng cho màn hình điện thoại siêu hẹp (<= 380px) chống tràn ngang */
-    @media (max-width: 380px) {
-      .app-header {
-        padding: 0 4px;
-        gap: 3px;
-      }
-      .header-left, .header-right {
-        gap: 3px;
-      }
+    @media (max-width: 390px) {
       .grand-total-label {
         display: none;
       }
-      .sync-pill, .active-pill, .manager-badge-pill {
-        padding: 0 5px;
-        font-size: 10px;
-      }
-      .btn-quick-lock, .btn-settings-main {
-        padding: 0 6px;
-        font-size: 10.5px;
-      }
     }
 
     /* ==========================================================================
-       4. HỘP THOẠI BÀN PHÍM SỐ NHẬP MÃ PIN QUẢN LÝ (LỚP BẢO MẬT 2)
-       ========================================================================== */
-    .pin-dots-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px 0 4px;
-    }
-
-    .pin-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 2px solid #94a3b8;
-      background: #f8fafc;
-      transition: all 0.12s ease;
-    }
-
-    .pin-dot.filled {
-      background: #0284c7;
-      border-color: #0369a1;
-      transform: scale(1.12);
-    }
-
-    .pin-dot.error {
-      background: #dc2626;
-      border-color: #991b1b;
-    }
-
-    .pin-error-text {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 800;
-      color: #dc2626;
-      min-height: 18px;
-    }
-
-    .pin-keypad-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 4px 8px 6px;
-    }
-
-    .pin-key-btn {
-      appearance: none;
-      border: 1.5px solid #cbd5e1;
-      background: #ffffff;
-      color: #0f172a;
-      height: 52px;
-      border-radius: 11px;
-      font-size: 22px;
-      font-weight: 900;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
-    }
-
-    .pin-key-btn:hover {
-      background: #f8fafc;
-      border-color: #94a3b8;
-    }
-
-    .pin-key-btn:active {
-      background: #e0f2fe;
-      border-color: #0284c7;
-      transform: scale(0.95);
-    }
-
-    .pin-key-btn.fn-key {
-      background: #f1f5f9;
-      font-size: 15px;
-      color: #475569;
-    }
-
-    /* ==========================================================================
-       5. THANH HƯỚNG DẪN ĐỔI CHỖ & THANH CÔNG CỤ SỬA SƠ ĐỒ BÀN
+       4. THANH ĐỔI CHỖ BÀN, THANH SỬA SƠ ĐỒ & BÀN PHÍM PIN QUẢN LÝ
        ========================================================================== */
     .swap-banner {
       display: none;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: #fef3c7;
-      border-bottom: 1.5px solid #f59e0b;
-      color: #92400e;
-      padding: 6px 10px;
+      background: #fefce8;
+      border-bottom: 1px solid #fde047;
+      color: #854d0e;
+      padding: 5px 10px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       flex-shrink: 0;
-      z-index: 18;
     }
 
     .swap-banner.open {
@@ -644,27 +485,25 @@
 
     .swap-cancel-btn {
       appearance: none;
-      border: 1px solid #d97706;
+      border: 1px solid #facc15;
       background: #ffffff;
-      color: #b45309;
-      font-size: 11.5px;
-      font-weight: 900;
-      padding: 4px 10px;
+      color: #854d0e;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
       border-radius: 6px;
       cursor: pointer;
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
     .edit-toolbar {
       display: none;
       flex-direction: column;
-      gap: 5px;
-      background: #fffbeb;
-      border-bottom: 1.5px solid #fcd34d;
-      padding: 6px 8px;
+      gap: 4px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 5px 8px;
       flex-shrink: 0;
-      z-index: 17;
     }
 
     .edit-toolbar.open {
@@ -689,252 +528,291 @@
     .tool-chip-btn {
       appearance: none;
       border: 1px solid #cbd5e1;
-      background: #ffffff;
-      color: #0f172a;
+      background: #f8fafc;
+      color: #1e293b;
       font-size: 11px;
-      font-weight: 800;
-      padding: 4px 8px;
+      font-weight: 700;
+      padding: 4px 7px;
       border-radius: 6px;
       cursor: pointer;
       white-space: nowrap;
     }
 
-    .tool-chip-btn:active { transform: scale(0.96); }
-    .tool-chip-btn.blue  { background: #e0f2fe; border-color: #7dd3fc; color: #0369a1; }
-    .tool-chip-btn.green { background: #16a34a; border-color: #15803d; color: #ffffff; }
-    .tool-chip-btn.amber { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
-    .tool-chip-btn.red   { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+    .tool-chip-btn.blue  { background: #f0f9ff; border-color: #bae6fd; color: #0369a1; }
+    .tool-chip-btn.green { background: #15803d; border-color: #166534; color: #ffffff; }
+    .tool-chip-btn.amber { background: #fefce8; border-color: #fde047; color: #854d0e; }
+    .tool-chip-btn.red   { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+
+    .pin-dots-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 0;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #94a3b8;
+      background: #ffffff;
+    }
+
+    .pin-dot.filled {
+      background: #15803d;
+      border-color: #15803d;
+    }
+
+    .pin-dot.error {
+      background: #dc2626;
+      border-color: #dc2626;
+    }
+
+    .pin-error-text {
+      min-height: 16px;
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #b91c1c;
+    }
+
+    .pin-keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .pin-key-btn {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 8px;
+      padding: 10px 4px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .pin-key-btn:active {
+      background: #e2e8f0;
+    }
+
+    .pin-key-btn.fn-key {
+      background: #f1f5f9;
+      font-size: 13px;
+      color: #475569;
+    }
 
     /* ==========================================================================
-       6. SƠ ĐỒ BÀN ĂN TRỰC QUAN (CO GIÃN TỰ ĐỘNG THEO TỶ LỆ & KÍCH THƯỚC MÀN HÌNH)
+       5. SƠ ĐỒ BÀN GHẾ TRỰC TIẾP (TỰ CO GIÃN ĐA MÀN HÌNH & ĐA TỶ LỆ)
        ========================================================================== */
     .map-container {
       flex: 1;
+      min-height: 0;
+      padding: clamp(5px, 0.9vmin, 12px);
       display: flex;
       flex-direction: column;
-      justify-content: stretch;
-      padding: clamp(3px, 0.8vmin, 12px);
-      gap: clamp(3px, 0.8vmin, 12px);
+      gap: clamp(5px, 0.9vmin, 11px);
       overflow-y: auto;
       overflow-x: hidden;
-      min-height: 0;
       -webkit-overflow-scrolling: touch;
-    }
-
-    .row-section {
-      flex: 1 1 0;
-      min-height: 60px;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--bg-card);
-      border: 1px solid #94a3b8;
-      border-radius: clamp(7px, 1vmin, 14px);
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-    }
-
-    .row-section[data-row-mod="1"] { border-right: clamp(4px, 0.5vmin, 7px) solid #0284c7; border-left: clamp(3px, 0.4vmin, 6px) solid #38bdf8; }
-    .row-section[data-row-mod="2"] { border-right: clamp(4px, 0.5vmin, 7px) solid #7c3aed; border-left: clamp(3px, 0.4vmin, 6px) solid #a78bfa; }
-    .row-section[data-row-mod="3"] { border-right: clamp(4px, 0.5vmin, 7px) solid #0d9488; border-left: clamp(3px, 0.4vmin, 6px) solid #2dd4bf; }
-    .row-section[data-row-mod="4"] { border-right: clamp(4px, 0.5vmin, 7px) solid #ea580c; border-left: clamp(3px, 0.4vmin, 6px) solid #fb923c; }
-    .row-section[data-row-mod="0"] { border-right: clamp(4px, 0.5vmin, 7px) solid #db2777; border-left: clamp(3px, 0.4vmin, 6px) solid #f472b6; }
-
-    .tables-grid {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(var(--grid-cols, 3), minmax(0, 1fr));
-      gap: clamp(4px, 0.9vmin, 14px);
-      padding: clamp(2px, 0.6vmin, 10px) clamp(3px, 0.7vmin, 12px);
-      align-items: stretch;
-      min-height: 0;
+      --grid-cols: 3;
     }
 
     .map-container.scrollable-cols {
       overflow-x: auto;
     }
+
     .map-container.scrollable-cols .row-section {
-      min-width: calc(var(--grid-cols, 3) * clamp(104px, 13vw, 165px));
+      min-width: calc(var(--grid-cols) * 108px);
     }
 
     .map-container.zoom-compact .row-section {
       flex: 0 0 auto;
-      height: clamp(70px, 11dvh, 105px);
+      min-height: clamp(66px, 11dvh, 92px);
     }
 
     .map-container.zoom-large .row-section {
       flex: 0 0 auto;
-      height: clamp(120px, 21dvh, 195px);
+      min-height: clamp(118px, 21dvh, 175px);
     }
 
-    .table-unit {
-      position: relative;
-      container-type: inline-size;
+    .row-section {
+      flex: 1 1 0;
+      min-height: clamp(82px, 14.5dvh, 140px);
+      background-color: var(--bg-card);
+      border-radius: clamp(8px, 1.1vmin, 13px);
+      padding: clamp(4px, 0.7vmin, 8px);
+      border: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: clamp(2px, 0.45vmin, 7px);
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: clamp(6px, 0.9vmin, 12px);
-      padding: clamp(2px, 0.5vmin, 8px);
-      min-width: 0;
+    }
+
+    .tables-grid {
+      flex: 1;
       min-height: 0;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+      gap: clamp(5px, 0.9vmin, 11px);
     }
 
-    .table-unit.unit-active {
-      background: var(--green-tint);
-      border: clamp(1.5px, 0.2vmin, 2.5px) solid var(--green-main);
-    }
-
-    .edit-mode-on .table-unit {
-      cursor: grab;
-    }
-
-    .table-unit.drag-over-slot,
-    .empty-slot-btn.drag-over-slot {
-      outline: 2.5px dashed #0284c7;
-      background: #e0f2fe !important;
-      transform: scale(0.98);
-    }
-
+    /* Ô trống (giữ nguyên vị trí khi xóa bàn để không tự dồn layout) */
     .empty-slot-btn {
       appearance: none;
-      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 60px;
+      border-radius: clamp(7px, 1vmin, 11px);
+      border: 1.5px dashed #cbd5e1;
+      background-color: #f8fafc;
+      color: #64748b;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: clamp(2px, 0.4vmin, 6px);
-      min-width: 0;
-      min-height: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: clamp(6px, 0.9vmin, 12px);
-      border: 1.5px dashed #94a3b8;
-      background: rgba(248, 250, 252, 0.78);
-      color: #64748b;
-      padding: clamp(2px, 0.5vmin, 8px);
+      gap: 3px;
       cursor: pointer;
+      padding: 4px;
     }
 
     .empty-slot-btn:hover {
-      background: #f1f5f9;
-      border-color: #64748b;
+      border-color: #94a3b8;
+      background-color: #f1f5f9;
     }
 
-    .empty-slot-btn:active {
-      background: #e2e8f0;
+    .empty-slot-btn.slot-selected-move {
+      border: 2px solid #ca8a04;
+      background: #fefce8;
+    }
+
+    .empty-slot-btn.slot-swap-target {
+      border: 2px dashed #0284c7;
+      background: #f0f9ff;
+      color: #0369a1;
     }
 
     .empty-slot-coord {
-      font-size: clamp(11px, 1.5vmin, 17px);
-      font-weight: 900;
-      color: #64748b;
+      font-size: clamp(11px, 1.5vmin, 15px);
+      font-weight: 800;
+      color: #475569;
     }
 
     .empty-slot-tag {
-      font-size: clamp(9.5px, 1.25vmin, 14px);
-      font-weight: 800;
-      color: #0284c7;
+      font-size: clamp(10px, 1.3vmin, 13px);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       6. CỤM BÀN ĂN + GHẾ QUANH BÀN (MẶT BÀN NỔI BẬT HƠN GHẾ)
+       ========================================================================== */
+    .table-unit {
+      position: relative;
+      container-type: inline-size;
+      background-color: var(--bg-unit);
+      border-radius: clamp(7px, 1vmin, 11px);
+      padding: clamp(3px, 0.55vmin, 6px);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: clamp(2px, 0.4vmin, 5px);
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .table-unit.unit-active {
+      background-color: var(--table-active-tint);
+      border-color: #99f6e4;
+    }
+
+    .table-unit.slot-selected-move {
+      outline: 2.5px solid #eab308;
+      background: #fefce8;
+    }
+
+    .table-unit.slot-swap-target {
+      outline: 2px dashed #0284c7;
+    }
+
+    .table-unit.drag-over-slot {
+      outline: 2.5px solid #0284c7;
       background: #e0f2fe;
-      padding: clamp(1px, 0.3vmin, 4px) clamp(5px, 0.8vw, 10px);
-      border-radius: 999px;
     }
 
-    .slot-selected-move {
-      border: 2px solid #d97706 !important;
-      background: #fef3c7 !important;
-      box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.35) !important;
-      z-index: 6;
-    }
-
-    .slot-swap-target {
-      border-color: #d97706 !important;
-      border-style: dashed !important;
-    }
-
+    /* Thanh nút sửa nhanh trên từng bàn khi bật Sửa sơ đồ */
     .table-edit-overlay {
       position: absolute;
-      inset: clamp(1px, 0.3vmin, 4px) clamp(1px, 0.3vmin, 4px) auto clamp(1px, 0.3vmin, 4px);
+      top: 2px;
+      left: 2px;
+      right: 2px;
       display: none;
       align-items: center;
       justify-content: space-between;
       gap: 2px;
-      z-index: 8;
+      z-index: 12;
       pointer-events: none;
     }
 
-    .edit-mode-on .table-edit-overlay {
+    .map-container.edit-mode-on .table-edit-overlay {
       display: flex;
     }
 
     .overlay-badge-btn {
       pointer-events: auto;
       appearance: none;
-      height: clamp(20px, 2.5vmin, 28px);
-      min-width: clamp(20px, 2.5vmin, 28px);
-      border-radius: 999px;
-      font-size: clamp(9.5px, 1.2vmin, 13.5px);
-      font-weight: 900;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      border: 1px solid rgba(15, 23, 42, 0.25);
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 5px;
       cursor: pointer;
-      border: 1px solid #ffffff;
-      padding: 0 clamp(4px, 0.5vw, 8px);
-      color: #ffffff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
     }
 
-    .overlay-badge-btn:hover {
-      filter: brightness(1.08);
+    .overlay-badge-btn.badge-delete {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
     }
 
-    .badge-rename { background: #0284c7; }
-    .badge-rotate { background: #7c3aed; }
-    .badge-chairs { background: #0d9488; }
-    .badge-move   { background: #d97706; }
-    .badge-delete { background: #dc2626; }
+    .overlay-badge-btn.badge-move {
+      background: #fefce8;
+      border-color: #fde047;
+      color: #854d0e;
+    }
 
-    /* ==========================================================================
-       7. GHẾ 4 PHÍA & MẶT BÀN CO GIÃN ĐA TỶ LỆ (MOBILE -> TABLET -> DESKTOP)
-       ========================================================================== */
     .chairs-row {
       display: flex;
       align-items: stretch;
-      justify-content: center;
-      gap: clamp(3px, 0.5vmin, 9px);
-      padding: 0 1px;
-      flex: 0 0 27%;
-      min-height: 17px;
-      max-height: clamp(26px, 4.4dvh, 46px);
+      justify-content: space-between;
+      gap: clamp(2px, 0.45vmin, 5px);
+      height: clamp(19px, 3vmin, 32px);
+      flex-shrink: 0;
     }
 
     .chairs-row .chair-btn {
       flex: 1 1 0;
-      max-width: clamp(88px, 14vw, 180px);
-      min-width: 18px;
+      min-width: 0;
     }
 
     .table-middle-zone {
       flex: 1 1 0;
+      min-height: 0;
       display: flex;
       align-items: stretch;
-      justify-content: center;
-      gap: clamp(2px, 0.45vmin, 8px);
-      min-height: 24px;
-      width: 100%;
+      gap: clamp(2px, 0.45vmin, 5px);
     }
 
     .chairs-col {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      gap: clamp(2px, 0.4vmin, 6px);
-      width: 26%;
-      min-width: clamp(22px, 3vw, 44px);
-      max-width: clamp(38px, 5.2vw, 76px);
+      justify-content: space-between;
+      gap: clamp(2px, 0.45vmin, 5px);
+      width: clamp(24px, 3.6vmin, 42px);
       flex-shrink: 0;
     }
 
@@ -944,13 +822,14 @@
       width: 100%;
     }
 
+    /* Chiếc ghế trống: Nhẹ nhàng, lùi về nền để nhường sự nổi bật cho mặt bàn */
     .chair-btn {
       appearance: none;
-      border: 1px solid var(--border-chair-empty);
-      background-color: var(--bg-chair-empty);
-      color: #475569;
+      border: 1px solid var(--chair-empty-border);
+      background-color: var(--chair-empty-bg);
+      color: var(--chair-empty-text);
       font-size: clamp(10.5px, 1.55vmin, 18px);
-      font-weight: 800;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
       display: flex;
       align-items: center;
@@ -963,81 +842,74 @@
     }
 
     .chair-btn:hover {
-      border-color: #0284c7;
-      background-color: #f0f9ff;
+      border-color: #2dd4bf;
+      background-color: #f0fdfa;
+      color: #0f766e;
     }
 
-    .chairs-row.top-chairs .chair-btn    { border-radius: clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px) 2px 2px; }
-    .chairs-row.bottom-chairs .chair-btn { border-radius: 2px 2px clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px); }
-    .chairs-col.left-chairs .chair-btn   { border-radius: clamp(5px, 0.7vmin, 9px) 2px 2px clamp(5px, 0.7vmin, 9px); }
-    .chairs-col.right-chairs .chair-btn  { border-radius: 2px clamp(5px, 0.7vmin, 9px) clamp(5px, 0.7vmin, 9px) 2px; }
+    .chairs-row.top-chairs .chair-btn    { border-radius: clamp(5px, 0.7vmin, 8px) clamp(5px, 0.7vmin, 8px) 2px 2px; }
+    .chairs-row.bottom-chairs .chair-btn { border-radius: 2px 2px clamp(5px, 0.7vmin, 8px) clamp(5px, 0.7vmin, 8px); }
+    .chairs-col.left-chairs .chair-btn   { border-radius: clamp(5px, 0.7vmin, 8px) 2px 2px clamp(5px, 0.7vmin, 8px); }
+    .chairs-col.right-chairs .chair-btn  { border-radius: 2px clamp(5px, 0.7vmin, 8px) clamp(5px, 0.7vmin, 8px) 2px; }
 
     .chair-btn:active {
-      transform: scale(0.93);
+      transform: scale(0.94);
     }
 
+    /* Chiếc ghế có tiền: Nền xanh ngọc nhạt cùng tông bàn, chữ đậm rõ số */
     .chair-btn.has-amount {
-      background-color: var(--green-main);
-      border-color: var(--green-border);
-      color: #ffffff;
+      background-color: var(--chair-active-bg);
+      border: 1.5px solid var(--chair-active-border);
+      color: var(--chair-active-text);
       font-size: clamp(11.5px, 1.8vmin, 21px);
-      font-weight: 900;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      font-weight: 800;
     }
 
     .chair-btn.has-amount:hover {
-      background-color: var(--green-dark);
+      background-color: #99f6e4;
     }
 
+    /* Mặt bàn trống: Khối xám xanh vững chắc, tạo trọng tâm rõ ràng hơn ghế trắng */
     .table-surface-btn {
       appearance: none;
       flex: 1;
       width: 100%;
-      border-radius: clamp(5px, 0.8vmin, 11px);
-      border: clamp(1.5px, 0.2vmin, 2.5px) solid #475569;
-      background-color: #ffffff;
+      min-width: 0;
+      border-radius: clamp(6px, 0.8vmin, 10px);
+      border: 1.5px solid var(--table-empty-border);
+      background-color: var(--table-empty-bg);
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: clamp(2px, 0.5vmin, 8px) clamp(5px, 1vmin, 14px);
+      padding: clamp(2px, 0.5vmin, 8px) clamp(6px, 1vmin, 14px);
       gap: clamp(3px, 0.6vmin, 10px);
       cursor: pointer;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .table-unit.orient-vertical .table-surface-btn {
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(3px, 0.6vmin, 8px) 4px;
     }
 
     .table-surface-btn:hover {
-      border-color: #0284c7;
-      background-color: #f8fafc;
+      border-color: #64748b;
+      background-color: #cbd5e1;
     }
 
     .table-surface-btn:active {
-      transform: scale(0.96);
-    }
-
-    .table-unit.orient-vertical .table-surface-btn,
-    .table-unit.has-side-chairs .table-surface-btn {
-      flex-direction: column;
-      justify-content: center;
-      padding: clamp(2px, 0.4vmin, 6px);
-      gap: clamp(1px, 0.3vmin, 5px);
-    }
-
-    .table-unit.orient-vertical:not(.has-side-chairs) .table-surface-btn {
-      max-width: 78%;
-      margin: 0 auto;
-      border-left-width: 2.5px;
-      border-right-width: 2.5px;
+      transform: scale(0.97);
     }
 
     .table-code-badge {
-      font-size: clamp(12.5px, 1.85vmin, 22px);
-      font-weight: 900;
-      color: #0f172a;
-      background: #e2e8f0;
-      padding: clamp(1px, 0.35vmin, 5px) clamp(5px, 0.8vmin, 12px);
-      border-radius: clamp(4px, 0.55vmin, 8px);
+      background-color: var(--table-badge-empty);
+      color: #ffffff;
+      font-size: clamp(11px, 1.65vmin, 19px);
+      font-weight: 800;
+      padding: clamp(2px, 0.35vmin, 4px) clamp(5px, 0.7vmin, 9px);
+      border-radius: clamp(4px, 0.55vmin, 7px);
       line-height: 1.1;
       white-space: nowrap;
       flex-shrink: 0;
@@ -1045,33 +917,37 @@
 
     .table-amount-display {
       font-size: clamp(14px, 2.35vmin, 28px);
-      font-weight: 900;
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
-      color: #64748b;
+      color: #334155;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    /* Mặt bàn có tiền: Xanh ngọc đậm (Deep Teal) đặc sắc nét, nổi bật nhất trên sơ đồ */
     .table-surface-btn.table-has-money {
-      background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
-      border-color: #14532d;
+      background-color: var(--table-active-bg);
+      border-color: var(--table-active-border);
       color: #ffffff;
     }
 
+    .table-surface-btn.table-has-money:hover {
+      background-color: #115e59;
+    }
+
     .table-surface-btn.table-has-money .table-code-badge {
-      background: rgba(0, 0, 0, 0.28);
-      color: #ffffff;
+      background-color: #ccfbf1;
+      color: #115e59;
     }
 
     .table-surface-btn.table-has-money .table-amount-display {
       color: #ffffff;
       font-size: clamp(15px, 2.75vmin, 33px);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     }
 
-    /* Tối ưu theo tỷ lệ ô bàn (Container Queries) trên Tablet & Desktop rộng */
+    /* Co giãn tự động theo kích thước ô bàn (Container Queries) trên Tablet & Desktop */
     @container (min-width: 190px) {
       .table-code-badge {
         font-size: clamp(15px, 8.2cqi, 24px);
@@ -1092,36 +968,33 @@
 
     @keyframes quickClearFlash {
       0% {
-        background: #ef4444;
-        border-color: #b91c1c;
+        background-color: #dc2626;
+        border-color: #991b1b;
         color: #ffffff;
-        transform: scale(0.92);
-        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.45);
+        transform: scale(0.94);
       }
       45% {
-        background: #fef08a;
-        border-color: #eab308;
+        background-color: #fef08a;
+        border-color: #ca8a04;
         color: #0f172a;
-        transform: scale(1.04);
-        box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.35);
+        transform: scale(1.03);
       }
       100% {
         transform: scale(1);
-        box-shadow: none;
       }
     }
 
     .flash-cleared {
-      animation: quickClearFlash 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: quickClearFlash 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* ==========================================================================
-       8. HỘP THOẠI MODAL CHUNG
+       7. HỘP THOẠI MODAL CHUNG
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background-color: rgba(15, 23, 42, 0.68);
+      background-color: rgba(15, 23, 42, 0.55);
       display: none;
       align-items: flex-end;
       justify-content: center;
@@ -1143,8 +1016,8 @@
       width: 100%;
       max-width: clamp(440px, 44vw, 580px);
       background-color: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.35);
+      border-radius: 13px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.25);
       overflow: hidden;
       max-height: 94dvh;
       display: flex;
@@ -1157,7 +1030,7 @@
 
     .modal-header {
       padding: 9px 12px;
-      background: #0f172a;
+      background: #1e293b;
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -1174,14 +1047,14 @@
 
     .modal-badge {
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      color: #38bdf8;
+      color: #93c5fd;
     }
 
     .modal-title {
       font-size: 15.5px;
-      font-weight: 900;
+      font-weight: 800;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
@@ -1197,31 +1070,31 @@
 
     .btn-header-drawer {
       appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.32);
-      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
       font-size: 11.5px;
-      font-weight: 800;
+      font-weight: 700;
       padding: 4px 8px;
       border-radius: 6px;
       cursor: pointer;
     }
 
     .btn-header-drawer.active {
-      background: #d97706;
-      border-color: #fbbf24;
+      background: #b45309;
+      border-color: #f59e0b;
     }
 
     .modal-close-x {
       appearance: none;
       border: none;
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.14);
       color: #ffffff;
       width: 28px;
       height: 28px;
       border-radius: 50%;
       font-size: 15px;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1229,11 +1102,11 @@
     }
 
     .modal-close-x:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .modal-body {
-      padding: 8px 10px;
+      padding: 9px 11px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -1247,7 +1120,7 @@
       justify-content: space-between;
       gap: 8px;
       background: #f0fdf4;
-      border: 1.5px solid #16a34a;
+      border: 1px solid #86efac;
       border-radius: 8px;
       padding: 6px 10px;
     }
@@ -1261,14 +1134,14 @@
 
     .live-bill-label {
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       color: #166534;
       text-transform: uppercase;
     }
 
     .live-bill-items {
       font-size: 11.5px;
-      font-weight: 700;
+      font-weight: 600;
       color: #15803d;
       white-space: nowrap;
       overflow: hidden;
@@ -1278,7 +1151,7 @@
 
     .live-bill-total {
       font-size: 24px;
-      font-weight: 900;
+      font-weight: 800;
       color: #15803d;
       white-space: nowrap;
       flex-shrink: 0;
@@ -1289,9 +1162,9 @@
       line-height: 1.35;
       padding: 5px 8px;
       border-radius: 6px;
-      background-color: #fffbeb;
-      border: 1px solid #fde68a;
-      color: #92400e;
+      background-color: #fefce8;
+      border: 1px solid #fde047;
+      color: #854d0e;
       display: none;
     }
 
@@ -1300,7 +1173,7 @@
     }
 
     /* ==========================================================================
-       9. THANH CHỌN MENU MÓN ĂN KÈM GIÁ TIỀN
+       8. THANH CHỌN MENU MÓN ĂN KÈM GIÁ TIỀN
        ========================================================================== */
     .menu-bar-header {
       display: flex;
@@ -1311,8 +1184,8 @@
 
     .menu-bar-title {
       font-size: 12px;
-      font-weight: 800;
-      color: #1e293b;
+      font-weight: 700;
+      color: #334155;
     }
 
     .menu-bar-actions {
@@ -1325,23 +1198,23 @@
       appearance: none;
       border: 1px solid #cbd5e1;
       background: #f8fafc;
-      color: #0f172a;
+      color: #1e293b;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       padding: 4px 8px;
       border-radius: 999px;
       cursor: pointer;
     }
 
     .pill-action-btn.primary {
-      background: #e0f2fe;
-      border-color: #7dd3fc;
+      background: #f0f9ff;
+      border-color: #bae6fd;
       color: #0369a1;
     }
 
     .pill-action-btn.active-toggle {
-      background: #0284c7;
-      border-color: #0369a1;
+      background: #0369a1;
+      border-color: #075985;
       color: #ffffff;
     }
 
@@ -1363,7 +1236,7 @@
 
     .menu-dish-card {
       position: relative;
-      border: 1.5px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
       background: #f8fafc;
       border-radius: 8px;
       padding: 7px 6px;
@@ -1377,22 +1250,22 @@
     }
 
     .menu-dish-card:hover {
-      border-color: #0284c7;
-      background: #f0f9ff;
+      border-color: #94a3b8;
+      background: #f1f5f9;
     }
 
     .menu-dish-card:active {
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
 
     .menu-dish-card.dish-selected {
-      background: #dcfce7;
-      border-color: #16a34a;
+      background: #f0fdf4;
+      border-color: #4ade80;
     }
 
     .dish-name {
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       color: #0f172a;
       line-height: 1.2;
       padding-right: 22px;
@@ -1408,9 +1281,9 @@
     }
 
     .dish-price {
-      font-size: 13.5px;
-      font-weight: 900;
-      color: #0284c7;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0369a1;
     }
 
     .menu-dish-card.dish-selected .dish-price {
@@ -1419,8 +1292,8 @@
 
     .dish-qty-badge {
       font-size: 11px;
-      font-weight: 900;
-      background: #16a34a;
+      font-weight: 800;
+      background: #15803d;
       color: #ffffff;
       padding: 1px 6px;
       border-radius: 999px;
@@ -1439,11 +1312,11 @@
       width: 23px;
       height: 23px;
       border-radius: 50%;
-      border: 1px solid #fca5a5;
-      background: #fee2e2;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
       color: #b91c1c;
       font-size: 15px;
-      font-weight: 900;
+      font-weight: 800;
       line-height: 1;
       display: none;
       align-items: center;
@@ -1457,7 +1330,7 @@
     }
 
     /* ==========================================================================
-       10. BÀN PHÍM SỐ NHẬP TRỰC TIẾP & NGĂN KÉO CHỈNH GHẾ / XOAY BÀN
+       9. BÀN PHÍM SỐ NHẬP TRỰC TIẾP & NGĂN KÉO CHỈNH GHẾ / XOAY BÀN
        ========================================================================== */
     .manual-numpad-box {
       display: none;
@@ -1489,10 +1362,10 @@
     .amount-input {
       width: 100%;
       font-size: 20px;
-      font-weight: 900;
+      font-weight: 800;
       color: #0f172a;
       background-color: #ffffff;
-      border: 2px solid #0284c7;
+      border: 1.5px solid #0369a1;
       border-radius: 7px;
       padding: 4px 28px 4px 10px;
       text-align: right;
@@ -1503,8 +1376,8 @@
       position: absolute;
       right: 9px;
       font-size: 16px;
-      font-weight: 900;
-      color: #0284c7;
+      font-weight: 800;
+      color: #0369a1;
       pointer-events: none;
     }
 
@@ -1522,7 +1395,7 @@
       border-radius: 6px;
       padding: 8px 2px;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1540,15 +1413,15 @@
     .num-btn.num-special {
       background-color: #f1f5f9;
       font-size: 13px;
-      color: #334155;
+      color: #475569;
     }
 
     .layout-tools-drawer {
       display: none;
       flex-direction: column;
       gap: 6px;
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       padding: 7px;
     }
@@ -1585,16 +1458,16 @@
       border-radius: 5px;
       padding: 5px 7px;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 3px;
     }
 
-    .subaction-btn.purple { background: #7c3aed; border-color: #6d28d9; color: #ffffff; }
-    .subaction-btn.move   { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
-    .subaction-btn.danger { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+    .subaction-btn.purple { background: #475569; border-color: #334155; color: #ffffff; }
+    .subaction-btn.move   { background: #fefce8; border-color: #fde047; color: #854d0e; }
+    .subaction-btn.danger { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
     .sides-stepper-grid {
       display: grid;
@@ -1615,7 +1488,7 @@
 
     .side-stepper-label {
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       color: #475569;
     }
 
@@ -1634,16 +1507,16 @@
       height: 24px;
       border-radius: 4px;
       font-size: 14px;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
     }
 
-    .stepper-mini-btn.plus  { background: #dcfce7; border-color: #86efac; color: #15803d; }
-    .stepper-mini-btn.minus { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+    .stepper-mini-btn.plus  { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+    .stepper-mini-btn.minus { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
     .stepper-count-val {
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 800;
     }
 
     .chair-pos-pills {
@@ -1660,13 +1533,13 @@
       border-radius: 5px;
       padding: 6px 2px;
       font-size: 11.5px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
     }
 
     .chair-pos-btn.active-pos {
-      background: #0284c7;
-      border-color: #0369a1;
+      background: #0369a1;
+      border-color: #075985;
       color: #ffffff;
     }
 
@@ -1686,7 +1559,7 @@
       border-radius: 7px;
       padding: 10px 6px;
       font-size: 13.5px;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1699,15 +1572,15 @@
     }
 
     .modal-btn.btn-cancel     { background-color: #e2e8f0; color: #334155; }
-    .modal-btn.btn-delete-val { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
-    .modal-btn.btn-save       { background-color: #16a34a; color: #ffffff; }
+    .modal-btn.btn-delete-val { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .modal-btn.btn-save       { background-color: #15803d; color: #ffffff; }
 
     /* ==========================================================================
-       11. HỘP THOẠI CÀI ĐẶT, BẢO MẬT & SẮP XẾP MENU
+       10. HỘP THOẠI CÀI ĐẶT, BẢO MẬT & SẮP XẾP MENU
        ========================================================================== */
     .settings-group {
       background: #f8fafc;
-      border: 1px solid #cbd5e1;
+      border: 1px solid #e2e8f0;
       border-radius: 8px;
       padding: 8px 10px;
       display: flex;
@@ -1716,19 +1589,15 @@
     }
 
     .settings-group.security-group {
-      background: #fffbeb;
-      border-color: #fcd34d;
+      background: #f8fafc;
+      border-color: #cbd5e1;
     }
 
     .settings-group-title {
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
       color: #475569;
-    }
-
-    .settings-group.security-group .settings-group-title {
-      color: #92400e;
     }
 
     .settings-btn-grid {
@@ -1741,11 +1610,11 @@
       appearance: none;
       border: 1px solid #cbd5e1;
       background: #ffffff;
-      color: #0f172a;
+      color: #1e293b;
       border-radius: 7px;
       padding: 9px 8px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1755,17 +1624,17 @@
     }
 
     .settings-action-btn:hover {
-      filter: brightness(0.98);
+      background: #f1f5f9;
     }
 
     .settings-action-btn:active {
       transform: scale(0.97);
     }
 
-    .settings-action-btn.primary { background: #0284c7; border-color: #0369a1; color: #ffffff; }
-    .settings-action-btn.green   { background: #16a34a; border-color: #15803d; color: #ffffff; }
-    .settings-action-btn.amber   { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
-    .settings-action-btn.danger  { background: #fef2f2; border-color: #fca5a5; color: #b91c1c; }
+    .settings-action-btn.primary { background: #0369a1; border-color: #075985; color: #ffffff; }
+    .settings-action-btn.green   { background: #15803d; border-color: #166534; color: #ffffff; }
+    .settings-action-btn.amber   { background: #fefce8; border-color: #fde047; color: #854d0e; }
+    .settings-action-btn.danger  { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
     .account-info-bar {
       display: flex;
@@ -1773,7 +1642,7 @@
       justify-content: space-between;
       gap: 6px;
       background: #ffffff;
-      border: 1px solid #fde68a;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
       padding: 6px 8px;
       font-size: 11.5px;
@@ -1802,8 +1671,8 @@
       width: 100%;
       padding: 8px 9px;
       font-size: 13px;
-      font-weight: 700;
-      border: 1.5px solid #cbd5e1;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
       outline: none;
       background: #ffffff;
@@ -1811,7 +1680,7 @@
     }
 
     .text-input-clean:focus {
-      border-color: #0284c7;
+      border-color: #0369a1;
     }
 
     .menu-editor-list {
@@ -1830,21 +1699,21 @@
       justify-content: space-between;
       gap: 6px;
       background: #f8fafc;
-      border: 1.5px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
       border-radius: 8px;
       padding: 6px;
-      transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
     }
 
     .menu-editor-item.editing-active {
-      border-color: #0284c7;
-      background: #e0f2fe;
+      border-color: #0369a1;
+      background: #f0f9ff;
     }
 
     .menu-editor-item.is-dragging {
-      background: #fef3c7;
-      border-color: #d97706;
-      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+      background: #fefce8;
+      border-color: #ca8a04;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
       z-index: 10;
     }
 
@@ -1857,7 +1726,7 @@
       height: 34px;
       border-radius: 6px;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1866,16 +1735,9 @@
       touch-action: none;
     }
 
-    .menu-drag-handle:active {
-      cursor: grabbing;
-      background: #fef3c7;
-      border-color: #f59e0b;
-      color: #b45309;
-    }
-
     .menu-order-num {
       font-size: 11.5px;
-      font-weight: 900;
+      font-weight: 800;
       color: #64748b;
       min-width: 18px;
       text-align: center;
@@ -1898,7 +1760,7 @@
 
     .menu-editor-name {
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 700;
       color: #0f172a;
       white-space: nowrap;
       overflow: hidden;
@@ -1907,7 +1769,7 @@
 
     .menu-editor-price {
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 800;
       color: #15803d;
       background: #dcfce7;
       padding: 2px 6px;
@@ -1932,7 +1794,7 @@
       height: 34px;
       border-radius: 6px;
       font-size: 12px;
-      font-weight: 900;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1940,8 +1802,8 @@
     }
 
     .menu-move-btn:active:not(:disabled) {
-      background: #0284c7;
-      border-color: #0369a1;
+      background: #0369a1;
+      border-color: #075985;
       color: #ffffff;
     }
 
@@ -1952,19 +1814,19 @@
 
     .menu-editor-del {
       appearance: none;
-      border: 1px solid #fca5a5;
-      background: #fee2e2;
-      color: #dc2626;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #b91c1c;
       border-radius: 6px;
       height: 34px;
       padding: 0 8px;
       font-size: 11.5px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
     }
 
     /* ==========================================================================
-       12. THỐNG KÊ CHI TIẾT & BẢN IN HÓA ĐƠN
+       11. THỐNG KÊ CHI TIẾT & BẢN IN HÓA ĐƠN
        ========================================================================== */
     .stats-summary-cards {
       display: grid;
@@ -1981,7 +1843,7 @@
 
     .stat-card.highlight { background: #f0fdf4; border-color: #86efac; }
     .stat-card-label { font-size: 10.5px; color: #64748b; font-weight: 700; }
-    .stat-card-value { font-size: 16px; font-weight: 900; color: #0f172a; margin-top: 2px; }
+    .stat-card-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
     .stat-card.highlight .stat-card-value { color: #15803d; }
 
     .stats-table-wrap {
@@ -2005,7 +1867,7 @@
 
     .stats-table th {
       background-color: #f1f5f9;
-      font-weight: 800;
+      font-weight: 700;
       color: #334155;
       font-size: 10.5px;
       text-transform: uppercase;
@@ -2021,25 +1883,25 @@
       padding: 1px 5px;
       border-radius: 99px;
       font-size: 9.5px;
-      font-weight: 800;
+      font-weight: 700;
     }
 
-    .status-pill.pill-direct { background-color: #16a34a; color: #ffffff; }
-    .status-pill.pill-chairs { background-color: #dcfce7; color: #14532d; border: 1px solid #86efac; }
-    .status-pill.pill-empty  { background-color: #f1f5f9; color: #94a3b8; }
+    .status-pill.pill-direct { background-color: #15803d; color: #ffffff; }
+    .status-pill.pill-chairs { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .status-pill.pill-empty  { background-color: #f1f5f9; color: #64748b; }
 
     .toast-msg {
       position: fixed;
       top: 50px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background-color: rgba(15, 23, 42, 0.96);
+      background-color: rgba(30, 41, 59, 0.96);
       color: #ffffff;
       padding: 6px 12px;
       border-radius: 999px;
       font-size: 11.5px;
-      font-weight: 800;
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
       z-index: 350;
       opacity: 0;
       pointer-events: none;
@@ -2059,7 +1921,7 @@
     .toast-msg.open.has-undo {
       pointer-events: auto;
       padding: 5px 7px 5px 12px;
-      border: 1px solid rgba(251, 191, 36, 0.55);
+      border: 1px solid rgba(251, 191, 36, 0.45);
     }
 
     .toast-undo-btn {
@@ -2068,7 +1930,7 @@
       background: #f59e0b;
       color: #0f172a;
       font-size: 11.5px;
-      font-weight: 900;
+      font-weight: 800;
       padding: 4px 10px;
       border-radius: 999px;
       cursor: pointer;
@@ -2170,7 +2032,6 @@
         🔐 Đăng nhập hệ thống
       </button>
 
-      <!-- Mục thu gọn cấu hình Firebase URL & Web API Key dành cho Chủ quán -->
       <div class="auth-config-drawer">
         <button type="button" id="btnAuthConfigToggle" class="auth-config-toggle" data-action="auth-toggle-config">
           <span id="authConfigToggleText">⚙️ Nhập Firebase URL &amp; Web API Key</span>
@@ -2198,7 +2059,7 @@
   </section>
 
   <!-- ========================================================================
-       1. KHUNG ỨNG DỤNG CHÍNH (HEADER 42PX + SƠ ĐỒ BÀN GHẾ)
+       1. KHUNG ỨNG DỤNG CHÍNH
        ======================================================================== -->
   <div class="app-shell">
     <header class="app-header">
@@ -2232,18 +2093,16 @@
       </div>
     </header>
 
-    <!-- Thanh hướng dẫn đổi chỗ bàn -->
     <div id="swapBanner" class="swap-banner">
       <span id="swapBannerText">⇄ Đang chọn bàn — Chạm vào bàn/ô trống khác để đổi chỗ</span>
       <button type="button" class="swap-cancel-btn" data-action="cancel-swap">✕ Hủy</button>
     </div>
 
-    <!-- Thanh công cụ sửa sơ đồ bàn (Chỉ hiện khi Quản lý bật) -->
     <div id="editToolbar" class="edit-toolbar">
       <div class="edit-toolbar-row">
         <div class="edit-toolbar-group">
           <button type="button" class="tool-chip-btn red" data-action="toolbar-col-dec">− Cột</button>
-          <span id="toolbarColLabel" style="font-size:11px; font-weight:900; padding:0 3px;">3 cột</span>
+          <span id="toolbarColLabel" style="font-size:11px; font-weight:800; padding:0 3px;">3 cột</span>
           <button type="button" class="tool-chip-btn blue" data-action="toolbar-col-inc">+ Cột</button>
           <button type="button" class="tool-chip-btn blue" data-action="toolbar-add-table">+ Bàn</button>
           <button type="button" class="tool-chip-btn" data-action="toolbar-add-empty">⬜ + Ô trống</button>
@@ -2256,13 +2115,12 @@
           <button type="button" class="tool-chip-btn amber" data-action="toolbar-reindex">🔄 Đánh lại tên (1A←Phải)</button>
           <button type="button" class="tool-chip-btn red" data-action="toolbar-trim-last">🗑️ Cắt ô cuối</button>
         </div>
-        <span style="font-size:10px; font-weight:700; color:#92400e;">
+        <span style="font-size:10px; font-weight:600; color:#475569;">
           <strong>↻</strong> xoay • <strong>🪑</strong> ghế • <strong>⇄</strong> đổi chỗ • <strong>×</strong> xoá bàn (để trống)
         </span>
       </div>
     </div>
 
-    <!-- Sơ đồ bàn ăn trực tiếp -->
     <main id="mapContainer" class="map-container" aria-label="Sơ đồ bàn ăn"></main>
   </div>
 
@@ -2332,7 +2190,6 @@
       </div>
 
       <div class="modal-body">
-        <!-- Ngăn kéo chỉnh Ghế 4 phía / Xoay bàn / Đổi chỗ / Xoá bàn (Yêu cầu quyền Quản lý) -->
         <div id="layoutDrawer" class="layout-tools-drawer">
           <div id="tableToolsBox" class="chair-layout-box">
             <div class="subactions-row">
@@ -2379,12 +2236,11 @@
             </div>
           </div>
 
-          <!-- Công cụ cho 1 chiếc ghế đang chọn -->
           <div id="seatToolsBox" class="single-chair-actions-box">
             <div class="subactions-row">
-              <span style="font-size:11px; font-weight:800; color:#334155;">Vị trí ghế quanh bàn:</span>
+              <span style="font-size:11px; font-weight:700; color:#334155;">Vị trí ghế quanh bàn:</span>
               <div style="display:flex; gap:4px;">
-                <button type="button" class="subaction-btn" style="background:#dcfce7; color:#15803d;" data-action="chair-add-sibling">+ Ghế cùng phía</button>
+                <button type="button" class="subaction-btn" style="background:#f0fdf4; color:#15803d;" data-action="chair-add-sibling">+ Ghế cùng phía</button>
                 <button type="button" class="subaction-btn danger" data-action="chair-delete-single">🗑️ Xoá ghế</button>
               </div>
             </div>
@@ -2397,7 +2253,6 @@
           </div>
         </div>
 
-        <!-- Thanh tổng tiền trực tiếp -->
         <div class="live-bill-banner">
           <div class="live-bill-left">
             <span class="live-bill-label">Tổng số tiền (1.000₫ = 1₫)</span>
@@ -2406,10 +2261,8 @@
           <div id="entryLiveTotal" class="live-bill-total">0₫</div>
         </div>
 
-        <!-- Cảnh báo quy tắc tính tiền mặt bàn / ghế -->
         <div id="entryRuleNotice" class="rule-notice"></div>
 
-        <!-- Tiêu đề Menu chọn nhanh -->
         <div class="menu-bar-header">
           <span class="menu-bar-title">🍜 Menu chọn nhanh:</span>
           <div class="menu-bar-actions">
@@ -2418,13 +2271,11 @@
           </div>
         </div>
 
-        <!-- Lưới món ăn chọn nhanh -->
         <div id="entryMenuGrid" class="menu-items-grid"></div>
 
-        <!-- Bàn phím số nhập trực tiếp -->
         <div id="entryNumpadBox" class="manual-numpad-box">
           <div class="manual-input-row">
-            <span style="font-size:11.5px; font-weight:800; color:#334155; white-space:nowrap;">Số tiền (35 = 35₫):</span>
+            <span style="font-size:11.5px; font-weight:700; color:#334155; white-space:nowrap;">Số tiền (35 = 35₫):</span>
             <div class="amount-input-wrap">
               <input
                 type="text"
@@ -2479,13 +2330,12 @@
       </div>
 
       <div class="modal-body">
-        <!-- Nhóm 1: Bảo mật & Tài khoản -->
         <div class="settings-group security-group">
           <span class="settings-group-title">1. 🔐 Bảo mật &amp; Tài khoản</span>
 
           <div class="account-info-bar">
             <span>Tài khoản: <strong id="settingsAccountEmail">Chế độ Cục bộ</strong></span>
-            <span style="font-size:11px; font-weight:900; color:#b45309;">PIN: <span id="settingsCurrentPinMask">••••</span></span>
+            <span style="font-size:11px; font-weight:800; color:#854d0e;">PIN: <span id="settingsCurrentPinMask">••••</span></span>
           </div>
 
           <div class="settings-btn-grid">
@@ -2510,7 +2360,6 @@
           </div>
         </div>
 
-        <!-- Nhóm 2: Vận hành & Thực đơn món ăn -->
         <div class="settings-group">
           <span class="settings-group-title">2. Vận hành &amp; Thực đơn món ăn</span>
           <div class="settings-btn-grid">
@@ -2536,11 +2385,10 @@
           <input type="file" id="jsonImportFileInput" accept=".json,application/json" style="display:none;" />
         </div>
 
-        <!-- Nhóm 3: Sơ đồ bàn & Số cột -->
         <div class="settings-group">
           <div style="display:flex; align-items:center; justify-content:space-between;">
             <span class="settings-group-title">3. Sơ đồ bàn &amp; Số cột (1–8 cột)</span>
-            <span id="settingsColSummary" style="font-size:12px; font-weight:900; color:#0284c7;">3 cột (C←B←A)</span>
+            <span id="settingsColSummary" style="font-size:12px; font-weight:800; color:#0369a1;">3 cột (C←B←A)</span>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr 1.25fr; gap:6px;">
@@ -2568,7 +2416,6 @@
           </div>
         </div>
 
-        <!-- Nhóm 4: Kết thúc ca -->
         <div class="settings-group" style="background:#fef2f2; border-color:#fecaca;">
           <span class="settings-group-title" style="color:#991b1b;">4. Kết thúc ca / Làm mới tiền</span>
           <button type="button" class="settings-action-btn danger" style="width:100%; padding:10px;" data-action="settings-open-reset-money">
@@ -2638,7 +2485,7 @@
 
       <div class="modal-body">
         <p id="tableNameModalHint" style="font-size:12.5px; color:#334155;"></p>
-        <input type="text" id="tableNameInput" class="text-input-clean" placeholder="Nhập tên bàn (VD: 1A, 2B, VIP1...)" style="font-size:16px; font-weight:900;" />
+        <input type="text" id="tableNameInput" class="text-input-clean" placeholder="Nhập tên bàn (VD: 1A, 2B, VIP1...)" style="font-size:16px; font-weight:800;" />
       </div>
 
       <div class="modal-footer" style="grid-template-columns: 1fr 1.2fr;">
@@ -2667,7 +2514,7 @@
 
       <div class="modal-footer" style="grid-template-columns: 1fr 1.4fr;">
         <button type="button" class="modal-btn btn-cancel" data-action="close-delete-table-modal">Hủy</button>
-        <button type="button" class="modal-btn btn-delete-val" style="background:#dc2626; color:#fff; border:none;" data-action="confirm-delete-table">
+        <button type="button" class="modal-btn btn-delete-val" style="background:#b91c1c; color:#fff; border:none;" data-action="confirm-delete-table">
           🗑️ Xoá bàn (Để trống ô)
         </button>
       </div>
@@ -2700,7 +2547,7 @@
         </div>
 
         <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-          <span id="statsFilterLabel" style="font-size:11.5px; font-weight:800; color:#475569;">Đang hiện: Tất cả các bàn</span>
+          <span id="statsFilterLabel" style="font-size:11.5px; font-weight:700; color:#475569;">Đang hiện: Tất cả các bàn</span>
           <button type="button" id="btnStatsFilterToggle" class="pill-action-btn primary" data-action="stats-toggle-filter">
             Chỉ xem bàn có tiền (&gt; 0₫)
           </button>
@@ -2751,14 +2598,14 @@
 
       <div class="modal-footer" style="grid-template-columns: 1fr 1.2fr;">
         <button type="button" class="modal-btn btn-cancel" data-action="close-reset-money-modal">Hủy</button>
-        <button type="button" class="modal-btn btn-delete-val" style="background:#dc2626; color:#fff; border:none;" data-action="confirm-reset-money">
+        <button type="button" class="modal-btn btn-delete-val" style="background:#b91c1c; color:#fff; border:none;" data-action="confirm-reset-money">
           🗑️ Xóa hết về 0₫
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Thông báo nhanh (Toast không chặn cảm ứng, có nút Hoàn tác khi xoá nhanh) -->
+  <!-- Thông báo nhanh -->
   <div id="toastMsg" class="toast-msg" aria-live="polite">Đã lưu dữ liệu</div>
 
   <!-- ========================================================================
@@ -2802,8 +2649,8 @@
       /* ======================================================================
          CẤU HÌNH BẢO MẬT & FIREBASE (CHỦ QUÁN CÓ THỂ DÁN SẴN TRƯỚC KHI UP GITHUB)
          ====================================================================== */
-      const DEFAULT_FIREBASE_URL = "";
-      const DEFAULT_FIREBASE_API_KEY = "";
+      const DEFAULT_FIREBASE_URL = "https://tinh-tien-quan-an-default-rtdb.asia-southeast1.firebasedatabase.app/";
+      const DEFAULT_FIREBASE_API_KEY = "AIzaSyChAcKb0_GgPuoyezarbmkoSkCoqwMod0U";
       const DEFAULT_MANAGER_PIN = "1234";
 
       const STATE_STORAGE_KEY = "quan_an_pos_state_v4";
@@ -2844,7 +2691,7 @@
 
       let entryCtx = {
         slotIndex: -1,
-        type: "table", // "table" | "chair"
+        type: "table",
         chairIndex: -1,
         amount: 0,
         items: {},
@@ -2862,7 +2709,7 @@
       let undoSnapshot = null;
       let toastTimer = null;
 
-      let syncMode = "local"; // "firebase" | "lan" | "local"
+      let syncMode = "local";
       let lastRemoteHash = "";
       let isPushingRemote = false;
       let pendingPush = false;
@@ -3773,10 +3620,8 @@
         let mapHtml = "";
 
         for (let r = 0; r < totalRows; r++) {
-          const rowMod = (r + 1) % 5;
-          mapHtml += '<section class="row-section" data-row-mod="' + rowMod + '"><div class="tables-grid">';
+          mapHtml += '<section class="row-section"><div class="tables-grid">';
 
-          // Đánh thứ tự cột từ Phải sang Trái (c = cols - 1 -> 0) để cột A nằm bên phải
           for (let c = state.cols - 1; c >= 0; c--) {
             const slotIdx = r * state.cols + c;
             const slot = state.slots[slotIdx] || createEmptySlot();
@@ -3858,7 +3703,6 @@
 
         mapEl.innerHTML = mapHtml;
 
-        // Cập nhật thanh tổng tiền & số bàn có khách
         const summary = getGrandSummary();
         const activeShort = el("activeTablesShort");
         const activeFull = el("activeTablesFull");
@@ -3958,7 +3802,6 @@
           }
         }
 
-        // Cập nhật ngăn kéo chỉnh ghế & xoay bàn
         const drawer = el("layoutDrawer");
         const drawerBtn = el("btnToggleLayoutDrawer");
         const tableToolsBox = el("tableToolsBox");
@@ -3998,7 +3841,6 @@
           });
         }
 
-        // Cập nhật bàn phím số
         const numpadBox = el("entryNumpadBox");
         const toggleNumpadBtn = el("btnToggleNumpad");
         const amountInput = el("entryAmountInput");
@@ -4006,7 +3848,6 @@
         if (toggleNumpadBtn) toggleNumpadBtn.classList.toggle("active-toggle", entryCtx.showNumpad);
         if (amountInput) amountInput.value = entryCtx.amount > 0 ? String(entryCtx.amount) : "";
 
-        // Cập nhật banner tổng tiền & danh sách món
         const liveTotal = el("entryLiveTotal");
         const liveSummary = el("entryLiveSummary");
         const saveBtn = el("btnEntrySave");
@@ -4022,7 +3863,6 @@
           saveBtn.textContent = "✓ Lưu (" + formatMoney(entryCtx.amount) + ")";
         }
 
-        // Dựng lưới món ăn chọn nhanh
         const menuGrid = el("entryMenuGrid");
         if (menuGrid) {
           let mHtml = "";
@@ -4054,7 +3894,6 @@
         const finalItems = sanitizeItemsMap(entryCtx.items);
 
         if (entryCtx.type === "table") {
-          // Quy tắc: Nhập hoặc xóa tiền tại mặt bàn -> tự động xóa tiền tất cả các ghế về 0₫
           table.directAmount = finalAmount;
           table.directItems = finalAmount > 0 ? finalItems : {};
           (table.chairs || []).forEach(function (ch) {
@@ -4066,7 +3905,6 @@
           if (ch) {
             ch.amount = finalAmount;
             ch.items = finalAmount > 0 ? finalItems : {};
-            // Xóa directAmount ở mặt bàn để tổng bàn tính theo tổng các ghế
             table.directAmount = 0;
             table.directItems = {};
           }
@@ -4486,7 +4324,6 @@
          XỬ LÝ SỰ KIỆN TẬP TRUNG (EVENT DELEGATION - ĐẦY ĐỦ 100% NÚT & CHUỘT)
          ====================================================================== */
       document.addEventListener("click", function (e) {
-        // Bấm trực tiếp ra vùng nền tối bên ngoài Modal -> đóng hộp thoại đó
         if (e.target && e.target.classList && e.target.classList.contains("modal-backdrop")) {
           const modalId = e.target.id;
           if (modalId === "pinModal") {
@@ -4511,7 +4348,6 @@
         const menuIdx = Number(target.getAttribute("data-menu-idx"));
 
         switch (action) {
-          /* -------------------- ĐĂNG NHẬP FIREBASE -------------------- */
           case "auth-toggle-password": {
             const passInp = el("authPassInput");
             if (passInp) {
@@ -4604,7 +4440,6 @@
             break;
           }
 
-          /* -------------------- THANH HEADER & ĐỒNG BỘ -------------------- */
           case "manual-sync": {
             if (syncMode === "firebase") {
               pullStateFromFirebase(true);
@@ -4649,7 +4484,6 @@
             break;
           }
 
-          /* -------------------- MÃ PIN QUẢN LÝ -------------------- */
           case "close-pin-modal": {
             pinBuffer = "";
             pendingPinAction = null;
@@ -4685,7 +4519,6 @@
             break;
           }
 
-          /* -------------------- THANH CÔNG CỤ SỬA SƠ ĐỒ -------------------- */
           case "toolbar-col-dec": { changeColumnCount(-1); break; }
           case "toolbar-col-inc": { changeColumnCount(1); break; }
           case "toolbar-add-table": { addNewTableAtEnd(); break; }
@@ -4701,7 +4534,6 @@
           case "toolbar-reindex": { reindexAllTableNames(); break; }
           case "toolbar-trim-last": { trimLastEmptyRowOrSlot(); break; }
 
-          /* -------------------- NÚT OVERLAY TRÊN TỪNG BÀN (CHẾ ĐỘ SỬA SƠ ĐỒ) -------------------- */
           case "overlay-rename": {
             openTableNameModal("rename", slotIdx);
             break;
@@ -4740,7 +4572,6 @@
             break;
           }
 
-          /* -------------------- Ô TRỐNG TRÊN SƠ ĐỒ -------------------- */
           case "tap-empty-slot": {
             if (swapSourceIndex !== null) {
               executeSwapSlots(swapSourceIndex, slotIdx);
@@ -4752,7 +4583,6 @@
             break;
           }
 
-          /* -------------------- TƯƠNG TÁC TRỰC TIẾP TRÊN MẶT BÀN / GHẾ (CHUỘT + CẢM ỨNG) -------------------- */
           case "tap-table": {
             if (swapSourceIndex !== null) {
               executeSwapSlots(swapSourceIndex, slotIdx);
@@ -4766,7 +4596,6 @@
             const currentTotal = getTableTotal(table);
             const isDoubleClick = (e.detail >= 2) || (lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS);
 
-            // Nhấn đúp (chuột hoặc chạm) vào mặt bàn đang có tiền (> 0₫) -> Xóa tiền nhanh tức thì
             if (currentTotal > 0 && isDoubleClick) {
               if (pendingSingleTapTimer) {
                 clearTimeout(pendingSingleTapTimer);
@@ -4796,7 +4625,6 @@
             }
             lastTapInfo = { key: tapKey, time: now };
 
-            // Nếu bàn đang có tiền (> 0₫), chờ nhịp nhấn đúp chuột/chạm trước khi mở hộp thoại
             if (currentTotal > 0) {
               pendingSingleTapTimer = setTimeout(function () {
                 pendingSingleTapTimer = null;
@@ -4823,7 +4651,6 @@
             const chAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
             const isDoubleClick = (e.detail >= 2) || (lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS);
 
-            // Nhấn đúp (chuột hoặc chạm) vào ghế đang có tiền (> 0₫) -> Xóa tiền ghế nhanh tức thì
             if (chAmt > 0 && isDoubleClick) {
               if (pendingSingleTapTimer) {
                 clearTimeout(pendingSingleTapTimer);
@@ -4851,7 +4678,6 @@
             }
             lastTapInfo = { key: tapKey, time: now };
 
-            // Nếu ghế đang có tiền (> 0₫), chờ nhịp nhấn đúp chuột/chạm trước khi mở hộp thoại
             if (chAmt > 0) {
               pendingSingleTapTimer = setTimeout(function () {
                 pendingSingleTapTimer = null;
@@ -4864,7 +4690,6 @@
             break;
           }
 
-          /* -------------------- HỘP THOẠI NHẬP TIỀN & CÔNG CỤ GHẾ / BÀN -------------------- */
           case "close-entry-modal": {
             closeModal("entryModal");
             break;
@@ -4992,7 +4817,6 @@
           }
 
           case "dish-add": {
-            // Chống cú nhấp đúp chuột vào bàn trống vô tình bấm trúng món đầu tiên ngay khi hộp thoại mở
             if (Date.now() - entryCtx.openedAt < 260) return;
             const dish = state.menu.find(function (m) { return m.id === dishId; });
             if (!dish) return;
@@ -5069,7 +4893,6 @@
             break;
           }
 
-          /* -------------------- HỘP THOẠI CÀI ĐẶT QUẢN LÝ -------------------- */
           case "close-settings": {
             closeModal("settingsModal");
             break;
@@ -5273,7 +5096,6 @@
             break;
           }
 
-          /* -------------------- QUẢN LÝ & SẮP XẾP MENU -------------------- */
           case "close-menu-modal": {
             menuEditId = null;
             closeModal("menuModal");
@@ -5367,7 +5189,6 @@
             break;
           }
 
-          /* -------------------- ĐẶT TÊN BÀN & XOÁ BÀN ĐỂ TRỐNG -------------------- */
           case "close-table-name-modal": {
             closeModal("tableNameModal");
             break;
@@ -5405,7 +5226,6 @@
           case "confirm-delete-table": {
             if (deleteTableSlotIndex >= 0 && deleteTableSlotIndex < state.slots.length) {
               const oldName = state.slots[deleteTableSlotIndex].name || "";
-              // Xoá bàn nhưng giữ nguyên ô trống tại đúng toạ độ (không dồn layout)
               state.slots[deleteTableSlotIndex] = createEmptySlot();
               deleteTableSlotIndex = -1;
               saveState();
@@ -5417,7 +5237,6 @@
             break;
           }
 
-          /* -------------------- THỐNG KÊ & XÓA HẾT TIỀN -------------------- */
           case "close-stats-modal": {
             closeModal("statsModal");
             break;
@@ -5661,7 +5480,6 @@
           });
         }
 
-        // Phím tắt toàn cục trên máy tính (Escape đóng hộp thoại, nhập PIN bằng bàn phím số)
         document.addEventListener("keydown", function (ev) {
           const pinModal = el("pinModal");
           if (pinModal && pinModal.classList.contains("open")) {
