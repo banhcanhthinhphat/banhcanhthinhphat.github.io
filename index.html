@@ -6,7 +6,7 @@
   <title>Tính Tiền Quán Ăn - Sơ Đồ Trực Quan &amp; Bảo Mật 2 Lớp</title>
   <style>
     /* ==========================================================================
-       1. BIẾN MÀU SẮC & THIẾT LẬP MOBILE-FIRST CHỐNG KẸT CẢM ỨNG
+       1. BIẾN MÀU SẮC & THIẾT LẬP MOBILE-FIRST + DESKTOP CHỐNG KẸT THAO TÁC
        ========================================================================== */
     :root {
       --bg-app: #cbd5e1;
@@ -43,6 +43,14 @@
     button {
       touch-action: manipulation;
       font-family: inherit;
+    }
+
+    .map-container,
+    .table-unit,
+    .table-surface-btn,
+    .chair-btn,
+    .empty-slot-btn {
+      touch-action: manipulation;
     }
 
     html, body {
@@ -277,6 +285,10 @@
       text-align: center;
     }
 
+    .auth-offline-btn:hover {
+      background: #f1f5f9;
+    }
+
     .auth-offline-btn:active {
       background: #e2e8f0;
     }
@@ -375,6 +387,10 @@
       cursor: pointer;
       color: #ffffff;
       min-width: 0;
+    }
+
+    .grand-total-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
     }
 
     .grand-total-btn:active {
@@ -524,6 +540,11 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
+    }
+
+    .pin-key-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
     }
 
     .pin-key-btn:active {
@@ -700,11 +721,23 @@
       padding: 2px;
       min-width: 0;
       min-height: 0;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
 
     .table-unit.unit-active {
       background: var(--green-tint);
       border: 1.5px solid var(--green-main);
+    }
+
+    .edit-mode-on .table-unit {
+      cursor: grab;
+    }
+
+    .table-unit.drag-over-slot,
+    .empty-slot-btn.drag-over-slot {
+      outline: 2.5px dashed #0284c7;
+      background: #e0f2fe !important;
+      transform: scale(0.98);
     }
 
     .empty-slot-btn {
@@ -725,6 +758,11 @@
       color: #64748b;
       padding: 2px;
       cursor: pointer;
+    }
+
+    .empty-slot-btn:hover {
+      background: #f1f5f9;
+      border-color: #64748b;
     }
 
     .empty-slot-btn:active {
@@ -776,8 +814,8 @@
     .overlay-badge-btn {
       pointer-events: auto;
       appearance: none;
-      height: 19px;
-      min-width: 19px;
+      height: 20px;
+      min-width: 20px;
       border-radius: 999px;
       font-size: 9.5px;
       font-weight: 900;
@@ -788,7 +826,11 @@
       border: 1px solid #ffffff;
       padding: 0 4px;
       color: #ffffff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+    }
+
+    .overlay-badge-btn:hover {
+      filter: brightness(1.08);
     }
 
     .badge-rename { background: #0284c7; }
@@ -861,6 +903,11 @@
       line-height: 1;
     }
 
+    .chair-btn:hover {
+      border-color: #0284c7;
+      background-color: #f0f9ff;
+    }
+
     .chairs-row.top-chairs .chair-btn    { border-radius: 5px 5px 2px 2px; }
     .chairs-row.bottom-chairs .chair-btn { border-radius: 2px 2px 5px 5px; }
     .chairs-col.left-chairs .chair-btn   { border-radius: 5px 2px 2px 5px; }
@@ -879,6 +926,10 @@
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     }
 
+    .chair-btn.has-amount:hover {
+      background-color: var(--green-dark);
+    }
+
     .table-surface-btn {
       appearance: none;
       flex: 1;
@@ -895,6 +946,11 @@
       cursor: pointer;
       overflow: hidden;
       box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+
+    .table-surface-btn:hover {
+      border-color: #0284c7;
+      background-color: #f8fafc;
     }
 
     .table-surface-btn:active {
@@ -1093,6 +1149,10 @@
       justify-content: center;
     }
 
+    .modal-close-x:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
     .modal-body {
       padding: 8px 10px;
       overflow-y: auto;
@@ -1235,6 +1295,11 @@
       justify-content: space-between;
       gap: 3px;
       min-height: 52px;
+    }
+
+    .menu-dish-card:hover {
+      border-color: #0284c7;
+      background: #f0f9ff;
     }
 
     .menu-dish-card:active {
@@ -1383,6 +1448,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .num-btn:hover {
+      background-color: #f1f5f9;
     }
 
     .num-btn:active {
@@ -1604,6 +1673,10 @@
       justify-content: center;
       gap: 5px;
       text-align: center;
+    }
+
+    .settings-action-btn:hover {
+      filter: brightness(0.98);
     }
 
     .settings-action-btn:active {
@@ -2165,7 +2238,7 @@
         </div>
         <div class="modal-header-right">
           <button type="button" id="btnToggleLayoutDrawer" class="btn-header-drawer" data-action="toggle-layout-drawer">
-            🪑 Ghế &amp; Bàn
+            🔒 Ghế &amp; Bàn
           </button>
           <button type="button" class="modal-close-x" data-action="close-entry-modal" aria-label="Đóng">✕</button>
         </div>
@@ -2652,7 +2725,8 @@
 
       const SIDE_ORDER = ["top", "bottom", "left", "right"];
       const ROTATE_CLOCKWISE = { top: "right", right: "bottom", bottom: "left", left: "top" };
-      const DOUBLE_TAP_MS = 360;
+      const DOUBLE_TAP_MS = 450;
+      const SINGLE_TAP_DELAY_MS = 310;
 
       const DEFAULT_MENU = [
         { id: "m1", name: "Phở bò", price: 35 },
@@ -2678,6 +2752,7 @@
 
       let isEditMode = false;
       let swapSourceIndex = null;
+      let dragSourceSlotIndex = null;
       let statsOnlyActive = false;
 
       let entryCtx = {
@@ -2687,14 +2762,16 @@
         amount: 0,
         items: {},
         showNumpad: false,
-        showLayoutDrawer: false
+        showLayoutDrawer: false,
+        openedAt: 0
       };
 
       let menuEditId = null;
-      let tableNameCtx = { mode: "create", slotIndex: -1 };
+      let tableNameCtx = { mode: "place-empty", slotIndex: -1 };
       let deleteTableSlotIndex = -1;
 
       let lastTapInfo = { key: "", time: 0 };
+      let pendingSingleTapTimer = null;
       let undoSnapshot = null;
       let toastTimer = null;
 
@@ -2895,7 +2972,7 @@
       function getChairsTotal(table) {
         if (!table || table.isEmpty || !Array.isArray(table.chairs)) return 0;
         return table.chairs.reduce(function (sum, ch) {
-          return sum + (Math.max(0, Math.round(Number(ch.amount) || 0)));
+          return sum + Math.max(0, Math.round(Number(ch.amount) || 0));
         }, 0);
       }
 
@@ -3561,6 +3638,9 @@
         undoSnapshot = null;
         saveState();
         renderMap();
+        if (el("entryModal") && el("entryModal").classList.contains("open")) {
+          renderEntryModal();
+        }
         showToast("↶ Đã hoàn tác khôi phục số tiền");
       }
 
@@ -3568,6 +3648,10 @@
          QUẢN LÝ MỞ / ĐÓNG HỘP THOẠI MODAL
          ====================================================================== */
       function openModal(id) {
+        if (pendingSingleTapTimer) {
+          clearTimeout(pendingSingleTapTimer);
+          pendingSingleTapTimer = null;
+        }
         const m = el(id);
         if (m) m.classList.add("open");
       }
@@ -3614,6 +3698,8 @@
           }
         }
 
+        const dragAttr = isEditMode ? ' draggable="true"' : "";
+
         let html = "";
         for (let r = 0; r < totalRows; r++) {
           const rowNum = r + 1;
@@ -3634,7 +3720,7 @@
 
             if (slot.isEmpty) {
               html +=
-                '<button type="button" class="empty-slot-btn' + moveCls + '" data-action="tap-empty-slot" data-slot="' + slotIdx + '">' +
+                '<button type="button" class="empty-slot-btn' + moveCls + '"' + dragAttr + ' data-action="tap-empty-slot" data-slot="' + slotIdx + '">' +
                   '<span class="empty-slot-coord">' + escapeHtml(coord) + '</span>' +
                   '<span class="empty-slot-tag">' + (isSwapTarget ? "⇄ Đặt vào đây" : "+ Đặt bàn") + '</span>' +
                 '</button>';
@@ -3657,7 +3743,7 @@
                 (hasSideChairs ? " has-side-chairs" : "") +
                 moveCls;
 
-              html += '<div class="' + unitCls + '" data-slot="' + slotIdx + '">';
+              html += '<div class="' + unitCls + '"' + dragAttr + ' data-slot="' + slotIdx + '">';
 
               // Lớp nút chỉnh sửa nhanh khi bật Sửa sơ đồ
               html +=
@@ -3772,6 +3858,7 @@
         entryCtx.chairIndex = type === "chair" ? chairIdx : -1;
         entryCtx.showNumpad = false;
         entryCtx.showLayoutDrawer = Boolean(autoOpenDrawer && isManagerUnlocked);
+        entryCtx.openedAt = Date.now();
 
         if (type === "table") {
           entryCtx.amount = getTableTotal(table);
@@ -3830,7 +3917,10 @@
         const seatToolsBox = el("seatToolsBox");
 
         if (drawer) drawer.classList.toggle("open", entryCtx.showLayoutDrawer && isManagerUnlocked);
-        if (drawerBtn) drawerBtn.classList.toggle("active", entryCtx.showLayoutDrawer && isManagerUnlocked);
+        if (drawerBtn) {
+          drawerBtn.classList.toggle("active", entryCtx.showLayoutDrawer && isManagerUnlocked);
+          drawerBtn.textContent = isManagerUnlocked ? "🪑 Ghế & Bàn" : "🔒 Ghế & Bàn";
+        }
 
         if (entryCtx.type === "table") {
           if (tableToolsBox) tableToolsBox.classList.add("open");
@@ -3938,6 +4028,58 @@
         closeModal("entryModal");
         renderMap();
         showToast("✓ Đã lưu " + formatMoney(finalAmount));
+      }
+
+      /* ======================================================================
+         HỘP THOẠI ĐẶT TÊN BÀN / ĐẶT BÀN VÀO Ô TRỐNG / XOÁ BÀN ĐỂ TRỐNG
+         ====================================================================== */
+      function openTableNameModal(mode, slotIdx) {
+        const slot = state.slots[slotIdx];
+        if (!slot) return;
+        tableNameCtx = { mode: mode, slotIndex: slotIdx };
+
+        const coord = getCoordLabel(slotIdx, state.cols);
+        const titleEl = el("tableNameModalTitle");
+        const hintEl = el("tableNameModalHint");
+        const inputEl = el("tableNameInput");
+
+        if (mode === "place-empty") {
+          if (titleEl) titleEl.textContent = "Đặt Bàn Tại Ô Trống " + coord;
+          if (hintEl) hintEl.textContent = "Nhập tên cho bàn mới tại vị trí " + coord + " (mặc định có sẵn 4 ghế):";
+          if (inputEl) inputEl.value = coord;
+        } else {
+          if (titleEl) titleEl.textContent = "Đổi Tên Bàn " + (slot.name || "");
+          if (hintEl) hintEl.textContent = "Nhập tên mới cho bàn ở vị trí " + coord + ":";
+          if (inputEl) inputEl.value = slot.name || coord;
+        }
+
+        openModal("tableNameModal");
+        setTimeout(function () {
+          if (inputEl) {
+            inputEl.focus();
+            inputEl.select();
+          }
+        }, 60);
+      }
+
+      function openDeleteTableConfirm(slotIdx) {
+        const slot = state.slots[slotIdx];
+        if (!slot || slot.isEmpty) return;
+        deleteTableSlotIndex = slotIdx;
+
+        const coord = getCoordLabel(slotIdx, state.cols);
+        const tVal = getTableTotal(slot);
+        const titleEl = el("deleteTableModalTitle");
+        const descEl = el("deleteTableModalDesc");
+
+        if (titleEl) titleEl.textContent = "Xoá Bàn " + slot.name + "?";
+        if (descEl) {
+          descEl.innerHTML =
+            "Xác nhận xoá <strong>Bàn " + escapeHtml(slot.name) + "</strong> (vị trí <strong>" + escapeHtml(coord) + "</strong>" +
+            (tVal > 0 ? (", đang có tiền <strong>" + formatMoney(tVal) + "</strong>") : "") +
+            ")?<br/><br/>Vị trí này sẽ trở thành <strong>Ô trống</strong> để giữ nguyên bố cục các bàn còn lại (không tự dồn hàng).";
+        }
+        openModal("deleteTableModal");
       }
 
       /* ======================================================================
@@ -4161,7 +4303,6 @@
               }
             }
           }
-          // Giữ an toàn các bàn đang có tiền ở cuối nếu giảm cột
           overflowActive.forEach(function (tbl) {
             newSlots.push(tbl);
           });
@@ -4294,9 +4435,22 @@
       }
 
       /* ======================================================================
-         XỬ LÝ SỰ KIỆN TẬP TRUNG (EVENT DELEGATION)
+         XỬ LÝ SỰ KIỆN TẬP TRUNG (EVENT DELEGATION - ĐẦY ĐỦ 100% NÚT & CHUỘT)
          ====================================================================== */
       document.addEventListener("click", function (e) {
+        // Bấm trực tiếp ra vùng nền tối bên ngoài Modal -> đóng hộp thoại đó
+        if (e.target && e.target.classList && e.target.classList.contains("modal-backdrop")) {
+          const modalId = e.target.id;
+          if (modalId === "pinModal") {
+            pinBuffer = "";
+            pendingPinAction = null;
+          } else if (modalId === "menuModal") {
+            menuEditId = null;
+          }
+          closeModal(modalId);
+          return;
+        }
+
         const target = e.target.closest("[data-action]");
         if (!target) return;
 
@@ -4483,105 +4637,25 @@
             break;
           }
 
-          /* -------------------- TƯƠNG TÁC TRỰC TIẾP TRÊN SƠ ĐỒ BÀN / GHẾ -------------------- */
-          case "tap-table": {
-            if (swapSourceIndex !== null) {
-              executeSwapSlots(swapSourceIndex, slotIdx);
-              return;
-            }
-            const table = state.slots[slotIdx];
-            if (!table || table.isEmpty) return;
-
-            const now = Date.now();
-            const tapKey = "tbl_" + slotIdx;
-            const currentTotal = getTableTotal(table);
-
-            // Nhấn đúp vào mặt bàn đang có tiền (> 0₫) -> Xóa tiền nhanh tức thì
-            if (currentTotal > 0 && lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS) {
-              lastTapInfo = { key: "", time: 0 };
-              captureUndoSnapshot();
-              table.directAmount = 0;
-              table.directItems = {};
-              (table.chairs || []).forEach(function (ch) {
-                ch.amount = 0;
-                ch.items = {};
-              });
-              saveState();
-              renderMap();
-              triggerQuickClearFlash('.table-unit[data-slot="' + slotIdx + '"] .table-surface-btn');
-              if (navigator.vibrate) {
-                try { navigator.vibrate(25); } catch (err) {}
-              }
-              showToast("🗑️ Đã xoá nhanh Bàn " + table.name + " (" + formatMoney(currentTotal) + ")", true);
-              return;
-            }
-
-            lastTapInfo = { key: tapKey, time: now };
-            openEntryModal(slotIdx, "table", -1, false);
+          /* -------------------- THANH CÔNG CỤ SỬA SƠ ĐỒ -------------------- */
+          case "toolbar-col-dec": { changeColumnCount(-1); break; }
+          case "toolbar-col-inc": { changeColumnCount(1); break; }
+          case "toolbar-add-table": { addNewTableAtEnd(); break; }
+          case "toolbar-add-empty": { addEmptySlotAtEnd(); break; }
+          case "toolbar-add-row": { addNewRowOfTables(); break; }
+          case "toolbar-done-edit": {
+            isEditMode = false;
+            swapSourceIndex = null;
+            renderMap();
+            showToast("✓ Đã lưu & thoát chế độ sửa sơ đồ");
             break;
           }
+          case "toolbar-reindex": { reindexAllTableNames(); break; }
+          case "toolbar-trim-last": { trimLastEmptyRowOrSlot(); break; }
 
-          case "tap-chair": {
-            if (swapSourceIndex !== null) {
-              executeSwapSlots(swapSourceIndex, slotIdx);
-              return;
-            }
-            const table = state.slots[slotIdx];
-            if (!table || table.isEmpty || !table.chairs[chairIdx]) return;
-
-            const ch = table.chairs[chairIdx];
-            const now = Date.now();
-            const tapKey = "ch_" + slotIdx + "_" + chairIdx;
-            const chAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
-
-            // Nhấn đúp vào ghế đang có tiền (> 0₫) -> Xóa tiền ghế nhanh tức thì
-            if (chAmt > 0 && lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS) {
-              lastTapInfo = { key: "", time: 0 };
-              captureUndoSnapshot();
-              ch.amount = 0;
-              ch.items = {};
-              table.directAmount = 0;
-              table.directItems = {};
-              saveState();
-              renderMap();
-              triggerQuickClearFlash('.chair-btn[data-slot="' + slotIdx + '"][data-chair="' + chairIdx + '"]');
-              if (navigator.vibrate) {
-                try { navigator.vibrate(25); } catch (err) {}
-              }
-              showToast("🗑️ Đã xoá Ghế G" + (chairIdx + 1) + " Bàn " + table.name + " (" + formatMoney(chAmt) + ")", true);
-              return;
-            }
-
-            lastTapInfo = { key: tapKey, time: now };
-            openEntryModal(slotIdx, "chair", chairIdx, false);
-            break;
-          }
-
-          case "tap-empty-slot": {
-            if (swapSourceIndex !== null) {
-              executeSwapSlots(swapSourceIndex, slotIdx);
-              return;
-            }
-            requireManagerPin(function () {
-              tableNameCtx = { mode: "place-empty", slotIndex: slotIdx };
-              const coord = getCoordLabel(slotIdx, state.cols);
-              if (el("tableNameModalTitle")) el("tableNameModalTitle").textContent = "Đặt Bàn Vào Ô Trống " + coord;
-              if (el("tableNameModalHint")) el("tableNameModalHint").textContent = "Nhập tên bàn muốn đặt tại ô trống " + coord + ":";
-              if (el("tableNameInput")) el("tableNameInput").value = coord;
-              openModal("tableNameModal");
-            });
-            break;
-          }
-
-          /* -------------------- NÚT OVERLAY CHẾ ĐỘ SỬA SƠ ĐỒ -------------------- */
+          /* -------------------- NÚT OVERLAY TRÊN TỪNG BÀN (CHẾ ĐỘ SỬA SƠ ĐỒ) -------------------- */
           case "overlay-rename": {
-            const tbl = state.slots[slotIdx];
-            if (!tbl || tbl.isEmpty) return;
-            tableNameCtx = { mode: "rename", slotIndex: slotIdx };
-            if (el("tableNameModalTitle")) el("tableNameModalTitle").textContent = "Đổi Tên Bàn " + tbl.name;
-            if (el("tableNameModalHint")) el("tableNameModalHint").textContent = "Nhập tên mới cho bàn này:";
-            if (el("tableNameInput")) el("tableNameInput").value = tbl.name;
-            openModal("tableNameModal");
+            openTableNameModal("rename", slotIdx);
             break;
           }
 
@@ -4604,41 +4678,145 @@
           }
 
           case "overlay-move": {
-            swapSourceIndex = (swapSourceIndex === slotIdx) ? null : slotIdx;
+            if (swapSourceIndex === slotIdx) {
+              swapSourceIndex = null;
+            } else {
+              swapSourceIndex = slotIdx;
+            }
             renderMap();
             break;
           }
 
           case "overlay-delete": {
-            const tbl = state.slots[slotIdx];
-            if (!tbl || tbl.isEmpty) return;
-            deleteTableSlotIndex = slotIdx;
-            if (el("deleteTableModalTitle")) el("deleteTableModalTitle").textContent = "Xoá Bàn " + tbl.name + "?";
-            if (el("deleteTableModalDesc")) {
-              el("deleteTableModalDesc").innerHTML =
-                "Bàn <strong>" + escapeHtml(tbl.name) + "</strong> sẽ được xoá và để lại <strong>Ô trống</strong> ngay tại vị trí này (không tự dồn các bàn phía sau).";
+            openDeleteTableConfirm(slotIdx);
+            break;
+          }
+
+          /* -------------------- Ô TRỐNG TRÊN SƠ ĐỒ -------------------- */
+          case "tap-empty-slot": {
+            if (swapSourceIndex !== null) {
+              executeSwapSlots(swapSourceIndex, slotIdx);
+              return;
             }
-            openModal("deleteTableModal");
+            requireManagerPin(function () {
+              openTableNameModal("place-empty", slotIdx);
+            });
             break;
           }
 
-          /* -------------------- THANH CÔNG CỤ SỬA SƠ ĐỒ -------------------- */
-          case "toolbar-col-dec": { changeColumnCount(-1); break; }
-          case "toolbar-col-inc": { changeColumnCount(1); break; }
-          case "toolbar-add-table": { addNewTableAtEnd(); break; }
-          case "toolbar-add-empty": { addEmptySlotAtEnd(); break; }
-          case "toolbar-add-row": { addNewRowOfTables(); break; }
-          case "toolbar-reindex": { reindexAllTableNames(); break; }
-          case "toolbar-trim-last": { trimLastEmptyRowOrSlot(); break; }
-          case "toolbar-done-edit": {
-            isEditMode = false;
-            swapSourceIndex = null;
-            renderMap();
-            showToast("✓ Đã thoát chế độ sửa sơ đồ");
+          /* -------------------- TƯƠNG TÁC TRỰC TIẾP TRÊN MẶT BÀN / GHẾ (CHUỘT + CẢM ỨNG) -------------------- */
+          case "tap-table": {
+            if (swapSourceIndex !== null) {
+              executeSwapSlots(swapSourceIndex, slotIdx);
+              return;
+            }
+            const table = state.slots[slotIdx];
+            if (!table || table.isEmpty) return;
+
+            const now = Date.now();
+            const tapKey = "tbl_" + slotIdx;
+            const currentTotal = getTableTotal(table);
+            const isDoubleClick = (e.detail >= 2) || (lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS);
+
+            // Nhấn đúp (chuột hoặc chạm) vào mặt bàn đang có tiền (> 0₫) -> Xóa tiền nhanh tức thì
+            if (currentTotal > 0 && isDoubleClick) {
+              if (pendingSingleTapTimer) {
+                clearTimeout(pendingSingleTapTimer);
+                pendingSingleTapTimer = null;
+              }
+              lastTapInfo = { key: "", time: 0 };
+              captureUndoSnapshot();
+              table.directAmount = 0;
+              table.directItems = {};
+              (table.chairs || []).forEach(function (ch) {
+                ch.amount = 0;
+                ch.items = {};
+              });
+              saveState();
+              renderMap();
+              triggerQuickClearFlash('.table-unit[data-slot="' + slotIdx + '"] .table-surface-btn');
+              if (navigator.vibrate) {
+                try { navigator.vibrate(25); } catch (err) {}
+              }
+              showToast("🗑️ Đã xoá nhanh Bàn " + table.name + " (" + formatMoney(currentTotal) + ")", true);
+              return;
+            }
+
+            if (pendingSingleTapTimer) {
+              clearTimeout(pendingSingleTapTimer);
+              pendingSingleTapTimer = null;
+            }
+            lastTapInfo = { key: tapKey, time: now };
+
+            // Nếu bàn đang có tiền (> 0₫), chờ nhịp nhấn đúp chuột/chạm trước khi mở hộp thoại
+            if (currentTotal > 0) {
+              pendingSingleTapTimer = setTimeout(function () {
+                pendingSingleTapTimer = null;
+                lastTapInfo = { key: "", time: 0 };
+                openEntryModal(slotIdx, "table", -1, false);
+              }, SINGLE_TAP_DELAY_MS);
+            } else {
+              openEntryModal(slotIdx, "table", -1, false);
+            }
             break;
           }
 
-          /* -------------------- HỘP THOẠI NHẬP TIỀN & MENU -------------------- */
+          case "tap-chair": {
+            if (swapSourceIndex !== null) {
+              executeSwapSlots(swapSourceIndex, slotIdx);
+              return;
+            }
+            const table = state.slots[slotIdx];
+            if (!table || table.isEmpty || !table.chairs[chairIdx]) return;
+
+            const ch = table.chairs[chairIdx];
+            const now = Date.now();
+            const tapKey = "ch_" + slotIdx + "_" + chairIdx;
+            const chAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
+            const isDoubleClick = (e.detail >= 2) || (lastTapInfo.key === tapKey && (now - lastTapInfo.time) <= DOUBLE_TAP_MS);
+
+            // Nhấn đúp (chuột hoặc chạm) vào ghế đang có tiền (> 0₫) -> Xóa tiền ghế nhanh tức thì
+            if (chAmt > 0 && isDoubleClick) {
+              if (pendingSingleTapTimer) {
+                clearTimeout(pendingSingleTapTimer);
+                pendingSingleTapTimer = null;
+              }
+              lastTapInfo = { key: "", time: 0 };
+              captureUndoSnapshot();
+              ch.amount = 0;
+              ch.items = {};
+              table.directAmount = 0;
+              table.directItems = {};
+              saveState();
+              renderMap();
+              triggerQuickClearFlash('.chair-btn[data-slot="' + slotIdx + '"][data-chair="' + chairIdx + '"]');
+              if (navigator.vibrate) {
+                try { navigator.vibrate(25); } catch (err) {}
+              }
+              showToast("🗑️ Đã xoá Ghế G" + (chairIdx + 1) + " Bàn " + table.name + " (" + formatMoney(chAmt) + ")", true);
+              return;
+            }
+
+            if (pendingSingleTapTimer) {
+              clearTimeout(pendingSingleTapTimer);
+              pendingSingleTapTimer = null;
+            }
+            lastTapInfo = { key: tapKey, time: now };
+
+            // Nếu ghế đang có tiền (> 0₫), chờ nhịp nhấn đúp chuột/chạm trước khi mở hộp thoại
+            if (chAmt > 0) {
+              pendingSingleTapTimer = setTimeout(function () {
+                pendingSingleTapTimer = null;
+                lastTapInfo = { key: "", time: 0 };
+                openEntryModal(slotIdx, "chair", chairIdx, false);
+              }, SINGLE_TAP_DELAY_MS);
+            } else {
+              openEntryModal(slotIdx, "chair", chairIdx, false);
+            }
+            break;
+          }
+
+          /* -------------------- HỘP THOẠI NHẬP TIỀN & CÔNG CỤ GHẾ / BÀN -------------------- */
           case "close-entry-modal": {
             closeModal("entryModal");
             break;
@@ -4662,6 +4840,7 @@
             saveState();
             renderMap();
             renderEntryModal();
+            showToast("↻ Đã xoay Bàn " + tbl.name + " 90°");
             break;
           }
 
@@ -4683,34 +4862,21 @@
           }
 
           case "modal-rename-table": {
-            const tbl = state.slots[entryCtx.slotIndex];
-            if (!tbl || tbl.isEmpty) return;
-            tableNameCtx = { mode: "rename", slotIndex: entryCtx.slotIndex };
-            if (el("tableNameModalTitle")) el("tableNameModalTitle").textContent = "Đổi Tên Bàn " + tbl.name;
-            if (el("tableNameModalHint")) el("tableNameModalHint").textContent = "Nhập tên mới cho bàn này:";
-            if (el("tableNameInput")) el("tableNameInput").value = tbl.name;
-            openModal("tableNameModal");
+            openTableNameModal("rename", entryCtx.slotIndex);
             break;
           }
 
           case "modal-delete-table": {
-            const tbl = state.slots[entryCtx.slotIndex];
-            if (!tbl || tbl.isEmpty) return;
-            deleteTableSlotIndex = entryCtx.slotIndex;
-            if (el("deleteTableModalTitle")) el("deleteTableModalTitle").textContent = "Xoá Bàn " + tbl.name + "?";
-            if (el("deleteTableModalDesc")) {
-              el("deleteTableModalDesc").innerHTML =
-                "Bàn <strong>" + escapeHtml(tbl.name) + "</strong> sẽ được xoá và để lại <strong>Ô trống</strong> ngay tại vị trí này (không tự dồn các bàn phía sau).";
-            }
-            openModal("deleteTableModal");
+            openDeleteTableConfirm(entryCtx.slotIndex);
             break;
           }
 
           case "side-chair-add": {
             const tbl = state.slots[entryCtx.slotIndex];
             if (!tbl || tbl.isEmpty || !side) return;
-            if ((tbl.chairs || []).length >= 16) {
-              showToast("Tối đa 16 ghế mỗi bàn!");
+            const sideCount = (tbl.chairs || []).filter(function (c) { return c.side === side; }).length;
+            if (sideCount >= 6) {
+              showToast("Tối đa 6 ghế mỗi cạnh bàn!");
               return;
             }
             tbl.chairs.push({ id: uid("ch"), side: side, amount: 0, items: {} });
@@ -4723,23 +4889,15 @@
           case "side-chair-remove": {
             const tbl = state.slots[entryCtx.slotIndex];
             if (!tbl || tbl.isEmpty || !side) return;
+            let removeIdx = -1;
             for (let i = tbl.chairs.length - 1; i >= 0; i--) {
               if (tbl.chairs[i].side === side) {
-                tbl.chairs.splice(i, 1);
+                removeIdx = i;
                 break;
               }
             }
-            saveState();
-            renderMap();
-            renderEntryModal();
-            break;
-          }
-
-          case "chair-move-side": {
-            const tbl = state.slots[entryCtx.slotIndex];
-            const ch = tbl && tbl.chairs ? tbl.chairs[entryCtx.chairIndex] : null;
-            if (!ch || !side) return;
-            ch.side = side;
+            if (removeIdx === -1) return;
+            tbl.chairs.splice(removeIdx, 1);
             saveState();
             renderMap();
             renderEntryModal();
@@ -4748,33 +4906,46 @@
 
           case "chair-add-sibling": {
             const tbl = state.slots[entryCtx.slotIndex];
-            const ch = tbl && tbl.chairs ? tbl.chairs[entryCtx.chairIndex] : null;
-            if (!tbl || !ch) return;
-            if (tbl.chairs.length >= 16) {
-              showToast("Tối đa 16 ghế mỗi bàn!");
+            if (!tbl || tbl.isEmpty) return;
+            const curChair = tbl.chairs[entryCtx.chairIndex];
+            const targetSide = curChair ? curChair.side : "top";
+            const sideCount = (tbl.chairs || []).filter(function (c) { return c.side === targetSide; }).length;
+            if (sideCount >= 6) {
+              showToast("Tối đa 6 ghế mỗi cạnh bàn!");
               return;
             }
-            tbl.chairs.push({ id: uid("ch"), side: ch.side, amount: 0, items: {} });
+            tbl.chairs.push({ id: uid("ch"), side: targetSide, amount: 0, items: {} });
+            saveState();
+            renderMap();
+            renderEntryModal();
+            showToast("+ Đã thêm 1 ghế mới");
+            break;
+          }
+
+          case "chair-delete-single": {
+            const tbl = state.slots[entryCtx.slotIndex];
+            if (!tbl || tbl.isEmpty || !tbl.chairs[entryCtx.chairIndex]) return;
+            tbl.chairs.splice(entryCtx.chairIndex, 1);
+            saveState();
+            closeModal("entryModal");
+            renderMap();
+            showToast("🗑️ Đã xoá ghế");
+            break;
+          }
+
+          case "chair-move-side": {
+            const tbl = state.slots[entryCtx.slotIndex];
+            if (!tbl || tbl.isEmpty || !tbl.chairs[entryCtx.chairIndex] || !side) return;
+            tbl.chairs[entryCtx.chairIndex].side = side;
             saveState();
             renderMap();
             renderEntryModal();
             break;
           }
 
-          case "chair-delete-single": {
-            const tbl = state.slots[entryCtx.slotIndex];
-            if (!tbl || !Array.isArray(tbl.chairs)) return;
-            if (entryCtx.chairIndex >= 0 && entryCtx.chairIndex < tbl.chairs.length) {
-              tbl.chairs.splice(entryCtx.chairIndex, 1);
-              saveState();
-              closeModal("entryModal");
-              renderMap();
-              showToast("🗑️ Đã xoá ghế");
-            }
-            break;
-          }
-
           case "dish-add": {
+            // Chống cú nhấp đúp chuột vào bàn trống vô tình bấm trúng món đầu tiên ngay khi hộp thoại mở
+            if (Date.now() - entryCtx.openedAt < 260) return;
             const dish = state.menu.find(function (m) { return m.id === dishId; });
             if (!dish) return;
             entryCtx.items[dish.id] = (entryCtx.items[dish.id] || 0) + 1;
@@ -4942,7 +5113,15 @@
 
           case "settings-download": {
             closeModal("settingsModal");
-            const fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            const clonedDoc = document.documentElement.cloneNode(true);
+            clonedDoc.querySelectorAll(".open").forEach(function (node) {
+              node.classList.remove("open");
+            });
+            ["mapContainer", "menuEditorList", "statsTableBody", "printTableBody"].forEach(function (cid) {
+              const cNode = clonedDoc.querySelector("#" + cid);
+              if (cNode) cNode.innerHTML = "";
+            });
+            const fullHtml = "<!DOCTYPE html>\n" + clonedDoc.outerHTML;
             const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -5234,6 +5413,67 @@
       });
 
       /* ======================================================================
+         KÉO & THẢ ĐỔI CHỖ BÀN BẰNG CHUỘT TRÊN SƠ ĐỒ (KHI BẬT SỬA SƠ ĐỒ)
+         ====================================================================== */
+      function initMapDragSwap() {
+        const mapEl = el("mapContainer");
+        if (!mapEl) return;
+
+        mapEl.addEventListener("dragstart", function (e) {
+          if (!isEditMode) {
+            e.preventDefault();
+            return;
+          }
+          const slotEl = e.target.closest("[data-slot]");
+          if (!slotEl) return;
+          dragSourceSlotIndex = Number(slotEl.getAttribute("data-slot"));
+          if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", String(dragSourceSlotIndex));
+          }
+        });
+
+        mapEl.addEventListener("dragover", function (e) {
+          if (!isEditMode || dragSourceSlotIndex === null) return;
+          const slotEl = e.target.closest("[data-slot]");
+          if (!slotEl) return;
+          e.preventDefault();
+          mapEl.querySelectorAll(".drag-over-slot").forEach(function (elItem) {
+            if (elItem !== slotEl) elItem.classList.remove("drag-over-slot");
+          });
+          slotEl.classList.add("drag-over-slot");
+        });
+
+        mapEl.addEventListener("dragleave", function (e) {
+          const slotEl = e.target.closest("[data-slot]");
+          if (slotEl) slotEl.classList.remove("drag-over-slot");
+        });
+
+        mapEl.addEventListener("drop", function (e) {
+          if (!isEditMode || dragSourceSlotIndex === null) return;
+          const slotEl = e.target.closest("[data-slot]");
+          mapEl.querySelectorAll(".drag-over-slot").forEach(function (elItem) {
+            elItem.classList.remove("drag-over-slot");
+          });
+          if (!slotEl) return;
+          e.preventDefault();
+          const targetIdx = Number(slotEl.getAttribute("data-slot"));
+          const srcIdx = dragSourceSlotIndex;
+          dragSourceSlotIndex = null;
+          if (!isNaN(targetIdx) && srcIdx !== targetIdx) {
+            executeSwapSlots(srcIdx, targetIdx);
+          }
+        });
+
+        mapEl.addEventListener("dragend", function () {
+          dragSourceSlotIndex = null;
+          mapEl.querySelectorAll(".drag-over-slot").forEach(function (elItem) {
+            elItem.classList.remove("drag-over-slot");
+          });
+        });
+      }
+
+      /* ======================================================================
          KÉO THẢ SẮP XẾP THỨ TỰ MENU TRÊN ĐIỆN THOẠI & MÁY TÍNH
          ====================================================================== */
       function initMenuDragReorder() {
@@ -5311,9 +5551,9 @@
       }
 
       /* ======================================================================
-         SỰ KIỆN NHẬP LIỆU BÀN PHÍM & KHỞI TẠO ỨNG DỤNG
+         SỰ KIỆN NHẬP LIỆU BÀN PHÍM, PHÍM TẮT (ESC/ENTER) & KHỞI TẠO ỨNG DỤNG
          ====================================================================== */
-      function initInputListeners() {
+      function initInputAndKeyboardListeners() {
         const entryAmtInp = el("entryAmountInput");
         if (entryAmtInp) {
           entryAmtInp.addEventListener("input", function () {
@@ -5331,6 +5571,13 @@
             }
             if (saveBtn) saveBtn.textContent = "✓ Lưu (" + formatMoney(entryCtx.amount) + ")";
           });
+
+          entryAmtInp.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter") {
+              ev.preventDefault();
+              saveEntryModalChanges();
+            }
+          });
         }
 
         const authPassInput = el("authPassInput");
@@ -5343,6 +5590,87 @@
             }
           });
         }
+
+        const tableNameInp = el("tableNameInput");
+        if (tableNameInp) {
+          tableNameInp.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter") {
+              ev.preventDefault();
+              const btn = document.querySelector('[data-action="save-table-name-modal"]');
+              if (btn) btn.click();
+            }
+          });
+        }
+
+        const menuPriceInp = el("menuPriceInput");
+        if (menuPriceInp) {
+          menuPriceInp.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter") {
+              ev.preventDefault();
+              const btn = el("btnMenuFormSave");
+              if (btn) btn.click();
+            }
+          });
+        }
+
+        // Phím tắt toàn cục trên máy tính (Escape đóng hộp thoại, nhập PIN bằng bàn phím số)
+        document.addEventListener("keydown", function (ev) {
+          const pinModal = el("pinModal");
+          if (pinModal && pinModal.classList.contains("open")) {
+            if (/^[0-9]$/.test(ev.key)) {
+              ev.preventDefault();
+              if (pinBuffer.length < 8) {
+                pinBuffer += ev.key;
+                renderPinDots(false);
+                if (pinBuffer.length === state.managerPin.length) {
+                  verifyPinInput();
+                }
+              }
+              return;
+            }
+            if (ev.key === "Backspace") {
+              ev.preventDefault();
+              pinBuffer = pinBuffer.slice(0, -1);
+              renderPinDots(false);
+              return;
+            }
+            if (ev.key === "Enter") {
+              ev.preventDefault();
+              verifyPinInput();
+              return;
+            }
+          }
+
+          if (ev.key === "Escape") {
+            const modalOrder = [
+              "resetMoneyModal",
+              "deleteTableModal",
+              "tableNameModal",
+              "menuModal",
+              "statsModal",
+              "settingsModal",
+              "pinModal",
+              "entryModal"
+            ];
+            for (let i = 0; i < modalOrder.length; i++) {
+              const m = el(modalOrder[i]);
+              if (m && m.classList.contains("open")) {
+                if (modalOrder[i] === "pinModal") {
+                  pinBuffer = "";
+                  pendingPinAction = null;
+                } else if (modalOrder[i] === "menuModal") {
+                  menuEditId = null;
+                }
+                closeModal(modalOrder[i]);
+                return;
+              }
+            }
+            if (swapSourceIndex !== null) {
+              swapSourceIndex = null;
+              renderMap();
+            }
+          }
+        });
 
         const jsonFileInput = el("jsonImportFileInput");
         if (jsonFileInput) {
@@ -5377,8 +5705,9 @@
         loadFirebaseConfigAndHash();
         loadAuthSession();
 
+        initMapDragSwap();
         initMenuDragReorder();
-        initInputListeners();
+        initInputAndKeyboardListeners();
         updateManagerUI();
         renderMap();
 
