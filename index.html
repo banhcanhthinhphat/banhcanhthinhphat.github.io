@@ -6,36 +6,45 @@
   <title>Tính Tiền Quán Ăn - Sơ Đồ Trực Quan &amp; Bảo Mật 2 Lớp</title>
   <style>
     /* ==========================================================================
-       1. BẢNG MÀU TỐI GIẢN, DỊU MẮT & THIẾT LẬP ĐA MÀN HÌNH
+       1. BẢNG MÀU TỐI GIẢN, DỊU MẮT (MẶT BÀN NỔI BẬT HƠN GHẾ) & ĐA MÀN HÌNH
        ========================================================================== */
     :root {
-      --bg-app: #f1f5f9;
+      --bg-app: #eef2f6;
       --bg-card: #ffffff;
       --bg-unit: #f8fafc;
       --border-subtle: #cbd5e1;
 
-      /* Màu mặt bàn & ghế khi trống (0₫): Tách biệt tông ấm (bàn) và tông lạnh (ghế) */
-      --table-empty-bg: #faf8f5;
-      --table-empty-border: #cbd5e1;
-      --table-badge-empty: #334155;
+      /* Màu mặt bàn & ghế khi trống (0₫): Mặt bàn tông gỗ kem ấm nổi khối, ghế trắng nhẹ lùi về nền */
+      --table-empty-bg: #e7dfd3;
+      --table-empty-border: #b8ab99;
+      --table-empty-hover: #dfd5c5;
+      --table-badge-empty: #1e293b;
+      --table-amount-empty: #334155;
 
-      --chair-empty-bg: #e2e8f0;
-      --chair-empty-border: #94a3b8;
-      --chair-empty-text: #475569;
+      --chair-empty-bg: #ffffff;
+      --chair-empty-border: #cbd5e1;
+      --chair-empty-text: #64748b;
+      --chair-empty-hover-bg: #f0fdfa;
+      --chair-empty-hover-border: #5eead4;
+      --chair-empty-hover-text: #0f766e;
 
-      /* Màu mặt bàn & ghế khi có tiền (> 0₫): Xanh lá rừng (bàn) & Xanh dương trầm (ghế) */
-      --table-active-bg: #15803d;
-      --table-active-border: #166534;
-      --table-active-tint: #f0fdf4;
+      /* Màu mặt bàn & ghế khi có tiền (> 0₫): Đồng bộ tông Xanh Ngọc (Teal) - Bàn đậm nổi bật, Ghế sáng dịu */
+      --table-active-bg: #0f766e;
+      --table-active-border: #115e59;
+      --table-active-hover: #115e59;
+      --table-active-tint: #f0fdfa;
+      --table-active-tint-border: #5eead4;
 
-      --chair-active-bg: #0369a1;
-      --chair-active-border: #075985;
+      --chair-active-bg: #ccfbf1;
+      --chair-active-border: #14b8a6;
+      --chair-active-text: #115e59;
+      --chair-active-hover: #99f6e4;
 
       --text-main: #0f172a;
       --text-muted: #64748b;
 
-      --green-main: #16a34a;
-      --green-dark: #15803d;
+      --green-main: #0d9488;
+      --green-dark: #0f766e;
       --blue-main: #0284c7;
       --blue-dark: #0369a1;
       --red-main: #dc2626;
@@ -96,7 +105,7 @@
     .auth-screen {
       position: fixed;
       inset: 0;
-      background: #1e293b;
+      background: #0f172a;
       display: none;
       align-items: center;
       justify-content: center;
@@ -131,7 +140,7 @@
       width: 42px;
       height: 42px;
       border-radius: 10px;
-      background: #15803d;
+      background: #0f766e;
       color: #ffffff;
       font-size: 21px;
       display: flex;
@@ -212,7 +221,7 @@
     .auth-primary-btn {
       appearance: none;
       border: none;
-      background: #15803d;
+      background: #0f766e;
       color: #ffffff;
       font-size: 14.5px;
       font-weight: 800;
@@ -222,7 +231,7 @@
     }
 
     .auth-primary-btn:hover {
-      background: #166534;
+      background: #115e59;
     }
 
     .auth-primary-btn:active {
@@ -259,8 +268,8 @@
     }
 
     .auth-config-toggle.configured {
-      background: #f0fdf4;
-      color: #15803d;
+      background: #f0fdfa;
+      color: #0f766e;
     }
 
     .auth-config-action-pill {
@@ -312,14 +321,14 @@
     .app-header {
       flex-shrink: 0;
       height: clamp(44px, 6.2dvh, 56px);
-      background: #1e293b;
+      background: #0f172a;
       color: #f8fafc;
       padding: 0 clamp(6px, 1.4vw, 16px);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: clamp(4px, 1vw, 12px);
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid #1e293b;
       z-index: 20;
       overflow: hidden;
     }
@@ -367,9 +376,9 @@
     }
 
     .sync-pill.online {
-      background: rgba(22, 163, 74, 0.2);
-      border-color: rgba(74, 222, 128, 0.5);
-      color: #bbf7d0;
+      background: rgba(13, 148, 136, 0.22);
+      border-color: rgba(94, 234, 212, 0.5);
+      color: #ccfbf1;
     }
 
     .sync-pill.syncing {
@@ -413,8 +422,8 @@
       display: inline-flex;
       align-items: baseline;
       gap: clamp(3px, 0.6vw, 6px);
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(15, 118, 110, 0.28);
+      border: 1px solid rgba(94, 234, 212, 0.35);
       border-radius: 8px;
       height: clamp(30px, 4.1dvh, 38px);
       padding: 0 clamp(7px, 1.1vw, 12px);
@@ -426,7 +435,7 @@
     }
 
     .grand-total-btn:hover {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(15, 118, 110, 0.42);
     }
 
     .grand-total-btn:active {
@@ -436,7 +445,7 @@
     .grand-total-label {
       font-size: clamp(9.5px, 1.2vmin, 12px);
       font-weight: 700;
-      color: #cbd5e1;
+      color: #99f6e4;
       text-transform: uppercase;
       white-space: nowrap;
       flex-shrink: 0;
@@ -445,7 +454,7 @@
     .grand-total-value {
       font-size: clamp(14px, 2vmin, 21px);
       font-weight: 800;
-      color: #86efac;
+      color: #5eead4;
       letter-spacing: -0.2px;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
@@ -506,8 +515,8 @@
 
     .btn-settings-main {
       appearance: none;
-      border: 1px solid #475569;
-      background: #334155;
+      border: 1px solid #334155;
+      background: #1e293b;
       color: #f8fafc;
       height: clamp(30px, 4.1dvh, 37px);
       padding: 0 clamp(8px, 1.1vw, 13px);
@@ -524,7 +533,7 @@
     }
 
     .btn-settings-main:hover {
-      background: #475569;
+      background: #334155;
     }
 
     .btn-settings-main.unlocked-style {
@@ -579,8 +588,8 @@
     }
 
     .pin-dot.filled {
-      background: #0369a1;
-      border-color: #0369a1;
+      background: #0f766e;
+      border-color: #0f766e;
       transform: scale(1.1);
     }
 
@@ -715,7 +724,7 @@
 
     .tool-chip-btn:active { transform: scale(0.96); }
     .tool-chip-btn.blue  { background: #f0f9ff; border-color: #bae6fd; color: #0369a1; }
-    .tool-chip-btn.green { background: #15803d; border-color: #166534; color: #ffffff; }
+    .tool-chip-btn.green { background: #0f766e; border-color: #115e59; color: #ffffff; }
     .tool-chip-btn.amber { background: #fefce8; border-color: #fde047; color: #854d0e; }
     .tool-chip-btn.red   { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
@@ -741,8 +750,8 @@
       display: flex;
       flex-direction: column;
       background-color: var(--bg-card);
-      border: 1px solid #e2e8f0;
-      border-right: clamp(3px, 0.4vmin, 5px) solid #94a3b8;
+      border: 1px solid #dce3ec;
+      border-right: clamp(3px, 0.4vmin, 5px) solid #64748b;
       border-radius: clamp(8px, 1vmin, 14px);
       overflow: hidden;
       box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -793,7 +802,7 @@
 
     .table-unit.unit-active {
       background: var(--table-active-tint);
-      border: 1.5px solid #86efac;
+      border: 1.5px solid var(--table-active-tint-border);
     }
 
     .edit-mode-on .table-unit {
@@ -902,7 +911,7 @@
     .badge-delete { background: #b91c1c; }
 
     /* ==========================================================================
-       7. GHẾ 4 PHÍA & MẶT BÀN TÁCH BIỆT MÀU RÕ RÀNG, PHẲNG & DỊU MẮT
+       7. GHẾ 4 PHÍA & MẶT BÀN TÁCH BIỆT RÕ RÀNG (MẶT BÀN LUÔN NỔI HƠN GHẾ)
        ========================================================================== */
     .chairs-row {
       display: flex;
@@ -948,7 +957,7 @@
       width: 100%;
     }
 
-    /* Chiếc ghế trống: Tông xám-xanh mát mắt, tách biệt với mặt bàn kem ấm */
+    /* Chiếc ghế trống: Nền trắng sạch, viền mảnh lùi về sau để nhường điểm nhấn cho mặt bàn */
     .chair-btn {
       appearance: none;
       border: 1px solid var(--chair-empty-border);
@@ -968,9 +977,9 @@
     }
 
     .chair-btn:hover {
-      border-color: #0369a1;
-      background-color: #e0f2fe;
-      color: #0c4a6e;
+      border-color: var(--chair-empty-hover-border);
+      background-color: var(--chair-empty-hover-bg);
+      color: var(--chair-empty-hover-text);
     }
 
     .chairs-row.top-chairs .chair-btn    { border-radius: clamp(5px, 0.7vmin, 8px) clamp(5px, 0.7vmin, 8px) 2px 2px; }
@@ -982,20 +991,20 @@
       transform: scale(0.94);
     }
 
-    /* Chiếc ghế có tiền: Xanh dương trầm dịu mắt, tách hẳn với mặt bàn xanh lá */
+    /* Chiếc ghế có tiền: Xanh ngọc nhạt cùng tông với mặt bàn, dễ đọc mà không lấn át bàn */
     .chair-btn.has-amount {
       background-color: var(--chair-active-bg);
       border-color: var(--chair-active-border);
-      color: #ffffff;
+      color: var(--chair-active-text);
       font-size: clamp(11.5px, 1.8vmin, 21px);
       font-weight: 800;
     }
 
     .chair-btn.has-amount:hover {
-      background-color: #075985;
+      background-color: var(--chair-active-hover);
     }
 
-    /* Mặt bàn trống: Tông kem trắng ngà phẳng, tối giản */
+    /* Mặt bàn trống: Tông gỗ kem ấm vững chắc, tạo trọng tâm rõ rệt hơn ghế */
     .table-surface-btn {
       appearance: none;
       flex: 1;
@@ -1014,8 +1023,8 @@
     }
 
     .table-surface-btn:hover {
-      border-color: #64748b;
-      background-color: #f5f3ef;
+      border-color: #8c7d6b;
+      background-color: var(--table-empty-hover);
     }
 
     .table-surface-btn:active {
@@ -1054,13 +1063,13 @@
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
-      color: var(--text-muted);
+      color: var(--table-amount-empty);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Mặt bàn có tiền: Xanh lá rừng trầm dịu mắt, số tiền trắng sắc nét */
+    /* Mặt bàn có tiền: Xanh ngọc đậm trầm dịu mắt, số tiền trắng nổi bật nhất */
     .table-surface-btn.table-has-money {
       background-color: var(--table-active-bg);
       border-color: var(--table-active-border);
@@ -1068,12 +1077,12 @@
     }
 
     .table-surface-btn.table-has-money:hover {
-      background-color: #166534;
+      background-color: var(--table-active-hover);
     }
 
     .table-surface-btn.table-has-money .table-code-badge {
-      background-color: #dcfce7;
-      color: #14532d;
+      background-color: #ccfbf1;
+      color: #115e59;
     }
 
     .table-surface-btn.table-has-money .table-amount-display {
@@ -1164,7 +1173,7 @@
 
     .modal-header {
       padding: 9px 12px;
-      background: #1e293b;
+      background: #0f172a;
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -1183,7 +1192,7 @@
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      color: #93c5fd;
+      color: #99f6e4;
     }
 
     .modal-title {
@@ -1253,8 +1262,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: #f0fdf4;
-      border: 1px solid #86efac;
+      background: #f0fdfa;
+      border: 1px solid #5eead4;
       border-radius: 8px;
       padding: 6px 10px;
     }
@@ -1269,14 +1278,14 @@
     .live-bill-label {
       font-size: 10px;
       font-weight: 700;
-      color: #166534;
+      color: #115e59;
       text-transform: uppercase;
     }
 
     .live-bill-items {
       font-size: 11.5px;
       font-weight: 600;
-      color: #15803d;
+      color: #0f766e;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1286,7 +1295,7 @@
     .live-bill-total {
       font-size: 24px;
       font-weight: 800;
-      color: #15803d;
+      color: #0f766e;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -1393,8 +1402,8 @@
     }
 
     .menu-dish-card.dish-selected {
-      background: #f0fdf4;
-      border-color: #4ade80;
+      background: #f0fdfa;
+      border-color: #2dd4bf;
     }
 
     .dish-name {
@@ -1421,13 +1430,13 @@
     }
 
     .menu-dish-card.dish-selected .dish-price {
-      color: #15803d;
+      color: #0f766e;
     }
 
     .dish-qty-badge {
       font-size: 11px;
       font-weight: 800;
-      background: #15803d;
+      background: #0f766e;
       color: #ffffff;
       padding: 1px 6px;
       border-radius: 999px;
@@ -1499,7 +1508,7 @@
       font-weight: 800;
       color: #0f172a;
       background-color: #ffffff;
-      border: 1.5px solid #0369a1;
+      border: 1.5px solid #0f766e;
       border-radius: 7px;
       padding: 4px 28px 4px 10px;
       text-align: right;
@@ -1511,7 +1520,7 @@
       right: 9px;
       font-size: 16px;
       font-weight: 800;
-      color: #0369a1;
+      color: #0f766e;
       pointer-events: none;
     }
 
@@ -1645,7 +1654,7 @@
       cursor: pointer;
     }
 
-    .stepper-mini-btn.plus  { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+    .stepper-mini-btn.plus  { background: #f0fdfa; border-color: #5eead4; color: #0f766e; }
     .stepper-mini-btn.minus { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
     .stepper-count-val {
@@ -1672,8 +1681,8 @@
     }
 
     .chair-pos-btn.active-pos {
-      background: #0369a1;
-      border-color: #075985;
+      background: #0f766e;
+      border-color: #115e59;
       color: #ffffff;
     }
 
@@ -1707,7 +1716,7 @@
 
     .modal-btn.btn-cancel     { background-color: #e2e8f0; color: #334155; }
     .modal-btn.btn-delete-val { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-    .modal-btn.btn-save       { background-color: #15803d; color: #ffffff; }
+    .modal-btn.btn-save       { background-color: #0f766e; color: #ffffff; }
 
     /* ==========================================================================
        11. HỘP THOẠI CÀI ĐẶT, BẢO MẬT & SẮP XẾP MENU
@@ -1766,7 +1775,7 @@
     }
 
     .settings-action-btn.primary { background: #0369a1; border-color: #075985; color: #ffffff; }
-    .settings-action-btn.green   { background: #15803d; border-color: #166534; color: #ffffff; }
+    .settings-action-btn.green   { background: #0f766e; border-color: #115e59; color: #ffffff; }
     .settings-action-btn.amber   { background: #fefce8; border-color: #fde047; color: #854d0e; }
     .settings-action-btn.danger  { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
@@ -1814,7 +1823,7 @@
     }
 
     .text-input-clean:focus {
-      border-color: #0369a1;
+      border-color: #0f766e;
     }
 
     .menu-editor-list {
@@ -1840,8 +1849,8 @@
     }
 
     .menu-editor-item.editing-active {
-      border-color: #0369a1;
-      background: #f0f9ff;
+      border-color: #0f766e;
+      background: #f0fdfa;
     }
 
     .menu-editor-item.is-dragging {
@@ -1904,8 +1913,8 @@
     .menu-editor-price {
       font-size: 12px;
       font-weight: 800;
-      color: #15803d;
-      background: #dcfce7;
+      color: #115e59;
+      background: #ccfbf1;
       padding: 2px 6px;
       border-radius: 999px;
       white-space: nowrap;
@@ -1936,8 +1945,8 @@
     }
 
     .menu-move-btn:active:not(:disabled) {
-      background: #0369a1;
-      border-color: #075985;
+      background: #0f766e;
+      border-color: #115e59;
       color: #ffffff;
     }
 
@@ -1975,10 +1984,10 @@
       padding: 7px 10px;
     }
 
-    .stat-card.highlight { background: #f0fdf4; border-color: #86efac; }
+    .stat-card.highlight { background: #f0fdfa; border-color: #5eead4; }
     .stat-card-label { font-size: 10.5px; color: #64748b; font-weight: 700; }
     .stat-card-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
-    .stat-card.highlight .stat-card-value { color: #15803d; }
+    .stat-card.highlight .stat-card-value { color: #0f766e; }
 
     .stats-table-wrap {
       border: 1px solid #cbd5e1;
@@ -2020,8 +2029,8 @@
       font-weight: 700;
     }
 
-    .status-pill.pill-direct { background-color: #15803d; color: #ffffff; }
-    .status-pill.pill-chairs { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+    .status-pill.pill-direct { background-color: #0f766e; color: #ffffff; }
+    .status-pill.pill-chairs { background-color: #ccfbf1; color: #115e59; border: 1px solid #5eead4; }
     .status-pill.pill-empty  { background-color: #f1f5f9; color: #64748b; }
 
     .toast-msg {
@@ -2029,7 +2038,7 @@
       top: 50px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
-      background-color: rgba(30, 41, 59, 0.96);
+      background-color: rgba(15, 23, 42, 0.96);
       color: #ffffff;
       padding: 6px 12px;
       border-radius: 999px;
@@ -2380,7 +2389,7 @@
             <div class="subactions-row">
               <span style="font-size:11px; font-weight:700; color:#334155;">Vị trí ghế quanh bàn:</span>
               <div style="display:flex; gap:4px;">
-                <button type="button" class="subaction-btn" style="background:#f0fdf4; color:#15803d;" data-action="chair-add-sibling">+ Ghế cùng phía</button>
+                <button type="button" class="subaction-btn" style="background:#f0fdfa; color:#0f766e;" data-action="chair-add-sibling">+ Ghế cùng phía</button>
                 <button type="button" class="subaction-btn danger" data-action="chair-delete-single">🗑️ Xoá ghế</button>
               </div>
             </div>
@@ -2798,8 +2807,8 @@
       /* ======================================================================
          CẤU HÌNH BẢO MẬT & FIREBASE (CHỦ QUÁN CÓ THỂ DÁN SẴN TRƯỚC KHI UP GITHUB)
          ====================================================================== */
-      const DEFAULT_FIREBASE_URL = "";
-      const DEFAULT_FIREBASE_API_KEY = "";
+      const DEFAULT_FIREBASE_URL = "https://tinh-tien-quan-an-default-rtdb.asia-southeast1.firebasedatabase.app/";
+      const DEFAULT_FIREBASE_API_KEY = "AIzaSyChAcKb0_GgPuoyezarbmkoSkCoqwMod0U";
       const DEFAULT_MANAGER_PIN = "1234";
 
       const STATE_STORAGE_KEY = "quan_an_pos_state_v4";
