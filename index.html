@@ -1337,8 +1337,47 @@
       white-space: normal;
       word-break: break-word;
       margin-top: 2px;
-      max-height: 46px;
+      max-height: 54px;
       overflow-y: auto;
+    }
+
+    .live-item-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .live-item-chip {
+      appearance: none;
+      border: 1px solid #99f6e4;
+      background: #ffffff;
+      color: #115e59;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      line-height: 1.25;
+      text-align: left;
+    }
+
+    .live-item-chip:hover {
+      background: #ccfbf1;
+      border-color: #14b8a6;
+    }
+
+    .live-item-chip.is-custom-price {
+      background: #fefce8;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+
+    .live-item-chip.is-custom-price:hover {
+      background: #fef08a;
     }
 
     .live-bill-total {
@@ -1347,6 +1386,7 @@
       color: #0f766e;
       white-space: nowrap;
       flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
     .rule-notice {
@@ -1365,13 +1405,14 @@
     }
 
     /* ==========================================================================
-       9. THANH CHỌN MENU MÓN ĂN KÈM GIÁ TIỀN
+       9. THANH CHỌN MENU MÓN ĂN KÈM GIÁ TIỀN & CHỈNH GIÁ TỪNG LẦN CHỌN
        ========================================================================== */
     .menu-bar-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .menu-bar-title {
@@ -1410,65 +1451,72 @@
       color: #ffffff;
     }
 
-    .menu-items-grid {
-      flex: 0 1 auto;
-      min-height: 0;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-content: start;
-      gap: clamp(4px, 0.8vmin, 7px);
-      overflow-y: auto;
-      padding: 1px 2px 2px 1px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
+    .pill-action-btn.price-mode-active {
+      background: #d97706;
+      border-color: #b45309;
+      color: #ffffff;
     }
 
-    #entryModal .modal-body.has-open-tools .menu-items-grid {
-      min-height: 115px;
+    .menu-items-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      overflow-y: auto;
+      align-content: start;
+      padding: 2px;
+      -webkit-overflow-scrolling: touch;
     }
 
     @media (min-width: 360px) {
       .menu-items-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
-    @media (min-width: 580px) {
+    @media (min-width: 600px) {
       .menu-items-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(4, 1fr);
       }
-    }
-
-    @media (min-width: 860px) {
       .menu-items-grid.menu-dense {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(5, 1fr);
       }
     }
 
     .menu-dish-card {
       position: relative;
-      min-width: 0;
       border: 1px solid #cbd5e1;
       background: #f8fafc;
       border-radius: 8px;
-      padding: clamp(6px, 1vmin, 9px) clamp(6px, 1vmin, 8px);
+      padding: 7px 6px;
       text-align: left;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 3px;
-      min-height: clamp(48px, 6.8dvh, 62px);
+      min-height: 52px;
     }
 
     .menu-items-grid.menu-dense .menu-dish-card {
-      padding: 5px 6px;
+      padding: 5px 5px;
       min-height: 44px;
-      gap: 2px;
     }
 
     .menu-items-grid.menu-dense .dish-name {
       font-size: 11.5px;
+    }
+
+    .menu-items-grid.price-prompt-mode .menu-dish-card {
+      border-style: dashed;
+      border-color: #d97706;
+      background: #fffbeb;
+    }
+
+    .menu-items-grid.price-prompt-mode .menu-dish-card.dish-selected {
+      background: #fef3c7;
+      border-color: #b45309;
     }
 
     .menu-dish-card:hover {
@@ -1482,7 +1530,7 @@
 
     .menu-dish-card.dish-selected {
       background: #f0fdfa;
-      border-color: #2dd4bf;
+      border-color: #14b8a6;
     }
 
     .dish-name {
@@ -1490,8 +1538,11 @@
       font-weight: 700;
       color: #0f172a;
       line-height: 1.2;
-      padding-right: 22px;
       word-break: break-word;
+    }
+
+    .menu-dish-card.dish-selected .dish-name {
+      padding-right: 24px;
     }
 
     .dish-bottom-row {
@@ -1505,7 +1556,6 @@
     .dish-price-group {
       display: flex;
       flex-direction: column;
-      line-height: 1.15;
       min-width: 0;
     }
 
@@ -1514,6 +1564,7 @@
       font-weight: 800;
       color: #0369a1;
       font-variant-numeric: tabular-nums;
+      line-height: 1.15;
     }
 
     .menu-dish-card.dish-selected .dish-price {
@@ -1522,16 +1573,24 @@
 
     .menu-dish-card.dish-multi .dish-price {
       font-size: 10.5px;
-      font-weight: 600;
-      color: #64748b;
+      font-weight: 700;
+      color: #475569;
     }
 
     .dish-subtotal {
-      font-size: 13.5px;
+      font-size: 12.5px;
       font-weight: 800;
       color: #0f766e;
       font-variant-numeric: tabular-nums;
-      white-space: nowrap;
+      line-height: 1.15;
+      margin-top: 1px;
+    }
+
+    .dish-right-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
     }
 
     .dish-qty-badge {
@@ -1546,6 +1605,40 @@
 
     .menu-dish-card.dish-selected .dish-qty-badge {
       display: inline-block;
+    }
+
+    .dish-custom-btn {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .dish-custom-btn:hover {
+      border-color: #d97706;
+      background: #fefce8;
+      color: #92400e;
+    }
+
+    .dish-custom-btn:active {
+      transform: scale(0.92);
+    }
+
+    .menu-dish-card.dish-has-custom .dish-custom-btn {
+      border-color: #f59e0b;
+      background: #fefce8;
+      color: #92400e;
     }
 
     .dish-minus-btn {
@@ -1571,6 +1664,93 @@
 
     .menu-dish-card.dish-selected .dish-minus-btn {
       display: inline-flex;
+    }
+
+    .dish-price-quick-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+
+    .price-adj-btn {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      border-radius: 6px;
+      padding: 7px 2px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price-adj-btn.is-plus {
+      background: #f0fdfa;
+      border-color: #5eead4;
+      color: #0f766e;
+    }
+
+    .price-adj-btn.is-minus {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .price-adj-btn:active {
+      transform: scale(0.95);
+    }
+
+    .dish-qty-stepper-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 10px;
+    }
+
+    .dish-qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-step-btn {
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-step-btn.plus {
+      background: #f0fdfa;
+      border-color: #5eead4;
+      color: #0f766e;
+    }
+
+    .qty-step-btn:active {
+      transform: scale(0.94);
+    }
+
+    .qty-step-value {
+      font-size: 16px;
+      font-weight: 800;
+      min-width: 24px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
     }
 
     /* ==========================================================================
@@ -1815,9 +1995,14 @@
       transform: scale(0.97);
     }
 
-    .modal-btn.btn-cancel     { background-color: #e2e8f0; color: #334155; }
-    .modal-btn.btn-delete-val { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-    .modal-btn.btn-save       { background-color: #0f766e; color: #ffffff; }
+    .modal-btn.btn-cancel      { background-color: #e2e8f0; color: #334155; }
+    .modal-btn.btn-delete-val  { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .modal-btn.btn-save        { background-color: #0f766e; color: #ffffff; }
+    .modal-btn.btn-print-multi { background-color: #0369a1; color: #ffffff; }
+    .modal-btn.btn-print-multi.is-disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
 
     /* ==========================================================================
        11. HỘP THOẠI CÀI ĐẶT, BẢO MẬT & SẮP XẾP MENU
@@ -1931,9 +2116,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      flex: 0 1 auto;
-      min-height: 140px;
-      max-height: 62dvh;
+      max-height: 270px;
       overflow-y: auto;
       padding: 2px 1px;
       -webkit-overflow-scrolling: touch;
@@ -2016,7 +2199,7 @@
     .menu-editor-price {
       font-size: 12px;
       font-weight: 800;
-      color: #115e59;
+      color: #0f766e;
       background: #ccfbf1;
       padding: 2px 6px;
       border-radius: 999px;
@@ -2072,7 +2255,7 @@
     }
 
     /* ==========================================================================
-       12. THỐNG KÊ CHI TIẾT & BẢN IN HÓA ĐƠN
+       12. THỐNG KÊ CHI TIẾT & BẢN IN HÓA ĐƠN POS
        ========================================================================== */
     .stats-summary-cards {
       display: grid;
@@ -2092,10 +2275,25 @@
     .stat-card-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
     .stat-card.highlight .stat-card-value { color: #0f766e; }
 
+    .stats-toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .stats-select-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
     .stats-table-wrap {
       border: 1px solid #cbd5e1;
       border-radius: 7px;
-      overflow: hidden;
+      overflow-x: auto;
     }
 
     .stats-table {
@@ -2106,9 +2304,10 @@
 
     .stats-table th,
     .stats-table td {
-      padding: 6px 8px;
+      padding: 6px 7px;
       border-bottom: 1px solid #e2e8f0;
       text-align: left;
+      vertical-align: middle;
     }
 
     .stats-table th {
@@ -2124,6 +2323,72 @@
       text-align: right;
     }
 
+    .stats-check-cell {
+      width: 30px;
+      text-align: center !important;
+    }
+
+    .stats-row-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: #0f766e;
+      cursor: pointer;
+    }
+
+    .stats-row-selected {
+      background-color: #f0fdfa;
+    }
+
+    .stats-total-actions-cell {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn-print-row {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f766e;
+      border-radius: 5px;
+      padding: 3px 6px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-print-row:hover {
+      background: #f0fdfa;
+      border-color: #14b8a6;
+    }
+
+    .btn-print-row:active {
+      transform: scale(0.94);
+    }
+
+    .chair-bill-chip {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0369a1;
+      border-radius: 5px;
+      padding: 2px 5px;
+      margin: 2px 3px 2px 0;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chair-bill-chip:hover {
+      background: #e0f2fe;
+      border-color: #0284c7;
+    }
+
     .status-pill {
       display: inline-block;
       padding: 1px 5px;
@@ -2135,116 +2400,6 @@
     .status-pill.pill-direct { background-color: #0f766e; color: #ffffff; }
     .status-pill.pill-chairs { background-color: #ccfbf1; color: #115e59; border: 1px solid #5eead4; }
     .status-pill.pill-empty  { background-color: #f1f5f9; color: #64748b; }
-
-    .stats-toolbar-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .stats-select-actions {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-
-    .stats-table tr.stats-row-selected {
-      background-color: #f0fdfa;
-    }
-
-    .stats-check-cell {
-      width: 28px;
-      text-align: center !important;
-      padding: 6px 4px !important;
-    }
-
-    .stats-check-input {
-      width: 17px;
-      height: 17px;
-      accent-color: #0f766e;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-
-    .stats-chair-list {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      vertical-align: middle;
-      margin-top: 2px;
-    }
-
-    .chair-print-chip {
-      appearance: none;
-      border: 1px solid #99f6e4;
-      background: #f0fdfa;
-      color: #115e59;
-      border-radius: 5px;
-      padding: 2px 6px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      text-align: left;
-    }
-
-    .chair-print-chip:hover {
-      background: #ccfbf1;
-      border-color: #14b8a6;
-    }
-
-    .chair-print-chip:active {
-      transform: scale(0.96);
-    }
-
-    .stats-total-cell {
-      white-space: nowrap;
-    }
-
-    .stats-total-wrap {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 5px;
-    }
-
-    .btn-row-print {
-      appearance: none;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      color: #0f766e;
-      border-radius: 5px;
-      padding: 3px 6px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      line-height: 1.1;
-    }
-
-    .btn-row-print:hover {
-      background: #f0fdfa;
-      border-color: #14b8a6;
-    }
-
-    .btn-row-print:active {
-      transform: scale(0.94);
-    }
-
-    .modal-btn.btn-print-multi {
-      background-color: #0369a1;
-      color: #ffffff;
-      font-size: 12.5px;
-    }
-
-    .modal-btn.btn-print-multi.is-disabled {
-      background-color: #cbd5e1;
-      color: #64748b;
-    }
 
     .toast-msg {
       position: fixed;
@@ -2304,7 +2459,7 @@
     }
 
     @media print {
-      @page { margin: 4mm; }
+      @page { margin: 5mm; }
       html, body {
         height: auto !important;
         background: #ffffff !important;
@@ -2317,85 +2472,85 @@
         width: 100%;
         max-width: 78mm;
         margin: 0 auto;
-        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         color: #000000;
+        font-size: 9.5pt;
         line-height: 1.35;
       }
-      .print-header {
+      .pos-header {
         text-align: center;
-        border-bottom: 1px dashed #000;
         padding-bottom: 6px;
-        margin-bottom: 6px;
       }
-      .print-shop-name {
-        font-size: 13pt;
+      .pos-restaurant-name {
+        font-size: 12pt;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
         margin-bottom: 2px;
       }
-      .print-target-name {
+      .pos-doc-title {
+        font-size: 11pt;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+      }
+      .pos-target-label {
+        font-size: 10.5pt;
+        font-weight: 800;
+        margin-top: 3px;
+      }
+      .pos-meta {
+        font-size: 8.5pt;
+        margin-top: 2px;
+      }
+      .pos-divider {
+        border: none;
+        border-top: 1px dashed #000000;
+        margin: 6px 0;
+      }
+      .pos-divider-double {
+        border: none;
+        border-top: 1.5px dashed #000000;
+        margin: 6px 0;
+      }
+      .pos-items-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9.2pt;
+      }
+      .pos-items-table th {
+        border-bottom: 1px dashed #000000;
+        padding: 3px 2px 4px;
+        font-weight: 800;
+        text-align: left;
+      }
+      .pos-items-table td {
+        padding: 3px 2px;
+        vertical-align: top;
+      }
+      .pos-items-table th.center,
+      .pos-items-table td.center {
+        text-align: center;
+      }
+      .pos-items-table th.right,
+      .pos-items-table td.right {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .pos-total-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 3px 2px;
         font-size: 11.5pt;
         font-weight: 800;
       }
-      .print-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 9.5pt;
-      }
-      .print-table th, .print-table td {
-        border: none;
-        padding: 3.5px 2px;
-        text-align: left;
-        vertical-align: top;
-      }
-      .print-table thead th {
-        font-size: 9pt;
-        font-weight: 800;
-        padding-bottom: 5px;
-        border-bottom: 1px dashed #000;
-      }
-      .print-table tbody tr:first-child td {
-        padding-top: 6px;
-      }
-      .print-table tbody tr:last-child td {
-        padding-bottom: 6px;
-      }
-      .print-table td.right, .print-table th.right {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-        white-space: nowrap;
-      }
-      .print-table td.center, .print-table th.center {
-        text-align: center;
+      .pos-total-amount {
         font-variant-numeric: tabular-nums;
       }
-      .print-grand-box {
-        border: none;
-        border-top: 1px dashed #000;
-        padding: 7px 2px 4px;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 8px;
-      }
-      .print-grand-label {
-        font-size: 10.5pt;
-        font-weight: 800;
-      }
-      .print-grand-main {
-        font-size: 12.5pt;
-        font-weight: 900;
-        font-variant-numeric: tabular-nums;
-        white-space: nowrap;
-      }
-      .print-footer {
+      .pos-footer {
         margin-top: 8px;
         text-align: center;
         font-size: 9pt;
         font-style: italic;
-        border-top: 1px dashed #000;
-        padding-top: 6px;
         white-space: pre-line;
       }
     }
@@ -2477,7 +2632,7 @@
           <span id="activeTablesShort" class="active-text-short">0/15</span>
           <span id="activeTablesFull" class="active-text-full">🟢 0/15 bàn</span>
         </span>
-        <button type="button" class="grand-total-btn" data-action="open-stats" title="Chạm để xem Bảng thống kê">
+        <button type="button" class="grand-total-btn" data-action="open-stats" title="Chạm để xem Bảng thống kê & In hóa đơn">
           <span class="grand-total-label">Tổng:</span>
           <span id="grandTotalValue" class="grand-total-value">0₫</span>
         </button>
@@ -2589,7 +2744,7 @@
           <h2 id="entryTitle" class="modal-title">Bàn 1A (Cả bàn)</h2>
         </div>
         <div class="modal-header-right">
-          <button type="button" id="btnEntryPrintBill" class="btn-header-print" data-action="entry-print-bill" title="In bill cho bàn hoặc ghế đang mở">
+          <button type="button" id="btnEntryPrintBill" class="btn-header-print" data-action="entry-print-bill" title="In hóa đơn cho bàn/ghế này">
             🖨️ In bill
           </button>
           <button type="button" id="btnToggleLayoutDrawer" class="btn-header-drawer" data-action="toggle-layout-drawer">
@@ -2681,6 +2836,7 @@
         <div class="menu-bar-header">
           <span class="menu-bar-title">🍜 Menu chọn nhanh:</span>
           <div class="menu-bar-actions">
+            <button type="button" id="btnTogglePriceMode" class="pill-action-btn" data-action="toggle-price-mode" title="Bật để hỏi sửa giá mỗi khi chạm chọn món">🏷️ Sửa giá</button>
             <button type="button" id="btnToggleNumpad" class="pill-action-btn" data-action="toggle-numpad">⌨️ Nhập số</button>
             <button type="button" id="btnEntryEditMenu" class="pill-action-btn primary" data-action="open-menu-editor">🔒 Sửa menu</button>
           </div>
@@ -2729,6 +2885,88 @@
         <button type="button" class="modal-btn btn-cancel" data-action="close-entry-modal">Hủy</button>
         <button type="button" class="modal-btn btn-delete-val" data-action="entry-clear-zero">Xóa tiền</button>
         <button type="button" id="btnEntrySave" class="modal-btn btn-save" data-action="entry-save">✓ Lưu (0₫)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       3b. HỘP THOẠI SỬA GIÁ TIỀN CHO MÓN ĐANG CHỌN (KHÔNG ĐỔI MENU GỐC)
+       ======================================================================== -->
+  <div id="dishPriceModal" class="modal-backdrop" role="dialog" aria-modal="true" style="z-index: 132;">
+    <div class="modal-card" style="max-width: 390px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span id="dishPriceSubBadge" class="modal-badge">CHỈNH GIÁ LẦN CHỌN NÀY (KHÔNG ĐỔI MENU)</span>
+          <h2 id="dishPriceTitle" class="modal-title">Phở bò</h2>
+        </div>
+        <button type="button" class="modal-close-x" data-action="close-dish-price-modal" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="manual-input-row">
+          <div class="amount-input-wrap">
+            <input
+              type="text"
+              id="dishPriceInput"
+              class="amount-input"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="0"
+            />
+            <span class="currency-suffix">₫</span>
+          </div>
+          <button type="button" id="btnDishPriceReset" class="pill-action-btn" data-action="dish-price-reset" title="Quay về giá mặc định trên menu">
+            ↺ Giá gốc
+          </button>
+        </div>
+
+        <!-- Các nút tăng/giảm nhanh tiền đồ thêm -->
+        <div class="dish-price-quick-row">
+          <button type="button" class="price-adj-btn is-minus" data-action="dish-price-adj" data-delta="-10">−10</button>
+          <button type="button" class="price-adj-btn is-minus" data-action="dish-price-adj" data-delta="-5">−5</button>
+          <button type="button" class="price-adj-btn is-plus" data-action="dish-price-adj" data-delta="5">+5</button>
+          <button type="button" class="price-adj-btn is-plus" data-action="dish-price-adj" data-delta="10">+10</button>
+          <button type="button" class="price-adj-btn is-plus" data-action="dish-price-adj" data-delta="15">+15</button>
+          <button type="button" class="price-adj-btn is-plus" data-action="dish-price-adj" data-delta="20">+20</button>
+        </div>
+
+        <!-- Chọn số lượng & thành tiền dự kiến -->
+        <div class="dish-qty-stepper-bar">
+          <div class="dish-qty-controls">
+            <span style="font-size:12px; font-weight:700; color:#334155;">SL:</span>
+            <button type="button" class="qty-step-btn" data-action="dish-price-qty-dec">−</button>
+            <span id="dishPriceQtyVal" class="qty-step-value">1</span>
+            <button type="button" class="qty-step-btn plus" data-action="dish-price-qty-inc">+</button>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase;">Thành tiền</div>
+            <div id="dishPriceSubtotalVal" style="font-size:17px; font-weight:800; color:#0f766e; font-variant-numeric:tabular-nums;">0₫</div>
+          </div>
+        </div>
+
+        <!-- Bàn phím số gọn nhập nhanh trên điện thoại -->
+        <div class="numpad-grid">
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="7">7</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="8">8</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="9">9</button>
+          <button type="button" class="num-btn num-special" data-action="dish-price-backspace">⌫</button>
+
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="4">4</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="5">5</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="6">6</button>
+          <button type="button" class="num-btn num-special" data-action="dish-price-clear">C</button>
+
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="1">1</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="2">2</button>
+          <button type="button" class="num-btn" data-action="dish-price-digit" data-digit="3">3</button>
+          <button type="button" class="num-btn num-special" data-action="dish-price-digit" data-digit="0">0</button>
+        </div>
+      </div>
+
+      <div id="dishPriceFooter" class="modal-footer" style="grid-template-columns: 0.9fr 1.3fr;">
+        <button type="button" class="modal-btn btn-cancel" data-action="close-dish-price-modal">Hủy</button>
+        <button type="button" id="btnDishPriceDeleteLine" class="modal-btn btn-delete-val" data-action="dish-price-delete-line" style="display:none;">Xoá món</button>
+        <button type="button" id="btnDishPriceConfirm" class="modal-btn btn-save" data-action="dish-price-confirm">✓ Thêm (0₫)</button>
       </div>
     </div>
   </div>
@@ -3080,6 +3318,7 @@
       const ROTATE_CLOCKWISE = { top: "right", right: "bottom", bottom: "left", left: "top" };
       const DOUBLE_TAP_MS = 450;
       const SINGLE_TAP_DELAY_MS = 310;
+      const CUSTOM_PRICE_SEP = "__p_";
 
       const DEFAULT_MENU = [
         { id: "m1", name: "Phở bò", price: 35 },
@@ -3107,7 +3346,7 @@
       let swapSourceIndex = null;
       let dragSourceSlotIndex = null;
       let statsOnlyActive = false;
-      let selectedPrintSlots = new Set();
+      let selectedPrintSlots = [];
 
       let entryCtx = {
         slotIndex: -1,
@@ -3117,8 +3356,19 @@
         items: {},
         showNumpad: false,
         showLayoutDrawer: false,
+        promptPriceOnSelect: false,
         isDirty: false,
         openedAt: 0
+      };
+
+      let dishPriceCtx = {
+        mode: "add", // "add" | "edit"
+        dishId: "",
+        originalKey: "",
+        defaultPrice: 0,
+        price: 0,
+        qty: 1,
+        replaceNextDigit: true
       };
 
       let menuEditId = null;
@@ -3183,10 +3433,8 @@
       }
 
       function formatBillVnd(val) {
-        const raw = Math.round(Number(val) || 0);
-        const sign = raw < 0 ? "-" : "";
-        const fullVnd = Math.abs(raw) * 1000;
-        return sign + fullVnd.toLocaleString("vi-VN") + "₫";
+        const n = Math.max(0, Math.round(Number(val) || 0));
+        return (n * 1000).toLocaleString("vi-VN") + "₫";
       }
 
       function colIndexToLetter(colIdx) {
@@ -3268,6 +3516,8 @@
         const cols = Math.min(8, Math.max(1, Math.round(Number(raw.cols) || 3)));
         const zoom = ["fit", "compact", "large"].indexOf(raw.zoom) !== -1 ? raw.zoom : "fit";
         const managerPin = normalizePinString(raw.managerPin) || base.managerPin;
+        const billRestaurant = String(raw.billRestaurant || "").trim().slice(0, 80);
+        const billFooter = String(raw.billFooter || "").trim().slice(0, 160);
 
         let menu = [];
         if (Array.isArray(raw.menu) && raw.menu.length > 0) {
@@ -3324,8 +3574,8 @@
           cols: cols,
           zoom: zoom,
           managerPin: managerPin,
-          billRestaurant: String(raw.billRestaurant || "").trim(),
-          billFooter: String(raw.billFooter || "").trim(),
+          billRestaurant: billRestaurant,
+          billFooter: billFooter,
           menu: menu,
           slots: slots,
           updatedAt: Number(raw.updatedAt) || Date.now()
@@ -3365,18 +3615,54 @@
         return { totalMoney: totalMoney, activeTables: activeTables, totalTables: totalTables };
       }
 
+      function makeItemKey(dishId, unitPrice, defaultPrice) {
+        const p = Math.max(0, Math.round(Number(unitPrice) || 0));
+        const defP = Math.max(0, Math.round(Number(defaultPrice) || 0));
+        if (p === defP) return String(dishId);
+        return String(dishId) + CUSTOM_PRICE_SEP + String(p);
+      }
+
+      function parseItemKey(key, menuMap) {
+        const raw = String(key || "");
+        const sepIdx = raw.indexOf(CUSTOM_PRICE_SEP);
+        let dishId = raw;
+        let customPrice = null;
+        if (sepIdx !== -1) {
+          dishId = raw.slice(0, sepIdx);
+          const parsedP = parseInt(raw.slice(sepIdx + CUSTOM_PRICE_SEP.length), 10);
+          if (!isNaN(parsedP) && parsedP >= 0) {
+            customPrice = parsedP;
+          }
+        }
+        const dish = menuMap
+          ? menuMap[dishId]
+          : state.menu.find(function (m) { return m.id === dishId; });
+        if (!dish) return null;
+        const unitPrice = customPrice !== null ? customPrice : dish.price;
+        const isCustomPrice = customPrice !== null && customPrice !== dish.price;
+        return {
+          key: raw,
+          dishId: dish.id,
+          name: dish.name,
+          defaultPrice: dish.price,
+          unitPrice: unitPrice,
+          isCustomPrice: isCustomPrice
+        };
+      }
+
       function formatItemsSummary(itemsMap) {
         if (!itemsMap || typeof itemsMap !== "object") return "";
         const menuMap = {};
         state.menu.forEach(function (m) { menuMap[m.id] = m; });
         const parts = [];
-        Object.keys(itemsMap).forEach(function (id) {
-          const qty = itemsMap[id];
-          if (qty > 0 && menuMap[id]) {
-            const dish = menuMap[id];
-            const subtotalTxt = qty > 1 ? (" = " + formatMoney(dish.price * qty)) : "";
-            parts.push(dish.name + " x" + qty + subtotalTxt);
-          }
+        Object.keys(itemsMap).forEach(function (key) {
+          const qty = Math.max(0, Math.round(Number(itemsMap[key]) || 0));
+          if (qty <= 0) return;
+          const parsed = parseItemKey(key, menuMap);
+          if (!parsed) return;
+          const priceTag = parsed.isCustomPrice ? (" (" + formatMoney(parsed.unitPrice) + ")") : "";
+          const subtotalTxt = qty > 1 ? (" = " + formatMoney(parsed.unitPrice * qty)) : "";
+          parts.push(parsed.name + priceTag + " x" + qty + subtotalTxt);
         });
         return parts.join(", ");
       }
@@ -4188,6 +4474,7 @@
         entryCtx.chairIndex = type === "chair" ? chairIdx : -1;
         entryCtx.showNumpad = false;
         entryCtx.showLayoutDrawer = Boolean(autoOpenDrawer && isManagerUnlocked);
+        entryCtx.promptPriceOnSelect = false;
         entryCtx.isDirty = false;
         entryCtx.openedAt = Date.now();
 
@@ -4283,26 +4570,49 @@
         const numpadBox = el("entryNumpadBox");
         const toggleNumpadBtn = el("btnToggleNumpad");
         const amountInput = el("entryAmountInput");
-        const entryModalBody = document.querySelector("#entryModal .modal-body");
         if (numpadBox) numpadBox.classList.toggle("open", entryCtx.showNumpad);
         if (toggleNumpadBtn) toggleNumpadBtn.classList.toggle("active-toggle", entryCtx.showNumpad);
         if (amountInput) amountInput.value = entryCtx.amount > 0 ? String(entryCtx.amount) : "";
-        if (entryModalBody) {
-          const hasToolsOpen = Boolean(entryCtx.showNumpad || (entryCtx.showLayoutDrawer && isManagerUnlocked));
-          entryModalBody.classList.toggle("has-open-tools", hasToolsOpen);
-        }
 
         const liveTotal = el("entryLiveTotal");
         const liveSummary = el("entryLiveSummary");
         const saveBtn = el("btnEntrySave");
         const printBtn = el("btnEntryPrintBill");
-        const itemsText = formatItemsSummary(entryCtx.items);
+        const priceModeBtn = el("btnTogglePriceMode");
+        const menuMap = {};
+        state.menu.forEach(function (m) { menuMap[m.id] = m; });
+
+        if (priceModeBtn) {
+          priceModeBtn.classList.toggle("price-mode-active", entryCtx.promptPriceOnSelect);
+          priceModeBtn.textContent = entryCtx.promptPriceOnSelect ? "🏷️ Đang sửa giá" : "🏷️ Sửa giá";
+        }
+
+        const chipParts = [];
+        Object.keys(entryCtx.items || {}).forEach(function (itemKey) {
+          const qty = Math.max(0, Math.round(Number(entryCtx.items[itemKey]) || 0));
+          if (qty <= 0) return;
+          const parsed = parseItemKey(itemKey, menuMap);
+          if (!parsed) return;
+          const priceTag = parsed.isCustomPrice ? (" (" + formatMoney(parsed.unitPrice) + ")") : "";
+          const subTag = qty > 1 ? (" = " + formatMoney(parsed.unitPrice * qty)) : "";
+          const customCls = parsed.isCustomPrice ? " is-custom-price" : "";
+          chipParts.push(
+            '<button type="button" class="live-item-chip' + customCls + '" data-action="entry-edit-item-line" data-item-key="' + escapeHtml(itemKey) + '" title="Chạm để sửa giá hoặc số lượng món này">' +
+              '<span>' + escapeHtml(parsed.name + priceTag + " x" + qty + subTag) + '</span>' +
+              '<span style="opacity:0.7;">✎</span>' +
+            '</button>'
+          );
+        });
 
         if (liveTotal) liveTotal.textContent = formatMoney(entryCtx.amount);
         if (liveSummary) {
-          liveSummary.textContent = itemsText
-            ? itemsText
-            : (entryCtx.amount > 0 ? ("Nhập tay: " + formatMoney(entryCtx.amount)) : "Chưa chọn món (0₫)");
+          if (chipParts.length > 0) {
+            liveSummary.innerHTML = '<div class="live-item-chips">' + chipParts.join("") + '</div>';
+          } else {
+            liveSummary.textContent = entryCtx.amount > 0
+              ? ("Nhập tay: " + formatMoney(entryCtx.amount))
+              : "Chưa chọn món (0₫)";
+          }
         }
         if (saveBtn) {
           saveBtn.textContent = "✓ Lưu (" + formatMoney(entryCtx.amount) + ")";
@@ -4311,20 +4621,36 @@
           printBtn.classList.toggle("is-empty", entryCtx.amount <= 0);
         }
 
+        const dishTotals = {};
+        Object.keys(entryCtx.items || {}).forEach(function (itemKey) {
+          const qty = Math.max(0, Math.round(Number(entryCtx.items[itemKey]) || 0));
+          if (qty <= 0) return;
+          const parsed = parseItemKey(itemKey, menuMap);
+          if (!parsed) return;
+          if (!dishTotals[parsed.dishId]) {
+            dishTotals[parsed.dishId] = { qty: 0, sum: 0, hasCustom: false };
+          }
+          dishTotals[parsed.dishId].qty += qty;
+          dishTotals[parsed.dishId].sum += parsed.unitPrice * qty;
+          if (parsed.isCustomPrice) dishTotals[parsed.dishId].hasCustom = true;
+        });
+
         const menuGrid = el("entryMenuGrid");
         if (menuGrid) {
-          // Tự động bật chế độ gọn khi thực đơn có trên 12 món để hiển thị tối đa trên 1 màn hình
           menuGrid.classList.toggle("menu-dense", state.menu.length > 12);
+          menuGrid.classList.toggle("price-prompt-mode", entryCtx.promptPriceOnSelect);
           let mHtml = "";
           state.menu.forEach(function (dish) {
-            const qty = Math.max(0, Math.round(Number(entryCtx.items[dish.id]) || 0));
+            const info = dishTotals[dish.id] || { qty: 0, sum: 0, hasCustom: false };
+            const qty = info.qty;
             const selectedCls = qty > 0 ? " dish-selected" : "";
-            const multiCls = qty > 1 ? " dish-multi" : "";
-            const subtotalHtml = qty > 1
-              ? ('<span class="dish-subtotal">= ' + formatMoney(dish.price * qty) + '</span>')
+            const multiCls = (qty > 1 || info.hasCustom) ? " dish-multi" : "";
+            const customCls = info.hasCustom ? " dish-has-custom" : "";
+            const subtotalHtml = (qty > 1 || info.hasCustom)
+              ? ('<span class="dish-subtotal">= ' + formatMoney(info.sum) + '</span>')
               : "";
             mHtml +=
-              '<div class="menu-dish-card' + selectedCls + multiCls + '" data-action="dish-add" data-dish-id="' + escapeHtml(dish.id) + '">' +
+              '<div class="menu-dish-card' + selectedCls + multiCls + customCls + '" data-action="dish-add" data-dish-id="' + escapeHtml(dish.id) + '">' +
                 '<button type="button" class="dish-minus-btn" data-action="dish-minus" data-dish-id="' + escapeHtml(dish.id) + '" aria-label="Bớt 1">−</button>' +
                 '<div class="dish-name">' + escapeHtml(dish.name) + '</div>' +
                 '<div class="dish-bottom-row">' +
@@ -4332,7 +4658,10 @@
                     '<span class="dish-price">' + formatMoney(dish.price) + '</span>' +
                     subtotalHtml +
                   '</div>' +
-                  '<span class="dish-qty-badge">x' + qty + '</span>' +
+                  '<div class="dish-right-controls">' +
+                    '<span class="dish-qty-badge">x' + qty + '</span>' +
+                    '<button type="button" class="dish-custom-btn" data-action="dish-custom-price" data-dish-id="' + escapeHtml(dish.id) + '" title="Chọn món với giá tuỳ chỉnh">✎</button>' +
+                  '</div>' +
                 '</div>' +
               '</div>';
           });
@@ -4340,12 +4669,141 @@
         }
       }
 
-      function saveEntryModalChanges() {
-        const table = state.slots[entryCtx.slotIndex];
-        if (!table || table.isEmpty) {
-          closeModal("entryModal");
+      function openDishPriceModal(mode, dishId, originalKey) {
+        const menuMap = {};
+        state.menu.forEach(function (m) { menuMap[m.id] = m; });
+
+        if (mode === "edit" && originalKey) {
+          const parsed = parseItemKey(originalKey, menuMap);
+          const curQty = Math.max(1, Math.round(Number(entryCtx.items[originalKey]) || 1));
+          if (!parsed) return;
+          dishPriceCtx = {
+            mode: "edit",
+            dishId: parsed.dishId,
+            originalKey: originalKey,
+            defaultPrice: parsed.defaultPrice,
+            price: parsed.unitPrice,
+            qty: curQty,
+            replaceNextDigit: true
+          };
+        } else {
+          const dish = menuMap[dishId];
+          if (!dish) return;
+          dishPriceCtx = {
+            mode: "add",
+            dishId: dish.id,
+            originalKey: "",
+            defaultPrice: dish.price,
+            price: dish.price,
+            qty: 1,
+            replaceNextDigit: true
+          };
+        }
+
+        renderDishPriceModal();
+        openModal("dishPriceModal");
+      }
+
+      function renderDishPriceModal() {
+        const dish = state.menu.find(function (m) { return m.id === dishPriceCtx.dishId; });
+        if (!dish) return;
+
+        const subBadge = el("dishPriceSubBadge");
+        const titleEl = el("dishPriceTitle");
+        const priceInp = el("dishPriceInput");
+        const resetBtn = el("btnDishPriceReset");
+        const qtyValEl = el("dishPriceQtyVal");
+        const subValEl = el("dishPriceSubtotalVal");
+        const footerEl = el("dishPriceFooter");
+        const delBtn = el("btnDishPriceDeleteLine");
+        const confirmBtn = el("btnDishPriceConfirm");
+
+        const lineTotal = Math.max(0, dishPriceCtx.price * dishPriceCtx.qty);
+
+        if (subBadge) {
+          subBadge.textContent = dishPriceCtx.mode === "edit"
+            ? "SỬA GIÁ / SỐ LƯỢNG MÓN ĐÃ CHỌN"
+            : "CHỈNH GIÁ LẦN CHỌN NÀY (KHÔNG ĐỔI MENU)";
+        }
+        if (titleEl) {
+          titleEl.textContent = dish.name + " (Menu: " + formatMoney(dish.price) + ")";
+        }
+        if (priceInp) {
+          priceInp.value = dishPriceCtx.price > 0 ? String(dishPriceCtx.price) : "";
+        }
+        if (resetBtn) {
+          resetBtn.textContent = "↺ " + formatMoney(dish.price);
+        }
+        if (qtyValEl) {
+          qtyValEl.textContent = String(dishPriceCtx.qty);
+        }
+        if (subValEl) {
+          subValEl.textContent = formatMoney(lineTotal);
+        }
+
+        if (dishPriceCtx.mode === "edit") {
+          if (footerEl) footerEl.style.gridTemplateColumns = "0.8fr 1fr 1.3fr";
+          if (delBtn) delBtn.style.display = "flex";
+          if (confirmBtn) confirmBtn.textContent = "✓ Cập nhật (" + formatMoney(lineTotal) + ")";
+        } else {
+          if (footerEl) footerEl.style.gridTemplateColumns = "0.9fr 1.3fr";
+          if (delBtn) delBtn.style.display = "none";
+          if (confirmBtn) confirmBtn.textContent = "✓ Thêm (" + formatMoney(lineTotal) + ")";
+        }
+      }
+
+      function confirmDishPriceModal() {
+        const dish = state.menu.find(function (m) { return m.id === dishPriceCtx.dishId; });
+        if (!dish) {
+          closeModal("dishPriceModal");
           return;
         }
+
+        const newPrice = Math.max(0, Math.round(Number(dishPriceCtx.price) || 0));
+        const newQty = Math.max(1, Math.round(Number(dishPriceCtx.qty) || 1));
+        const newKey = makeItemKey(dish.id, newPrice, dish.price);
+
+        if (dishPriceCtx.mode === "edit" && dishPriceCtx.originalKey) {
+          const oldKey = dishPriceCtx.originalKey;
+          const oldQty = Math.max(0, Math.round(Number(entryCtx.items[oldKey]) || 0));
+          const oldParsed = parseItemKey(oldKey);
+          const oldPrice = oldParsed ? oldParsed.unitPrice : dish.price;
+          const oldSub = oldQty * oldPrice;
+          const newSub = newQty * newPrice;
+
+          delete entryCtx.items[oldKey];
+          entryCtx.items[newKey] = (entryCtx.items[newKey] || 0) + newQty;
+          entryCtx.amount = Math.max(0, entryCtx.amount - oldSub + newSub);
+        } else {
+          entryCtx.items[newKey] = (entryCtx.items[newKey] || 0) + newQty;
+          entryCtx.amount = Math.max(0, entryCtx.amount + (newPrice * newQty));
+        }
+
+        entryCtx.isDirty = true;
+        closeModal("dishPriceModal");
+        renderEntryModal();
+      }
+
+      function deleteEditingDishLine() {
+        if (dishPriceCtx.mode !== "edit" || !dishPriceCtx.originalKey) {
+          closeModal("dishPriceModal");
+          return;
+        }
+        const oldKey = dishPriceCtx.originalKey;
+        const oldQty = Math.max(0, Math.round(Number(entryCtx.items[oldKey]) || 0));
+        const oldParsed = parseItemKey(oldKey);
+        if (oldQty > 0 && oldParsed) {
+          delete entryCtx.items[oldKey];
+          entryCtx.amount = Math.max(0, entryCtx.amount - (oldQty * oldParsed.unitPrice));
+          entryCtx.isDirty = true;
+        }
+        closeModal("dishPriceModal");
+        renderEntryModal();
+      }
+
+      function commitEntryContextToState() {
+        const table = state.slots[entryCtx.slotIndex];
+        if (!table || table.isEmpty) return;
 
         const finalAmount = Math.max(0, Math.round(Number(entryCtx.amount) || 0));
         const finalItems = sanitizeItemsMap(entryCtx.items);
@@ -4366,10 +4824,15 @@
             table.directItems = {};
           }
         }
-
+        entryCtx.isDirty = false;
         saveState();
-        closeModal("entryModal");
         renderMap();
+      }
+
+      function saveEntryModalChanges() {
+        const finalAmount = Math.max(0, Math.round(Number(entryCtx.amount) || 0));
+        commitEntryContextToState();
+        closeModal("entryModal");
         showToast("✓ Đã lưu " + formatMoney(finalAmount));
       }
 
@@ -4423,346 +4886,6 @@
             ")?<br/><br/>Vị trí này sẽ trở thành <strong>Ô trống</strong> để giữ nguyên bố cục các bàn còn lại (không tự dồn hàng).";
         }
         openModal("deleteTableModal");
-      }
-
-      /* ======================================================================
-         THỐNG KÊ CHI TIẾT & IN HÓA ĐƠN (TỪNG BÀN / TỪNG GHẾ / GỘP NHIỀU BÀN)
-         ====================================================================== */
-      function openStatsModal() {
-        pruneSelectedPrintSlots();
-        renderStatsModal();
-        openModal("statsModal");
-      }
-
-      function pruneSelectedPrintSlots() {
-        const nextSet = new Set();
-        selectedPrintSlots.forEach(function (idx) {
-          const slot = state.slots[idx];
-          if (slot && !slot.isEmpty && getTableTotal(slot) > 0) {
-            nextSet.add(idx);
-          }
-        });
-        selectedPrintSlots = nextSet;
-      }
-
-      function renderStatsModal() {
-        pruneSelectedPrintSlots();
-        const summary = getGrandSummary();
-        if (el("statsActiveCount")) {
-          el("statsActiveCount").textContent = summary.activeTables + " / " + summary.totalTables + " bàn";
-        }
-        if (el("statsGrandTotal")) {
-          el("statsGrandTotal").textContent = formatMoney(summary.totalMoney);
-        }
-        if (el("btnStatsFilterToggle")) {
-          el("btnStatsFilterToggle").textContent = statsOnlyActive
-            ? "Hiện tất cả bàn"
-            : "Chỉ xem bàn có tiền (> 0₫)";
-        }
-
-        let selectedMoney = 0;
-        selectedPrintSlots.forEach(function (idx) {
-          const s = state.slots[idx];
-          if (s && !s.isEmpty) selectedMoney += getTableTotal(s);
-        });
-
-        const selectedSummaryEl = el("statsSelectedSummary");
-        if (selectedSummaryEl) {
-          selectedSummaryEl.textContent = selectedPrintSlots.size > 0
-            ? ("Đã chọn: " + selectedPrintSlots.size + " bàn (" + formatMoney(selectedMoney) + ")")
-            : "";
-        }
-
-        const multiPrintBtn = el("btnStatsPrintSelected");
-        if (multiPrintBtn) {
-          if (selectedPrintSlots.size > 0) {
-            multiPrintBtn.classList.remove("is-disabled");
-            multiPrintBtn.textContent = selectedPrintSlots.size === 1
-              ? ("🖨️ In 1 bàn (" + formatMoney(selectedMoney) + ")")
-              : ("🖨️ In gộp " + selectedPrintSlots.size + " bàn (" + formatMoney(selectedMoney) + ")");
-          } else {
-            multiPrintBtn.classList.add("is-disabled");
-            multiPrintBtn.textContent = "🖨️ In gộp (0 bàn)";
-          }
-        }
-
-        const tbody = el("statsTableBody");
-        if (!tbody) return;
-
-        let rowsHtml = "";
-        state.slots.forEach(function (slot, idx) {
-          if (!slot || slot.isEmpty) return;
-          const total = getTableTotal(slot);
-          if (statsOnlyActive && total <= 0) return;
-
-          const isSelected = selectedPrintSlots.has(idx);
-          let detailHtml = "";
-          if (slot.directAmount > 0) {
-            const dishTxt = formatItemsSummary(slot.directItems);
-            detailHtml = '<span class="status-pill pill-direct">Cả bàn</span> ' +
-              (dishTxt ? escapeHtml(dishTxt) : "Nhập trực tiếp mặt bàn");
-          } else {
-            const chairChips = [];
-            (slot.chairs || []).forEach(function (ch, cIdx) {
-              if (ch.amount > 0) {
-                const cDish = formatItemsSummary(ch.items);
-                const chipLabel = "G" + (cIdx + 1) + ": " + formatMoney(ch.amount) + (cDish ? " (" + cDish + ")" : "");
-                chairChips.push(
-                  '<button type="button" class="chair-print-chip" data-action="stats-print-chair" data-slot="' + idx + '" data-chair="' + cIdx + '" title="Chạm để in bill riêng Ghế G' + (cIdx + 1) + '">' +
-                    '<span>' + escapeHtml(chipLabel) + '</span><span>🖨️</span>' +
-                  '</button>'
-                );
-              }
-            });
-            if (chairChips.length > 0) {
-              detailHtml =
-                '<span class="status-pill pill-chairs">Theo ghế</span> ' +
-                '<div class="stats-chair-list">' + chairChips.join("") + '</div>';
-            } else {
-              detailHtml = '<span class="status-pill pill-empty">Trống</span>';
-            }
-          }
-
-          const checkHtml = total > 0
-            ? ('<input type="checkbox" class="stats-check-input" data-action="stats-toggle-select-slot" data-slot="' + idx + '"' + (isSelected ? " checked" : "") + ' aria-label="Chọn bàn ' + escapeHtml(slot.name) + '" />')
-            : '<span style="color:#cbd5e1;">—</span>';
-
-          const printRowBtn = total > 0
-            ? ('<button type="button" class="btn-row-print" data-action="stats-print-table" data-slot="' + idx + '" title="In bill riêng Bàn ' + escapeHtml(slot.name) + '">🖨️</button>')
-            : "";
-
-          rowsHtml +=
-            '<tr class="' + (isSelected ? "stats-row-selected" : "") + '">' +
-              '<td class="stats-check-cell">' + checkHtml + '</td>' +
-              '<td><strong>' + escapeHtml(slot.name) + '</strong> <span style="font-size:10px;color:#64748b;">(' + getCoordLabel(idx, state.cols) + ')</span></td>' +
-              '<td>' + detailHtml + '</td>' +
-              '<td class="text-right stats-total-cell"><div class="stats-total-wrap"><strong>' + formatMoney(total) + '</strong>' + printRowBtn + '</div></td>' +
-            '</tr>';
-        });
-
-        if (!rowsHtml) {
-          rowsHtml = '<tr><td colspan="4" style="text-align:center;color:#64748b;padding:16px;">Chưa có bàn nào phát sinh tiền.</td></tr>';
-        }
-        tbody.innerHTML = rowsHtml;
-      }
-
-      function getPrintTimestampText() {
-        const now = new Date();
-        return now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) +
-          " ngày " + now.toLocaleDateString("vi-VN");
-      }
-
-      function buildItemizedLines(itemsMap, totalAmount) {
-        const menuMap = {};
-        state.menu.forEach(function (m) { menuMap[m.id] = m; });
-
-        const lines = [];
-        let itemsSum = 0;
-
-        if (itemsMap && typeof itemsMap === "object") {
-          Object.keys(itemsMap).forEach(function (id) {
-            const qty = Math.max(0, Math.round(Number(itemsMap[id]) || 0));
-            if (qty > 0 && menuMap[id]) {
-              const dish = menuMap[id];
-              const lineTotal = dish.price * qty;
-              itemsSum += lineTotal;
-              lines.push({
-                name: dish.name,
-                qty: qty,
-                unitPrice: dish.price,
-                lineTotal: lineTotal
-              });
-            }
-          });
-        }
-
-        const safeTotal = Math.max(0, Math.round(Number(totalAmount) || 0));
-        if (lines.length === 0 && safeTotal > 0) {
-          lines.push({
-            name: "Tiền ăn uống",
-            qty: 1,
-            unitPrice: safeTotal,
-            lineTotal: safeTotal
-          });
-        } else if (safeTotal !== itemsSum) {
-          const diff = safeTotal - itemsSum;
-          lines.push({
-            name: diff > 0 ? "Món khác / Phụ thu" : "Giảm giá / Điều chỉnh",
-            qty: 1,
-            unitPrice: diff,
-            lineTotal: diff
-          });
-        }
-
-        return lines;
-      }
-
-      function renderItemizedRowsHtml(lines) {
-        return lines.map(function (ln) {
-          return (
-            '<tr>' +
-              '<td>' + escapeHtml(ln.name) + '</td>' +
-              '<td class="center">' + ln.qty + '</td>' +
-              '<td class="right"><strong>' + formatBillVnd(ln.lineTotal) + '</strong></td>' +
-            '</tr>'
-          );
-        }).join("");
-      }
-
-      function buildStandardBillHtml(targetLabel, lines, totalAmount) {
-        const shopName = String(state.billRestaurant || "").trim();
-        const footerNote = String(state.billFooter || "").trim();
-
-        const shopHtml = shopName
-          ? ('<div class="print-shop-name">' + escapeHtml(shopName) + '</div>')
-          : "";
-        const footerHtml = footerNote
-          ? ('<div class="print-footer">' + escapeHtml(footerNote) + '</div>')
-          : "";
-
-        return (
-          '<div class="print-header">' +
-            shopHtml +
-            '<div class="print-target-name">' + escapeHtml(targetLabel) + '</div>' +
-          '</div>' +
-          '<table class="print-table">' +
-            '<thead>' +
-              '<tr>' +
-                '<th style="width:58%;">Món ăn</th>' +
-                '<th class="center" style="width:14%;">SL</th>' +
-                '<th class="right" style="width:28%;">Thành tiền</th>' +
-              '</tr>' +
-            '</thead>' +
-            '<tbody>' + renderItemizedRowsHtml(lines) + '</tbody>' +
-          '</table>' +
-          '<div class="print-grand-box">' +
-            '<span class="print-grand-label">TỔNG CỘNG</span>' +
-            '<span class="print-grand-main">' + formatBillVnd(totalAmount) + '</span>' +
-          '</div>' +
-          footerHtml
-        );
-      }
-
-      function triggerPrintWithHtml(html) {
-        const container = el("printContent");
-        if (!container) return;
-        container.innerHTML = html;
-        setTimeout(function () {
-          window.print();
-        }, 120);
-      }
-
-      function collectTableItemsAndTotal(table) {
-        const mergedItems = {};
-        if (!table || table.isEmpty) {
-          return { items: mergedItems, total: 0 };
-        }
-        const total = getTableTotal(table);
-        if (table.directAmount > 0) {
-          Object.keys(table.directItems || {}).forEach(function (id) {
-            const qty = Math.max(0, Math.round(Number(table.directItems[id]) || 0));
-            if (qty > 0) mergedItems[id] = (mergedItems[id] || 0) + qty;
-          });
-        } else {
-          (table.chairs || []).forEach(function (ch) {
-            if (!ch || ch.amount <= 0) return;
-            Object.keys(ch.items || {}).forEach(function (id) {
-              const qty = Math.max(0, Math.round(Number(ch.items[id]) || 0));
-              if (qty > 0) mergedItems[id] = (mergedItems[id] || 0) + qty;
-            });
-          });
-        }
-        return { items: mergedItems, total: total };
-      }
-
-      function printSingleChairBill(slotIdx, chairIdx, overrideItems, overrideAmount) {
-        const table = state.slots[slotIdx];
-        if (!table || table.isEmpty) return;
-        const ch = table.chairs && table.chairs[chairIdx];
-        if (!ch) return;
-
-        const hasOverride = typeof overrideAmount === "number";
-        const amount = hasOverride
-          ? Math.max(0, Math.round(overrideAmount))
-          : Math.max(0, Math.round(Number(ch.amount) || 0));
-        const items = hasOverride ? (overrideItems || {}) : (ch.items || {});
-
-        if (amount <= 0) {
-          showToast("Ghế G" + (chairIdx + 1) + " chưa có tiền để in!");
-          return;
-        }
-
-        const label = "Ghế G" + (chairIdx + 1) + " - Bàn " + table.name;
-        const lines = buildItemizedLines(items, amount);
-        triggerPrintWithHtml(buildStandardBillHtml(label, lines, amount));
-      }
-
-      function printSingleTableBill(slotIdx, overrideItems, overrideAmount) {
-        const table = state.slots[slotIdx];
-        if (!table || table.isEmpty) return;
-
-        const hasOverride = typeof overrideAmount === "number";
-        let items = {};
-        let total = 0;
-
-        if (hasOverride) {
-          total = Math.max(0, Math.round(overrideAmount));
-          items = overrideItems || {};
-        } else {
-          const collected = collectTableItemsAndTotal(table);
-          items = collected.items;
-          total = collected.total;
-        }
-
-        if (total <= 0) {
-          showToast("Bàn " + table.name + " chưa có tiền để in!");
-          return;
-        }
-
-        const label = "Bàn " + table.name;
-        const lines = buildItemizedLines(items, total);
-        triggerPrintWithHtml(buildStandardBillHtml(label, lines, total));
-      }
-
-      function printMultiTableBill(slotIndices) {
-        const activeTables = [];
-        (slotIndices || []).forEach(function (idx) {
-          const slot = state.slots[idx];
-          if (slot && !slot.isEmpty && getTableTotal(slot) > 0) {
-            activeTables.push(slot);
-          }
-        });
-
-        if (activeTables.length === 0) {
-          showToast("Chưa có bàn nào có tiền để in!");
-          return;
-        }
-
-        const mergedItems = {};
-        let grandTotal = 0;
-
-        activeTables.forEach(function (tbl) {
-          const collected = collectTableItemsAndTotal(tbl);
-          grandTotal += collected.total;
-          Object.keys(collected.items).forEach(function (id) {
-            mergedItems[id] = (mergedItems[id] || 0) + collected.items[id];
-          });
-        });
-
-        // Khi chọn nhiều bàn chỉ hiển thị tên bàn đầu tiên được chọn
-        const label = "Bàn " + activeTables[0].name;
-        const lines = buildItemizedLines(mergedItems, grandTotal);
-        triggerPrintWithHtml(buildStandardBillHtml(label, lines, grandTotal));
-      }
-
-      function prepareAndPrintReceipt() {
-        const activeIndices = [];
-        state.slots.forEach(function (slot, idx) {
-          if (slot && !slot.isEmpty && getTableTotal(slot) > 0) {
-            activeIndices.push(idx);
-          }
-        });
-        printMultiTableBill(activeIndices);
       }
 
       /* ======================================================================
@@ -4821,6 +4944,346 @@
         if (el("entryModal") && el("entryModal").classList.contains("open")) {
           renderEntryModal();
         }
+      }
+
+      /* ======================================================================
+         THỐNG KÊ CHI TIẾT & IN HÓA ĐƠN POS (TỪNG BÀN / GHẾ / GỘP / CẢ QUÁN)
+         ====================================================================== */
+      function pruneInvalidPrintSelections() {
+        selectedPrintSlots = selectedPrintSlots.filter(function (idx) {
+          const slot = state.slots[idx];
+          return slot && !slot.isEmpty && getTableTotal(slot) > 0;
+        });
+      }
+
+      function openStatsModal() {
+        pruneInvalidPrintSelections();
+        renderStatsModal();
+        openModal("statsModal");
+      }
+
+      function renderStatsModal() {
+        pruneInvalidPrintSelections();
+        const summary = getGrandSummary();
+        if (el("statsActiveCount")) {
+          el("statsActiveCount").textContent = summary.activeTables + " / " + summary.totalTables + " bàn";
+        }
+        if (el("statsGrandTotal")) {
+          el("statsGrandTotal").textContent = formatMoney(summary.totalMoney);
+        }
+        if (el("btnStatsFilterToggle")) {
+          el("btnStatsFilterToggle").textContent = statsOnlyActive
+            ? "Hiện tất cả bàn"
+            : "Chỉ xem bàn có tiền (> 0₫)";
+        }
+
+        let selectedTotal = 0;
+        selectedPrintSlots.forEach(function (idx) {
+          const s = state.slots[idx];
+          if (s && !s.isEmpty) selectedTotal += getTableTotal(s);
+        });
+
+        const selSummaryEl = el("statsSelectedSummary");
+        const multiBtn = el("btnStatsPrintSelected");
+        if (selSummaryEl) {
+          selSummaryEl.textContent = selectedPrintSlots.length > 0
+            ? ("Đã chọn: " + selectedPrintSlots.length + " bàn (" + formatMoney(selectedTotal) + ")")
+            : "";
+        }
+        if (multiBtn) {
+          if (selectedPrintSlots.length > 0) {
+            multiBtn.classList.remove("is-disabled");
+            multiBtn.textContent = "🖨️ In gộp (" + selectedPrintSlots.length + " bàn • " + formatMoney(selectedTotal) + ")";
+          } else {
+            multiBtn.classList.add("is-disabled");
+            multiBtn.textContent = "🖨️ In gộp (0 bàn)";
+          }
+        }
+
+        const tbody = el("statsTableBody");
+        if (!tbody) return;
+
+        let rowsHtml = "";
+        state.slots.forEach(function (slot, idx) {
+          if (!slot || slot.isEmpty) return;
+          const total = getTableTotal(slot);
+          if (statsOnlyActive && total <= 0) return;
+
+          const isChecked = selectedPrintSlots.indexOf(idx) !== -1;
+          const rowCls = isChecked ? ' class="stats-row-selected"' : "";
+          const checkHtml = total > 0
+            ? '<input type="checkbox" class="stats-row-checkbox" data-action="stats-toggle-select" data-slot="' + idx + '"' + (isChecked ? " checked" : "") + ' />'
+            : '<span style="color:#cbd5e1;">—</span>';
+
+          let detailHtml = "";
+          if (slot.directAmount > 0) {
+            const dishTxt = formatItemsSummary(slot.directItems);
+            detailHtml = '<span class="status-pill pill-direct">Cả bàn</span> ' +
+              (dishTxt ? escapeHtml(dishTxt) : "Nhập trực tiếp mặt bàn");
+          } else {
+            const chairChips = [];
+            (slot.chairs || []).forEach(function (ch, cIdx) {
+              if (ch.amount > 0) {
+                const cDish = formatItemsSummary(ch.items);
+                const chipTxt = "G" + (cIdx + 1) + ": " + formatMoney(ch.amount) + (cDish ? " (" + cDish + ")" : "");
+                chairChips.push(
+                  '<button type="button" class="chair-bill-chip" data-action="stats-print-chair" data-slot="' + idx + '" data-chair="' + cIdx + '" title="In hóa đơn riêng Ghế G' + (cIdx + 1) + '">' +
+                    escapeHtml(chipTxt) + ' 🖨️' +
+                  '</button>'
+                );
+              }
+            });
+            if (chairChips.length > 0) {
+              detailHtml = '<span class="status-pill pill-chairs">Theo ghế</span> ' + chairChips.join("");
+            } else {
+              detailHtml = '<span class="status-pill pill-empty">Trống</span>';
+            }
+          }
+
+          const printRowBtn = total > 0
+            ? '<button type="button" class="btn-print-row" data-action="stats-print-table" data-slot="' + idx + '" title="In bill Bàn ' + escapeHtml(slot.name) + '">🖨️</button>'
+            : "";
+
+          rowsHtml +=
+            '<tr' + rowCls + '>' +
+              '<td class="stats-check-cell">' + checkHtml + '</td>' +
+              '<td><strong>' + escapeHtml(slot.name) + '</strong> <span style="font-size:10px;color:#64748b;">(' + getCoordLabel(idx, state.cols) + ')</span></td>' +
+              '<td>' + detailHtml + '</td>' +
+              '<td class="text-right"><div class="stats-total-actions-cell"><strong>' + formatMoney(total) + '</strong>' + printRowBtn + '</div></td>' +
+            '</tr>';
+        });
+
+        if (!rowsHtml) {
+          rowsHtml = '<tr><td colspan="4" style="text-align:center;color:#64748b;padding:16px;">Chưa có bàn nào phát sinh tiền.</td></tr>';
+        }
+        tbody.innerHTML = rowsHtml;
+      }
+
+      function buildItemizedLines(itemsMap, totalAmount, fallbackLabel) {
+        const menuMap = {};
+        state.menu.forEach(function (m) { menuMap[m.id] = m; });
+
+        const lines = [];
+        let itemsSum = 0;
+
+        if (itemsMap && typeof itemsMap === "object") {
+          Object.keys(itemsMap).forEach(function (key) {
+            const qty = Math.max(0, Math.round(Number(itemsMap[key]) || 0));
+            if (qty <= 0) return;
+            const parsed = parseItemKey(key, menuMap);
+            if (!parsed) return;
+            const lineTotal = parsed.unitPrice * qty;
+            itemsSum += lineTotal;
+            const displayName = parsed.isCustomPrice
+              ? (parsed.name + " (" + formatBillVnd(parsed.unitPrice) + ")")
+              : parsed.name;
+            lines.push({
+              name: displayName,
+              qty: qty,
+              unitPrice: parsed.unitPrice,
+              lineTotal: lineTotal
+            });
+          });
+        }
+
+        const safeTotal = Math.max(0, Math.round(Number(totalAmount) || 0));
+        if (lines.length === 0 && safeTotal > 0) {
+          lines.push({
+            name: fallbackLabel || "Tiền ăn uống",
+            qty: 1,
+            unitPrice: safeTotal,
+            lineTotal: safeTotal
+          });
+        } else if (safeTotal > itemsSum) {
+          const diff = safeTotal - itemsSum;
+          lines.push({
+            name: "Phụ thu / Món khác",
+            qty: 1,
+            unitPrice: diff,
+            lineTotal: diff
+          });
+        }
+
+        return lines;
+      }
+
+      function buildStandardBillHtml(targetHeading, lines, grandTotal) {
+        const now = new Date();
+        const ts = now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) +
+          " - " + now.toLocaleDateString("vi-VN");
+
+        const restName = String((state && state.billRestaurant) || "").trim();
+        const footerNote = String((state && state.billFooter) || "").trim();
+
+        let rowsHtml = "";
+        if (!lines || lines.length === 0) {
+          rowsHtml = '<tr><td colspan="3" class="center">Chưa có món</td></tr>';
+        } else {
+          lines.forEach(function (ln) {
+            rowsHtml +=
+              '<tr>' +
+                '<td>' + escapeHtml(ln.name) + '</td>' +
+                '<td class="center">' + ln.qty + '</td>' +
+                '<td class="right">' + formatBillVnd(ln.lineTotal) + '</td>' +
+              '</tr>';
+          });
+        }
+
+        return (
+          '<div class="pos-header">' +
+            (restName ? ('<div class="pos-restaurant-name">' + escapeHtml(restName) + '</div>') : '') +
+            '<div class="pos-doc-title">HÓA ĐƠN THANH TOÁN</div>' +
+            '<div class="pos-target-label">' + escapeHtml(targetHeading) + '</div>' +
+            '<div class="pos-meta">' + escapeHtml(ts) + '</div>' +
+          '</div>' +
+          '<hr class="pos-divider" />' +
+          '<table class="pos-items-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th style="width:58%;">Món ăn</th>' +
+                '<th class="center" style="width:14%;">SL</th>' +
+                '<th class="right" style="width:28%;">Thành tiền</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' + rowsHtml + '</tbody>' +
+          '</table>' +
+          '<hr class="pos-divider-double" />' +
+          '<div class="pos-total-row">' +
+            '<span>TỔNG CỘNG</span>' +
+            '<span class="pos-total-amount">' + formatBillVnd(grandTotal) + '</span>' +
+          '</div>' +
+          (footerNote ? ('<hr class="pos-divider" /><div class="pos-footer">' + escapeHtml(footerNote) + '</div>') : '')
+        );
+      }
+
+      function triggerPrintHtml(htmlContent) {
+        const container = el("printContent");
+        if (!container) return;
+        container.innerHTML = htmlContent;
+        setTimeout(function () {
+          window.print();
+        }, 120);
+      }
+
+      function printSingleChairBill(slotIdx, chairIdx) {
+        const table = state.slots[slotIdx];
+        if (!table || table.isEmpty || !table.chairs[chairIdx]) return;
+        const ch = table.chairs[chairIdx];
+        const amt = Math.max(0, Math.round(Number(ch.amount) || 0));
+        if (amt <= 0) {
+          showToast("⚠️ Ghế này chưa có tiền để in bill!");
+          return;
+        }
+        const lines = buildItemizedLines(ch.items, amt, "Tiền ăn uống");
+        const heading = "Ghế G" + (chairIdx + 1) + " - Bàn " + table.name;
+        triggerPrintHtml(buildStandardBillHtml(heading, lines, amt));
+      }
+
+      function printSingleTableBill(slotIdx) {
+        const table = state.slots[slotIdx];
+        if (!table || table.isEmpty) return;
+        const total = getTableTotal(table);
+        if (total <= 0) {
+          showToast("⚠️ Bàn này chưa có tiền để in bill!");
+          return;
+        }
+
+        let lines = [];
+        if (table.directAmount > 0) {
+          lines = buildItemizedLines(table.directItems, table.directAmount, "Tiền ăn uống");
+        } else {
+          const mergedMap = {};
+          let extraFallback = 0;
+          (table.chairs || []).forEach(function (ch) {
+            const cAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
+            if (cAmt <= 0) return;
+            const cLines = buildItemizedLines(ch.items, cAmt, "Tiền ăn uống");
+            cLines.forEach(function (ln) {
+              const key = ln.name + "__" + ln.unitPrice;
+              if (!mergedMap[key]) {
+                mergedMap[key] = { name: ln.name, qty: 0, unitPrice: ln.unitPrice, lineTotal: 0 };
+              }
+              mergedMap[key].qty += ln.qty;
+              mergedMap[key].lineTotal += ln.lineTotal;
+            });
+            if (cLines.length === 0) extraFallback += cAmt;
+          });
+          lines = Object.keys(mergedMap).map(function (k) { return mergedMap[k]; });
+          if (extraFallback > 0) {
+            lines.push({ name: "Tiền ăn uống", qty: 1, unitPrice: extraFallback, lineTotal: extraFallback });
+          }
+        }
+
+        triggerPrintHtml(buildStandardBillHtml("Bàn " + table.name, lines, total));
+      }
+
+      function printMultiTableBill(slotIndices) {
+        const validSlots = (slotIndices || []).filter(function (idx) {
+          const s = state.slots[idx];
+          return s && !s.isEmpty && getTableTotal(s) > 0;
+        });
+
+        if (validSlots.length === 0) {
+          showToast("⚠️ Chưa có bàn nào có tiền được chọn!");
+          return;
+        }
+        if (validSlots.length === 1) {
+          printSingleTableBill(validSlots[0]);
+          return;
+        }
+
+        const firstTable = state.slots[validSlots[0]];
+        const mergedMap = {};
+        let combinedTotal = 0;
+
+        validSlots.forEach(function (idx) {
+          const tbl = state.slots[idx];
+          const tTotal = getTableTotal(tbl);
+          combinedTotal += tTotal;
+
+          if (tbl.directAmount > 0) {
+            const dLines = buildItemizedLines(tbl.directItems, tbl.directAmount, "Tiền ăn uống");
+            dLines.forEach(function (ln) {
+              const k = ln.name + "__" + ln.unitPrice;
+              if (!mergedMap[k]) {
+                mergedMap[k] = { name: ln.name, qty: 0, unitPrice: ln.unitPrice, lineTotal: 0 };
+              }
+              mergedMap[k].qty += ln.qty;
+              mergedMap[k].lineTotal += ln.lineTotal;
+            });
+          } else {
+            (tbl.chairs || []).forEach(function (ch) {
+              const cAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
+              if (cAmt <= 0) return;
+              const cLines = buildItemizedLines(ch.items, cAmt, "Tiền ăn uống");
+              cLines.forEach(function (ln) {
+                const k = ln.name + "__" + ln.unitPrice;
+                if (!mergedMap[k]) {
+                  mergedMap[k] = { name: ln.name, qty: 0, unitPrice: ln.unitPrice, lineTotal: 0 };
+                }
+                mergedMap[k].qty += ln.qty;
+                mergedMap[k].lineTotal += ln.lineTotal;
+              });
+            });
+          }
+        });
+
+        const mergedLines = Object.keys(mergedMap).map(function (k) { return mergedMap[k]; });
+        triggerPrintHtml(buildStandardBillHtml("Bàn " + firstTable.name, mergedLines, combinedTotal));
+      }
+
+      function prepareAndPrintReceipt() {
+        const allActiveIndices = [];
+        state.slots.forEach(function (slot, idx) {
+          if (slot && !slot.isEmpty && getTableTotal(slot) > 0) {
+            allActiveIndices.push(idx);
+          }
+        });
+        if (allActiveIndices.length === 0) {
+          showToast("⚠️ Chưa có bàn nào có tiền để in!");
+          return;
+        }
+        printMultiTableBill(allActiveIndices);
       }
 
       /* ======================================================================
@@ -4988,10 +5451,10 @@
             : "🔐 Đăng nhập Firebase Cloud";
         }
 
-        const billShopInp = el("billRestaurantInput");
-        const billFooterInp = el("billFooterInput");
-        if (billShopInp) billShopInp.value = state.billRestaurant || "";
-        if (billFooterInp) billFooterInp.value = state.billFooter || "";
+        const restInp = el("billRestaurantInput");
+        const footInp = el("billFooterInput");
+        if (restInp) restInp.value = state.billRestaurant || "";
+        if (footInp) footInp.value = state.billFooter || "";
       }
 
       /* ======================================================================
@@ -5364,30 +5827,29 @@
             break;
           }
 
-          case "entry-print-bill": {
-            if (entryCtx.amount <= 0) {
-              showToast("Chưa có tiền để in bill!");
-              return;
-            }
-            if (entryCtx.type === "chair") {
-              printSingleChairBill(
-                entryCtx.slotIndex,
-                entryCtx.chairIndex,
-                entryCtx.isDirty ? entryCtx.items : undefined,
-                entryCtx.isDirty ? entryCtx.amount : undefined
-              );
-            } else {
-              printSingleTableBill(
-                entryCtx.slotIndex,
-                entryCtx.isDirty ? entryCtx.items : undefined,
-                entryCtx.isDirty ? entryCtx.amount : undefined
-              );
-            }
+          case "close-entry-modal": {
+            closeModal("entryModal");
             break;
           }
 
-          case "close-entry-modal": {
+          case "entry-print-bill": {
+            const curAmt = Math.max(0, Math.round(Number(entryCtx.amount) || 0));
+            if (curAmt <= 0) {
+              showToast("⚠️ Chưa có số tiền để in hóa đơn!");
+              return;
+            }
+            if (entryCtx.isDirty) {
+              commitEntryContextToState();
+            }
+            const printSlot = entryCtx.slotIndex;
+            const printType = entryCtx.type;
+            const printChair = entryCtx.chairIndex;
             closeModal("entryModal");
+            if (printType === "chair") {
+              printSingleChairBill(printSlot, printChair);
+            } else {
+              printSingleTableBill(printSlot);
+            }
             break;
           }
 
@@ -5516,6 +5978,10 @@
             if (Date.now() - entryCtx.openedAt < 260) return;
             const dish = state.menu.find(function (m) { return m.id === dishId; });
             if (!dish) return;
+            if (entryCtx.promptPriceOnSelect) {
+              openDishPriceModal("add", dish.id, "");
+              return;
+            }
             entryCtx.items[dish.id] = (entryCtx.items[dish.id] || 0) + 1;
             entryCtx.amount += dish.price;
             entryCtx.isDirty = true;
@@ -5523,20 +5989,130 @@
             break;
           }
 
+          case "dish-custom-price": {
+            if (!dishId) return;
+            openDishPriceModal("add", dishId, "");
+            break;
+          }
+
+          case "entry-edit-item-line": {
+            const itemKey = target.getAttribute("data-item-key") || "";
+            if (!itemKey) return;
+            openDishPriceModal("edit", "", itemKey);
+            break;
+          }
+
+          case "toggle-price-mode": {
+            entryCtx.promptPriceOnSelect = !entryCtx.promptPriceOnSelect;
+            renderEntryModal();
+            if (entryCtx.promptPriceOnSelect) {
+              showToast("🏷️ Đã bật: Chạm món bất kỳ để sửa giá lần chọn này");
+            }
+            break;
+          }
+
           case "dish-minus": {
             const dish = state.menu.find(function (m) { return m.id === dishId; });
             if (!dish) return;
-            const curQty = entryCtx.items[dish.id] || 0;
-            if (curQty > 0) {
-              if (curQty === 1) {
-                delete entryCtx.items[dish.id];
-              } else {
-                entryCtx.items[dish.id] = curQty - 1;
+            let targetKey = "";
+            let deductPrice = dish.price;
+
+            if ((entryCtx.items[dish.id] || 0) > 0) {
+              targetKey = dish.id;
+              deductPrice = dish.price;
+            } else {
+              const prefix = dish.id + CUSTOM_PRICE_SEP;
+              const customKeys = Object.keys(entryCtx.items || {}).filter(function (k) {
+                return k.indexOf(prefix) === 0 && (entryCtx.items[k] || 0) > 0;
+              });
+              if (customKeys.length > 0) {
+                targetKey = customKeys[customKeys.length - 1];
+                const parsed = parseItemKey(targetKey);
+                deductPrice = parsed ? parsed.unitPrice : dish.price;
               }
-              entryCtx.amount = Math.max(0, entryCtx.amount - dish.price);
+            }
+
+            if (targetKey) {
+              const curQty = entryCtx.items[targetKey] || 0;
+              if (curQty <= 1) {
+                delete entryCtx.items[targetKey];
+              } else {
+                entryCtx.items[targetKey] = curQty - 1;
+              }
+              entryCtx.amount = Math.max(0, entryCtx.amount - deductPrice);
               entryCtx.isDirty = true;
               renderEntryModal();
             }
+            break;
+          }
+
+          case "close-dish-price-modal": {
+            closeModal("dishPriceModal");
+            break;
+          }
+
+          case "dish-price-adj": {
+            const delta = parseInt(target.getAttribute("data-delta") || "0", 10) || 0;
+            dishPriceCtx.price = Math.max(0, dishPriceCtx.price + delta);
+            dishPriceCtx.replaceNextDigit = false;
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-reset": {
+            dishPriceCtx.price = dishPriceCtx.defaultPrice;
+            dishPriceCtx.replaceNextDigit = true;
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-qty-dec": {
+            dishPriceCtx.qty = Math.max(1, dishPriceCtx.qty - 1);
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-qty-inc": {
+            dishPriceCtx.qty = Math.min(99, dishPriceCtx.qty + 1);
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-digit": {
+            if (digit === null) return;
+            const baseStr = dishPriceCtx.replaceNextDigit
+              ? ""
+              : (dishPriceCtx.price > 0 ? String(dishPriceCtx.price) : "");
+            const nextStr = (baseStr + digit).slice(0, 7);
+            dishPriceCtx.price = Math.max(0, parseInt(nextStr, 10) || 0);
+            dishPriceCtx.replaceNextDigit = false;
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-backspace": {
+            const curStr = dishPriceCtx.price > 0 ? String(dishPriceCtx.price) : "";
+            const nextStr = curStr.slice(0, -1);
+            dishPriceCtx.price = Math.max(0, parseInt(nextStr, 10) || 0);
+            dishPriceCtx.replaceNextDigit = false;
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-clear": {
+            dishPriceCtx.price = 0;
+            dishPriceCtx.replaceNextDigit = false;
+            renderDishPriceModal();
+            break;
+          }
+
+          case "dish-price-delete-line": {
+            deleteEditingDishLine();
+            break;
+          }
+
+          case "dish-price-confirm": {
+            confirmDishPriceModal();
             break;
           }
 
@@ -5585,7 +6161,6 @@
           case "entry-clear-zero": {
             entryCtx.amount = 0;
             entryCtx.items = {};
-            entryCtx.isDirty = true;
             saveEntryModalChanges();
             break;
           }
@@ -5629,6 +6204,16 @@
             const pinRow = el("pinChangeRow");
             if (pinRow) pinRow.classList.remove("open");
             showToast("🔑 Đã đổi mã PIN Quản lý thành công");
+            break;
+          }
+
+          case "settings-save-bill-info": {
+            const restVal = el("billRestaurantInput") ? el("billRestaurantInput").value.trim().slice(0, 80) : "";
+            const footVal = el("billFooterInput") ? el("billFooterInput").value.trim().slice(0, 160) : "";
+            state.billRestaurant = restVal;
+            state.billFooter = footVal;
+            saveState();
+            showToast("✓ Đã lưu thông tin in bill");
             break;
           }
 
@@ -5681,14 +6266,6 @@
           case "settings-print": {
             closeModal("settingsModal");
             prepareAndPrintReceipt();
-            break;
-          }
-
-          case "settings-save-bill-info": {
-            state.billRestaurant = el("billRestaurantInput") ? el("billRestaurantInput").value.trim() : "";
-            state.billFooter = el("billFooterInput") ? el("billFooterInput").value.trim() : "";
-            saveState();
-            showToast("✓ Đã lưu thông tin in bill");
             break;
           }
 
@@ -5785,13 +6362,13 @@
           case "settings-reset-15": {
             const keepPin = state.managerPin;
             const keepMenu = state.menu;
-            const keepShop = state.billRestaurant;
-            const keepFooter = state.billFooter;
+            const keepRest = state.billRestaurant;
+            const keepFoot = state.billFooter;
             state = createDefaultState();
             state.managerPin = keepPin;
             state.menu = keepMenu;
-            state.billRestaurant = keepShop;
-            state.billFooter = keepFooter;
+            state.billRestaurant = keepRest;
+            state.billFooter = keepFoot;
             saveState();
             renderMap();
             updateSettingsSummaryUI();
@@ -5962,10 +6539,22 @@
             break;
           }
 
+          case "stats-toggle-select": {
+            const pos = selectedPrintSlots.indexOf(slotIdx);
+            if (pos === -1) {
+              selectedPrintSlots.push(slotIdx);
+            } else {
+              selectedPrintSlots.splice(pos, 1);
+            }
+            renderStatsModal();
+            break;
+          }
+
           case "stats-select-all": {
-            state.slots.forEach(function (slot, idx) {
-              if (slot && !slot.isEmpty && getTableTotal(slot) > 0) {
-                selectedPrintSlots.add(idx);
+            selectedPrintSlots = [];
+            state.slots.forEach(function (s, i) {
+              if (s && !s.isEmpty && getTableTotal(s) > 0) {
+                selectedPrintSlots.push(i);
               }
             });
             renderStatsModal();
@@ -5973,38 +6562,31 @@
           }
 
           case "stats-clear-select": {
-            selectedPrintSlots.clear();
+            selectedPrintSlots = [];
             renderStatsModal();
-            break;
-          }
-
-          case "stats-toggle-select-slot": {
-            if (target.checked) {
-              selectedPrintSlots.add(slotIdx);
-            } else {
-              selectedPrintSlots.delete(slotIdx);
-            }
-            renderStatsModal();
-            break;
-          }
-
-          case "stats-print-chair": {
-            printSingleChairBill(slotIdx, chairIdx);
             break;
           }
 
           case "stats-print-table": {
+            closeModal("statsModal");
             printSingleTableBill(slotIdx);
             break;
           }
 
+          case "stats-print-chair": {
+            closeModal("statsModal");
+            printSingleChairBill(slotIdx, chairIdx);
+            break;
+          }
+
           case "stats-print-selected": {
-            pruneSelectedPrintSlots();
-            if (selectedPrintSlots.size === 0) {
-              showToast("Hãy tích chọn ít nhất 1 bàn để in gộp!");
+            if (selectedPrintSlots.length === 0) {
+              showToast("⚠️ Hãy tích chọn ít nhất 1 bàn để in gộp!");
               return;
             }
-            printMultiTableBill(Array.from(selectedPrintSlots));
+            const toPrint = selectedPrintSlots.slice();
+            closeModal("statsModal");
+            printMultiTableBill(toPrint);
             break;
           }
 
@@ -6030,7 +6612,7 @@
                 ch.items = {};
               });
             });
-            selectedPrintSlots.clear();
+            selectedPrintSlots = [];
             saveState();
             closeModal("resetMoneyModal");
             renderMap();
@@ -6211,6 +6793,27 @@
           });
         }
 
+        const dishPriceInp = el("dishPriceInput");
+        if (dishPriceInp) {
+          dishPriceInp.addEventListener("input", function () {
+            const digits = dishPriceInp.value.replace(/\D/g, "").slice(0, 7);
+            dishPriceCtx.price = Math.max(0, parseInt(digits, 10) || 0);
+            dishPriceCtx.replaceNextDigit = false;
+            const lineTotal = Math.max(0, dishPriceCtx.price * dishPriceCtx.qty);
+            if (el("dishPriceSubtotalVal")) el("dishPriceSubtotalVal").textContent = formatMoney(lineTotal);
+            if (el("btnDishPriceConfirm")) {
+              el("btnDishPriceConfirm").textContent = (dishPriceCtx.mode === "edit" ? "✓ Cập nhật (" : "✓ Thêm (") + formatMoney(lineTotal) + ")";
+            }
+          });
+
+          dishPriceInp.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter") {
+              ev.preventDefault();
+              confirmDishPriceModal();
+            }
+          });
+        }
+
         const authPassInput = el("authPassInput");
         if (authPassInput) {
           authPassInput.addEventListener("keydown", function (ev) {
@@ -6275,6 +6878,7 @@
             const modalOrder = [
               "resetMoneyModal",
               "deleteTableModal",
+              "dishPriceModal",
               "tableNameModal",
               "menuModal",
               "statsModal",
