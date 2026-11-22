@@ -805,6 +805,56 @@
       border: 1.5px solid var(--table-active-tint-border);
     }
 
+    @keyframes overduePulse {
+      0%, 100% {
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.35);
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.45);
+      }
+    }
+
+    .table-unit.unit-overdue {
+      background: #fffbeb;
+      border: 2px solid #d97706;
+      animation: overduePulse 2s infinite ease-in-out;
+    }
+
+    .table-unit.unit-overdue .table-surface-btn.table-has-money {
+      background-color: #b45309;
+      border-color: #92400e;
+    }
+
+    .table-unit.unit-overdue .table-surface-btn.table-has-money:hover {
+      background-color: #92400e;
+    }
+
+    .table-unit.unit-overdue .table-surface-btn.table-has-money .table-code-badge {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .table-elapsed-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: clamp(9px, 1.15vmin, 12px);
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.72);
+      color: #ffffff;
+      pointer-events: none;
+      z-index: 4;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+    }
+
+    .table-unit.unit-overdue .table-elapsed-badge {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
     .edit-mode-on .table-unit {
       cursor: grab;
     }
@@ -3038,8 +3088,25 @@
             <button type="button" class="settings-action-btn" data-action="settings-import-json">
               📥 Nhập khôi phục JSON
             </button>
+            <button type="button" class="settings-action-btn amber" style="grid-column: span 2;" data-action="settings-open-history">
+              📜 Lịch sử Order &amp; Xuất file báo cáo (<span id="settingsHistoryCount">0</span>)
+            </button>
           </div>
           <input type="file" id="jsonImportFileInput" accept=".json,application/json" style="display:none;" />
+        </div>
+
+        <!-- Nhóm 2a: Cảnh báo bàn order lâu -->
+        <div class="settings-group">
+          <span class="settings-group-title">⏱️ Cảnh báo bàn order lâu (Highlight)</span>
+          <div style="display:grid; grid-template-columns: 1fr auto; gap:6px; align-items:center;">
+            <input type="number" id="overdueMinutesInput" class="text-input-clean" min="1" max="600" inputmode="numeric" placeholder="Số phút (VD: 30)" />
+            <button type="button" class="settings-action-btn green" style="padding:8px 12px;" data-action="settings-save-overdue">
+              ✓ Lưu thời gian
+            </button>
+          </div>
+          <span style="font-size:11px; color:#64748b;">
+            Tự động làm nổi bật bàn có khách quá số phút này mà chưa thanh toán/xóa (0 = tắt cảnh báo).
+          </span>
         </div>
 
         <!-- Nhóm 2b: Tùy chỉnh thông tin in hóa đơn (Tùy chọn) -->
@@ -3286,6 +3353,64 @@
     </div>
   </div>
 
+  <!-- ========================================================================
+       9b. HỘP THOẠI LỊCH SỬ ORDER & THANH TOÁN (XUẤT FILE CSV / JSON)
+       ======================================================================== -->
+  <div id="historyModal" class="modal-backdrop" role="dialog" aria-modal="true" style="z-index: 128;">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">NHẬT KÝ HOẠT ĐỘNG &amp; DOANH THU</span>
+          <h2 class="modal-title">📜 Lịch Sử Order &amp; Thanh Toán</h2>
+        </div>
+        <button type="button" class="modal-close-x" data-action="close-history-modal" aria-label="Đóng">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="stats-summary-cards">
+          <div class="stat-card">
+            <div class="stat-card-label">Tổng số lượt đã ghi</div>
+            <div id="historyTotalCount" class="stat-card-value">0 lượt</div>
+          </div>
+          <div class="stat-card highlight">
+            <div class="stat-card-label">Tổng tiền đã thanh toán / xóa</div>
+            <div id="historyTotalRevenue" class="stat-card-value">0₫</div>
+          </div>
+        </div>
+
+        <div class="stats-toolbar-row">
+          <div class="stats-select-actions">
+            <button type="button" class="pill-action-btn primary" data-action="history-export-csv">📊 Xuất file Excel (CSV)</button>
+            <button type="button" class="pill-action-btn" data-action="history-export-json">📄 Xuất file JSON</button>
+          </div>
+          <button type="button" class="pill-action-btn" style="color:#b91c1c; border-color:#fecaca; background:#fef2f2;" data-action="history-clear-all">
+            🗑️ Xóa lịch sử
+          </button>
+        </div>
+
+        <div class="stats-table-wrap" style="max-height: 52dvh; overflow-y: auto;">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Bàn / Ghế</th>
+                <th>Giờ Order</th>
+                <th>Giờ Thanh toán</th>
+                <th>Thời lượng</th>
+                <th>Chi tiết món</th>
+                <th class="text-right">Tổng tiền</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="grid-template-columns: 1fr;">
+        <button type="button" class="modal-btn btn-cancel" data-action="close-history-modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Thông báo nhanh (Toast không chặn cảm ứng, có nút Hoàn tác khi xoá nhanh) -->
   <div id="toastMsg" class="toast-msg" aria-live="polite">Đã lưu dữ liệu</div>
 
@@ -3386,6 +3511,7 @@
       let pendingPush = false;
       let syncPollTimer = null;
       let tokenRefreshTimer = null;
+      let overdueRefreshTimer = null;
 
       let menuDragState = {
         active: false,
@@ -3465,6 +3591,7 @@
           orientation: "horizontal",
           directAmount: 0,
           directItems: {},
+          orderStartedAt: 0,
           chairs: createDefaultChairs()
         };
       }
@@ -3489,8 +3616,10 @@
           cols: cols,
           zoom: "fit",
           managerPin: normalizePinString(DEFAULT_MANAGER_PIN) || "1234",
+          overdueMinutes: 30,
           billRestaurant: "",
           billFooter: "",
+          history: [],
           menu: DEFAULT_MENU.map(function (m) {
             return { id: m.id, name: m.name, price: m.price };
           }),
@@ -3516,8 +3645,32 @@
         const cols = Math.min(8, Math.max(1, Math.round(Number(raw.cols) || 3)));
         const zoom = ["fit", "compact", "large"].indexOf(raw.zoom) !== -1 ? raw.zoom : "fit";
         const managerPin = normalizePinString(raw.managerPin) || base.managerPin;
+        const overdueMinutes = raw.overdueMinutes !== undefined
+          ? Math.min(600, Math.max(0, Math.round(Number(raw.overdueMinutes) || 0)))
+          : 30;
         const billRestaurant = String(raw.billRestaurant || "").trim().slice(0, 80);
         const billFooter = String(raw.billFooter || "").trim().slice(0, 160);
+
+        let history = [];
+        if (Array.isArray(raw.history)) {
+          history = raw.history
+            .filter(function (h) { return h && typeof h === "object"; })
+            .slice(-500)
+            .map(function (h) {
+              return {
+                id: String(h.id || uid("hist")),
+                targetLabel: String(h.targetLabel || ""),
+                coord: String(h.coord || ""),
+                actionType: String(h.actionType || "Thanh toán / Xóa bàn"),
+                orderAt: Number(h.orderAt) || 0,
+                clearedAt: Number(h.clearedAt) || Date.now(),
+                durationMinutes: Math.max(0, Math.round(Number(h.durationMinutes) || 0)),
+                details: String(h.details || ""),
+                amount: Math.max(0, Math.round(Number(h.amount) || 0)),
+                staffEmail: String(h.staffEmail || "")
+              };
+            });
+        }
 
         let menu = [];
         if (Array.isArray(raw.menu) && raw.menu.length > 0) {
@@ -3552,6 +3705,8 @@
               : createDefaultChairs();
 
             const directAmount = Math.max(0, Math.round(Number(s.directAmount) || 0));
+            const chairsSum = chairs.reduce(function (sum, c) { return sum + c.amount; }, 0);
+            const hasMoney = (directAmount + chairsSum) > 0;
             return {
               id: String(s.id || uid("tbl")),
               isEmpty: false,
@@ -3559,6 +3714,7 @@
               orientation: s.orientation === "vertical" ? "vertical" : "horizontal",
               directAmount: directAmount,
               directItems: directAmount > 0 ? sanitizeItemsMap(s.directItems) : {},
+              orderStartedAt: hasMoney ? (Number(s.orderStartedAt) || Date.now()) : 0,
               chairs: chairs
             };
           });
@@ -3574,8 +3730,10 @@
           cols: cols,
           zoom: zoom,
           managerPin: managerPin,
+          overdueMinutes: overdueMinutes,
           billRestaurant: billRestaurant,
           billFooter: billFooter,
+          history: history,
           menu: menu,
           slots: slots,
           updatedAt: Number(raw.updatedAt) || Date.now()
@@ -3665,6 +3823,55 @@
           parts.push(parsed.name + priceTag + " x" + qty + subtotalTxt);
         });
         return parts.join(", ");
+      }
+
+      function buildTableDetailSummary(table) {
+        if (!table || table.isEmpty) return "";
+        if (table.directAmount > 0) {
+          return formatItemsSummary(table.directItems) || "Nhập trực tiếp mặt bàn";
+        }
+        const parts = [];
+        (table.chairs || []).forEach(function (ch, idx) {
+          if (ch.amount > 0) {
+            const cDish = formatItemsSummary(ch.items);
+            parts.push("G" + (idx + 1) + ": " + formatMoney(ch.amount) + (cDish ? " (" + cDish + ")" : ""));
+          }
+        });
+        return parts.join("; ") || "Nhập trực tiếp ghế";
+      }
+
+      function formatDateTimeFull(ts) {
+        if (!ts || ts <= 0) return "--";
+        const d = new Date(ts);
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mo = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return hh + ":" + mm + " " + dd + "/" + mo + "/" + yyyy;
+      }
+
+      function recordOrderHistory(opts) {
+        if (!opts || (Number(opts.amount) || 0) <= 0) return;
+        const now = Date.now();
+        const started = Number(opts.orderAt) > 0 ? Number(opts.orderAt) : now;
+        const durMin = Math.max(0, Math.round((now - started) / 60000));
+        if (!Array.isArray(state.history)) state.history = [];
+        state.history.push({
+          id: uid("hist"),
+          targetLabel: String(opts.targetLabel || ""),
+          coord: String(opts.coord || ""),
+          actionType: String(opts.actionType || "Thanh toán / Xóa tiền"),
+          orderAt: started,
+          clearedAt: now,
+          durationMinutes: durMin,
+          details: String(opts.details || ""),
+          amount: Math.max(0, Math.round(Number(opts.amount) || 0)),
+          staffEmail: (syncMode === "firebase" && authSession.email) ? authSession.email : (syncMode === "lan" ? "Wi-Fi nội bộ" : "Cục bộ")
+        });
+        if (state.history.length > 500) {
+          state.history = state.history.slice(-500);
+        }
       }
 
       /* ======================================================================
@@ -4256,23 +4463,30 @@
 
       function captureUndoSnapshot() {
         try {
-          undoSnapshot = JSON.parse(JSON.stringify(state.slots));
+          undoSnapshot = {
+            slots: JSON.parse(JSON.stringify(state.slots)),
+            history: JSON.parse(JSON.stringify(state.history || []))
+          };
         } catch (err) {
           undoSnapshot = null;
         }
       }
 
       function restoreUndoSnapshot() {
-        if (!Array.isArray(undoSnapshot)) return;
-        state.slots = sanitizeState({
+        if (!undoSnapshot || !Array.isArray(undoSnapshot.slots)) return;
+        const restored = sanitizeState({
           cols: state.cols,
           zoom: state.zoom,
           managerPin: state.managerPin,
+          overdueMinutes: state.overdueMinutes,
           billRestaurant: state.billRestaurant,
           billFooter: state.billFooter,
+          history: undoSnapshot.history || [],
           menu: state.menu,
-          slots: undoSnapshot
-        }).slots;
+          slots: undoSnapshot.slots
+        });
+        state.slots = restored.slots;
+        state.history = restored.history;
         undoSnapshot = null;
         saveState();
         renderMap();
@@ -4368,6 +4582,11 @@
             const totalTable = getTableTotal(slot);
             const hasMoney = totalTable > 0;
             const chairs = slot.chairs || [];
+            const elapsedMins = (hasMoney && slot.orderStartedAt > 0)
+              ? Math.max(0, Math.floor((Date.now() - slot.orderStartedAt) / 60000))
+              : 0;
+            const overdueLimit = Math.max(0, Number(state.overdueMinutes) || 0);
+            const isOverdue = hasMoney && overdueLimit > 0 && elapsedMins >= overdueLimit;
 
             let topHtml = "";
             let bottomHtml = "";
@@ -4386,6 +4605,7 @@
             const unitClasses = [
               "table-unit",
               hasMoney ? "unit-active" : "",
+              isOverdue ? "unit-overdue" : "",
               slot.orientation === "vertical" ? "orient-vertical" : "",
               hasSideChairs ? "has-side-chairs" : "",
               isSelectedMove ? "slot-selected-move" : "",
@@ -4394,6 +4614,9 @@
 
             const surfaceCls = "table-surface-btn" + (hasMoney ? " table-has-money" : "");
             const dragAttr = editActive ? ' draggable="true"' : "";
+            const elapsedBadgeHtml = hasMoney
+              ? ('<span class="table-elapsed-badge" title="Thời gian đã order">' + (isOverdue ? "⏰ " : "⏱ ") + elapsedMins + 'p</span>')
+              : "";
 
             mapHtml +=
               '<div class="' + unitClasses + '" data-slot="' + slotIdx + '"' + dragAttr + '>' +
@@ -4418,6 +4641,7 @@
                   (rightHtml ? ('<div class="chairs-col right-chairs">' + rightHtml + '</div>') : '') +
                 '</div>' +
                 (bottomHtml ? ('<div class="chairs-row bottom-chairs">' + bottomHtml + '</div>') : '') +
+                elapsedBadgeHtml +
               '</div>';
           }
 
@@ -4805,10 +5029,25 @@
         const table = state.slots[entryCtx.slotIndex];
         if (!table || table.isEmpty) return;
 
+        const prevTableTotal = getTableTotal(table);
+        const prevOrderStart = Number(table.orderStartedAt) || Date.now();
+        const prevDetails = buildTableDetailSummary(table);
+        const coord = getCoordLabel(entryCtx.slotIndex, state.cols);
+
         const finalAmount = Math.max(0, Math.round(Number(entryCtx.amount) || 0));
         const finalItems = sanitizeItemsMap(entryCtx.items);
 
         if (entryCtx.type === "table") {
+          if (finalAmount === 0 && prevTableTotal > 0) {
+            recordOrderHistory({
+              targetLabel: "Bàn " + table.name,
+              coord: coord,
+              actionType: "Xóa tiền cả bàn",
+              orderAt: prevOrderStart,
+              details: prevDetails,
+              amount: prevTableTotal
+            });
+          }
           table.directAmount = finalAmount;
           table.directItems = finalAmount > 0 ? finalItems : {};
           (table.chairs || []).forEach(function (ch) {
@@ -4818,12 +5057,34 @@
         } else {
           const ch = table.chairs[entryCtx.chairIndex];
           if (ch) {
+            const prevChairAmt = Math.max(0, Math.round(Number(ch.amount) || 0));
+            const prevChairDetails = formatItemsSummary(ch.items) || "Nhập trực tiếp ghế";
+            if (finalAmount === 0 && prevChairAmt > 0) {
+              recordOrderHistory({
+                targetLabel: "Ghế G" + (entryCtx.chairIndex + 1) + " - Bàn " + table.name,
+                coord: coord,
+                actionType: "Xóa tiền ghế",
+                orderAt: prevOrderStart,
+                details: prevChairDetails,
+                amount: prevChairAmt
+              });
+            }
             ch.amount = finalAmount;
             ch.items = finalAmount > 0 ? finalItems : {};
             table.directAmount = 0;
             table.directItems = {};
           }
         }
+
+        const newTableTotal = getTableTotal(table);
+        if (newTableTotal > 0) {
+          if (prevTableTotal <= 0 || !table.orderStartedAt) {
+            table.orderStartedAt = Date.now();
+          }
+        } else {
+          table.orderStartedAt = 0;
+        }
+
         entryCtx.isDirty = false;
         saveState();
         renderMap();
@@ -5287,6 +5548,143 @@
       }
 
       /* ======================================================================
+         HỘP THOẠI LỊCH SỬ ORDER & XUẤT FILE BÁO CÁO (CSV / JSON)
+         ====================================================================== */
+      function openHistoryModal() {
+        renderHistoryModal();
+        openModal("historyModal");
+      }
+
+      function renderHistoryModal() {
+        const list = Array.isArray(state.history) ? state.history : [];
+        let totalRev = 0;
+        list.forEach(function (item) {
+          totalRev += Math.max(0, Math.round(Number(item.amount) || 0));
+        });
+
+        if (el("historyTotalCount")) {
+          el("historyTotalCount").textContent = list.length + " lượt";
+        }
+        if (el("historyTotalRevenue")) {
+          el("historyTotalRevenue").textContent = formatMoney(totalRev);
+        }
+
+        const tbody = el("historyTableBody");
+        if (!tbody) return;
+
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;padding:18px;">Chưa có lịch sử thanh toán / xóa bàn nào được ghi nhận.</td></tr>';
+          return;
+        }
+
+        let html = "";
+        for (let i = list.length - 1; i >= 0; i--) {
+          const item = list[i];
+          html +=
+            '<tr>' +
+              '<td><strong>' + escapeHtml(item.targetLabel) + '</strong>' +
+                (item.coord ? (' <span style="font-size:10px;color:#64748b;">(' + escapeHtml(item.coord) + ')</span>') : '') +
+              '</td>' +
+              '<td style="white-space:nowrap;font-size:11px;">' + escapeHtml(formatDateTimeFull(item.orderAt)) + '</td>' +
+              '<td style="white-space:nowrap;font-size:11px;">' + escapeHtml(formatDateTimeFull(item.clearedAt)) + '</td>' +
+              '<td style="white-space:nowrap;font-size:11px;">' + item.durationMinutes + ' phút</td>' +
+              '<td style="font-size:11.5px;">' + escapeHtml(item.details || item.actionType) + '</td>' +
+              '<td class="text-right" style="white-space:nowrap;"><strong>' + formatMoney(item.amount) + '</strong></td>' +
+            '</tr>';
+        }
+        tbody.innerHTML = html;
+      }
+
+      function exportHistoryToCsv() {
+        const list = Array.isArray(state.history) ? state.history : [];
+        if (list.length === 0) {
+          showToast("⚠️ Chưa có dữ liệu lịch sử để xuất file!");
+          return;
+        }
+
+        function csvCell(val) {
+          const str = String(val === undefined || val === null ? "" : val).replace(/"/g, '""');
+          return '"' + str + '"';
+        }
+
+        const headers = [
+          "STT",
+          "Bàn / Ghế",
+          "Vị trí",
+          "Thao tác",
+          "Thời gian Order",
+          "Thời gian Thanh toán / Xóa",
+          "Thời gian phục vụ (phút)",
+          "Chi tiết món ăn",
+          "Số tiền (nghìn đồng)",
+          "Thành tiền quy đổi (VNĐ)",
+          "Thiết bị / Tài khoản"
+        ];
+
+        const lines = [headers.map(csvCell).join(",")];
+        list.forEach(function (item, idx) {
+          const rawAmt = Math.max(0, Math.round(Number(item.amount) || 0));
+          lines.push([
+            idx + 1,
+            item.targetLabel,
+            item.coord,
+            item.actionType,
+            formatDateTimeFull(item.orderAt),
+            formatDateTimeFull(item.clearedAt),
+            item.durationMinutes,
+            item.details,
+            rawAmt,
+            rawAmt * 1000,
+            item.staffEmail || ""
+          ].map(csvCell).join(","));
+        });
+
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const dateTag = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = "lich-su-order-quan-an-" + dateTag + ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+        showToast("📊 Đã xuất file lịch sử Excel (CSV)");
+      }
+
+      function exportHistoryToJson() {
+        const list = Array.isArray(state.history) ? state.history : [];
+        if (list.length === 0) {
+          showToast("⚠️ Chưa có dữ liệu lịch sử để xuất file!");
+          return;
+        }
+        const payload = {
+          app: "tinh-tien-quan-an-history",
+          exportedAt: new Date().toISOString(),
+          totalRecords: list.length,
+          records: list.map(function (item) {
+            return Object.assign({}, item, {
+              orderTimeFormatted: formatDateTimeFull(item.orderAt),
+              clearedTimeFormatted: formatDateTimeFull(item.clearedAt),
+              amountVnd: (Math.max(0, Math.round(Number(item.amount) || 0))) * 1000
+            });
+          })
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const dateTag = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = "lich-su-order-quan-an-" + dateTag + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+        showToast("📄 Đã xuất file lịch sử JSON");
+      }
+
+      /* ======================================================================
          THAO TÁC SƠ ĐỒ BÀN: THÊM/BỚT CỘT, ĐỔI CHỖ, XOÁ ĐỂ TRỐNG, ĐÁNH LẠI TÊN
          ====================================================================== */
       function changeColumnCount(delta) {
@@ -5455,6 +5853,12 @@
         const footInp = el("billFooterInput");
         if (restInp) restInp.value = state.billRestaurant || "";
         if (footInp) footInp.value = state.billFooter || "";
+
+        const overdueInp = el("overdueMinutesInput");
+        if (overdueInp) overdueInp.value = String(state.overdueMinutes !== undefined ? state.overdueMinutes : 30);
+
+        const histCountEl = el("settingsHistoryCount");
+        if (histCountEl) histCountEl.textContent = String(Array.isArray(state.history) ? state.history.length : 0);
       }
 
       /* ======================================================================
@@ -5740,8 +6144,17 @@
               }
               lastTapInfo = { key: "", time: 0 };
               captureUndoSnapshot();
+              recordOrderHistory({
+                targetLabel: "Bàn " + table.name,
+                coord: getCoordLabel(slotIdx, state.cols),
+                actionType: "Nhấn đúp xóa bàn",
+                orderAt: table.orderStartedAt,
+                details: buildTableDetailSummary(table),
+                amount: currentTotal
+              });
               table.directAmount = 0;
               table.directItems = {};
+              table.orderStartedAt = 0;
               (table.chairs || []).forEach(function (ch) {
                 ch.amount = 0;
                 ch.items = {};
@@ -5795,10 +6208,21 @@
               }
               lastTapInfo = { key: "", time: 0 };
               captureUndoSnapshot();
+              recordOrderHistory({
+                targetLabel: "Ghế G" + (chairIdx + 1) + " - Bàn " + table.name,
+                coord: getCoordLabel(slotIdx, state.cols),
+                actionType: "Nhấn đúp xóa ghế",
+                orderAt: table.orderStartedAt,
+                details: formatItemsSummary(ch.items) || "Nhập trực tiếp ghế",
+                amount: chAmt
+              });
               ch.amount = 0;
               ch.items = {};
               table.directAmount = 0;
               table.directItems = {};
+              if (getTableTotal(table) <= 0) {
+                table.orderStartedAt = 0;
+              }
               saveState();
               renderMap();
               triggerQuickClearFlash('.chair-btn[data-slot="' + slotIdx + '"][data-chair="' + chairIdx + '"]');
@@ -6217,23 +6641,45 @@
             break;
           }
 
-          case "settings-copy-invite-link": {
-            let shareUrl = window.location.origin + window.location.pathname;
-            if (fbConfig.url && fbConfig.apiKey) {
-              shareUrl += "#fb=" + encodeURIComponent(fbConfig.url) + "&key=" + encodeURIComponent(fbConfig.apiKey);
-            }
-            const tempInput = document.createElement("input");
-            tempInput.value = shareUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999);
-            try {
-              document.execCommand("copy");
-              showToast("📋 Đã sao chép link mời nhân viên!");
-            } catch (err) {
-              showToast("Link: " + shareUrl);
-            }
-            document.body.removeChild(tempInput);
+          case "settings-save-overdue": {
+            const rawMin = el("overdueMinutesInput") ? el("overdueMinutesInput").value : "30";
+            const mins = Math.min(600, Math.max(0, Math.round(Number(rawMin) || 0)));
+            state.overdueMinutes = mins;
+            saveState();
+            renderMap();
+            showToast(mins > 0
+              ? ("⏱️ Đã đặt cảnh báo bàn order quá " + mins + " phút")
+              : "⏱️ Đã tắt cảnh báo thời gian order");
+            break;
+          }
+
+          case "settings-open-history": {
+            closeModal("settingsModal");
+            openHistoryModal();
+            break;
+          }
+
+          case "close-history-modal": {
+            closeModal("historyModal");
+            break;
+          }
+
+          case "history-export-csv": {
+            exportHistoryToCsv();
+            break;
+          }
+
+          case "history-export-json": {
+            exportHistoryToJson();
+            break;
+          }
+
+          case "history-clear-all": {
+            state.history = [];
+            saveState();
+            renderHistoryModal();
+            updateSettingsSummaryUI();
+            showToast("🗑️ Đã xóa toàn bộ lịch sử");
             break;
           }
 
@@ -6364,11 +6810,15 @@
             const keepMenu = state.menu;
             const keepRest = state.billRestaurant;
             const keepFoot = state.billFooter;
+            const keepOverdue = state.overdueMinutes;
+            const keepHistory = state.history;
             state = createDefaultState();
             state.managerPin = keepPin;
             state.menu = keepMenu;
             state.billRestaurant = keepRest;
             state.billFooter = keepFoot;
+            state.overdueMinutes = keepOverdue;
+            state.history = keepHistory;
             saveState();
             renderMap();
             updateSettingsSummaryUI();
@@ -6603,10 +7053,22 @@
 
           case "confirm-reset-money": {
             captureUndoSnapshot();
-            state.slots.forEach(function (slot) {
+            state.slots.forEach(function (slot, sIdx) {
               if (!slot || slot.isEmpty) return;
+              const sTotal = getTableTotal(slot);
+              if (sTotal > 0) {
+                recordOrderHistory({
+                  targetLabel: "Bàn " + slot.name,
+                  coord: getCoordLabel(sIdx, state.cols),
+                  actionType: "Kết thúc ca / Xóa toàn bộ",
+                  orderAt: slot.orderStartedAt,
+                  details: buildTableDetailSummary(slot),
+                  amount: sTotal
+                });
+              }
               slot.directAmount = 0;
               slot.directItems = {};
+              slot.orderStartedAt = 0;
               (slot.chairs || []).forEach(function (ch) {
                 ch.amount = 0;
                 ch.items = {};
@@ -6880,6 +7342,7 @@
               "deleteTableModal",
               "dishPriceModal",
               "tableNameModal",
+              "historyModal",
               "menuModal",
               "statsModal",
               "settingsModal",
@@ -6944,6 +7407,11 @@
         initInputAndKeyboardListeners();
         updateManagerUI();
         renderMap();
+
+        if (overdueRefreshTimer) clearInterval(overdueRefreshTimer);
+        overdueRefreshTimer = setInterval(function () {
+          renderMap();
+        }, 30000);
 
         if (fbConfig.mode === "firebase" && fbConfig.url && fbConfig.apiKey) {
           if (authSession.idToken && (authSession.refreshToken || Date.now() < authSession.expiresAt)) {
