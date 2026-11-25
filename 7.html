@@ -6293,6 +6293,12 @@
           if (prevTableTotal <= 0 || !table.orderStartedAt) {
             table.orderStartedAt = Date.now();
           }
+          if (entryCtx.type === "chair" && finalAmount === 0 && table.kitchenDoneKeys) {
+            const prefix = "ch_" + entryCtx.chairIndex + "::";
+            Object.keys(table.kitchenDoneKeys).forEach(function (k) {
+              if (k.indexOf(prefix) === 0) delete table.kitchenDoneKeys[k];
+            });
+          }
         } else {
           table.orderStartedAt = 0;
           table.kitchenDoneKeys = {};
@@ -7608,7 +7614,16 @@
             });
             ch.amount = 0;
             ch.items = {};
-            if (getTableTotal(table) <= 0) table.orderStartedAt = 0;
+            if (table.kitchenDoneKeys) {
+              const prefix = "ch_" + chairIdx + "::";
+              Object.keys(table.kitchenDoneKeys).forEach(function (k) {
+                if (k.indexOf(prefix) === 0) delete table.kitchenDoneKeys[k];
+              });
+            }
+            if (getTableTotal(table) <= 0) {
+              table.orderStartedAt = 0;
+              table.kitchenDoneKeys = {};
+            }
           } else {
             recordOrderHistory({
               targetLabel: "Bàn " + table.name,
@@ -7621,6 +7636,7 @@
             table.directAmount = 0;
             table.directItems = {};
             table.orderStartedAt = 0;
+            table.kitchenDoneKeys = {};
             (table.chairs || []).forEach(function (c) {
               c.amount = 0;
               c.items = {};
@@ -7701,8 +7717,18 @@
           if (prevTableTotal <= 0 || !table.orderStartedAt) {
             table.orderStartedAt = Date.now();
           }
+          if (plan.intent === "add_items" && table.kitchenDoneKeys) {
+            plan.items.forEach(function (it) {
+              if (it.qty > 0) {
+                const itemKey = makeItemKey(it.dishId, it.unitPrice, it.defaultPrice, it.note);
+                const kKey = (chairIdx >= 0 ? ("ch_" + chairIdx + "::") : "tbl::") + itemKey;
+                delete table.kitchenDoneKeys[kKey];
+              }
+            });
+          }
         } else {
           table.orderStartedAt = 0;
+          table.kitchenDoneKeys = {};
         }
 
         saveState();
@@ -8519,8 +8545,15 @@
               ch.items = {};
               table.directAmount = 0;
               table.directItems = {};
+              if (table.kitchenDoneKeys) {
+                const prefix = "ch_" + chairIdx + "::";
+                Object.keys(table.kitchenDoneKeys).forEach(function (k) {
+                  if (k.indexOf(prefix) === 0) delete table.kitchenDoneKeys[k];
+                });
+              }
               if (getTableTotal(table) <= 0) {
                 table.orderStartedAt = 0;
+                table.kitchenDoneKeys = {};
               }
               saveState();
               renderMap();
@@ -8707,6 +8740,37 @@
             }
             entryCtx.items[dish.id] = (entryCtx.items[dish.id] || 0) + 1;
             entryCtx.amount += dish.price;
+            entryCtx.isDirty = true;
+            renderEntryModal();
+            break;
+          }
+
+          case "dish-minus": {
+            const dish = state.menu.find(function (m) { return m.id === dishId; });
+            if (!dish) return;
+            const keys = Object.keys(entryCtx.items || {});
+            let targetKey = "";
+            if ((entryCtx.items[dish.id] || 0) > 0) {
+              targetKey = dish.id;
+            } else {
+              for (let i = keys.length - 1; i >= 0; i--) {
+                const parsed = parseItemKey(keys[i]);
+                if (parsed && parsed.dishId === dish.id && (entryCtx.items[keys[i]] || 0) > 0) {
+                  targetKey = keys[i];
+                  break;
+                }
+              }
+            }
+            if (!targetKey) return;
+            const parsedTarget = parseItemKey(targetKey);
+            const unitPrice = parsedTarget ? parsedTarget.unitPrice : dish.price;
+            const nextQty = (entryCtx.items[targetKey] || 0) - 1;
+            if (nextQty > 0) {
+              entryCtx.items[targetKey] = nextQty;
+            } else {
+              delete entryCtx.items[targetKey];
+            }
+            entryCtx.amount = Math.max(0, entryCtx.amount - unitPrice);
             entryCtx.isDirty = true;
             renderEntryModal();
             break;
@@ -9173,7 +9237,7 @@
             clonedDoc.querySelectorAll(".open").forEach(function (node) {
               node.classList.remove("open");
             });
-            ["mapContainer", "menuEditorList", "statsTableBody", "printContent"].forEach(function (cid) {
+            ["mapContainer", "kitchenContainer", "menuEditorList", "notePresetsEditorList", "statsTableBody", "historyTableBody", "printContent"].forEach(function (cid) {
               const cNode = clonedDoc.querySelector("#" + cid);
               if (cNode) cNode.innerHTML = "";
             });
