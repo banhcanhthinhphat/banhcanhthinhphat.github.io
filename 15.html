@@ -1,0 +1,4586 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tính Tiền Quán Ăn - Sơ Đồ Bàn, Bếp KDS &amp; Order AI</title>
+  <style>
+    /* ==========================================================================
+       1. THIẾT KẾ TỐI GIẢN, DỊU MẮT & TƯƠNG THÍCH MOBILE / DESKTOP / POS
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-app: #f5f5f4;
+      --bg-surface: #ffffff;
+      --bg-muted: #e7e5e4;
+      --border-subtle: #d6d3d1;
+      --text-main: #1c1917;
+      --text-muted: #57534e;
+      --accent-teal: #0f766e;
+      --accent-teal-soft: #f0fdfa;
+      --table-empty-bg: #fefce8;
+      --table-empty-border: #d97706;
+      --table-active-bg: #115e59;
+      --table-active-border: #0f766e;
+      --chair-empty-bg: #f8fafc;
+      --chair-empty-border: #cbd5e1;
+      --chair-active-bg: #fffbeb;
+      --chair-active-border: #f59e0b;
+      --danger: #dc2626;
+      --warning: #ea580c;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       2. THANH TIÊU ĐỀ & CHUYỂN ĐỔI VAI TRÒ (ORDER / BẾP)
+       ========================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .role-switcher {
+      display: inline-flex;
+      background: #f5f5f4;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 2px;
+    }
+
+    .role-tab {
+      border: none;
+      background: transparent;
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .role-tab.active {
+      background: var(--accent-teal);
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    .grand-total-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fffbeb;
+      border: 1.5px solid #f59e0b;
+      color: #92400e;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .grand-total-pill span.val {
+      color: #b45309;
+      font-size: 15px;
+    }
+
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f5f5f4;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #a8a29e;
+    }
+
+    .sync-badge.ok .sync-dot { background: #16a34a; }
+    .sync-badge.warn .sync-dot { background: #f59e0b; }
+    .sync-badge.err .sync-dot { background: #dc2626; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-main);
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    .btn-top:active {
+      transform: scale(0.97);
+    }
+
+    .btn-ai-trigger {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+    }
+
+    .btn-handsfree-toggle.active {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+      animation: pulseSoft 1.8s infinite;
+    }
+
+    .kbd-hint {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(29, 78, 216, 0.12);
+      color: #1e40af;
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.25); }
+      50% { box-shadow: 0 0 0 5px rgba(220, 38, 38, 0); }
+    }
+
+    /* ==========================================================================
+       3. SƠ ĐỒ BÀN GHẾ (ORDER VIEW)
+       ========================================================================== */
+    .map-wrapper {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      padding-bottom: 84px;
+    }
+
+    .map-grid {
+      display: grid;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .slot-empty {
+      min-height: 120px;
+      border: 1.5px dashed #d6d3d1;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #a8a29e;
+      font-size: 12px;
+      padding: 8px;
+    }
+
+    .table-unit {
+      background: #ffffff;
+      border: 1.5px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .table-unit.has-guests {
+      border-color: #5eead4;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.09);
+    }
+
+    .table-unit.overdue-alert {
+      border: 2px solid #ea580c !important;
+      animation: overdueBlink 1.5s infinite;
+    }
+
+    @keyframes overdueBlink {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.35); }
+      50% { box-shadow: 0 0 0 6px rgba(234, 88, 12, 0); }
+    }
+
+    .chairs-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(46px, 1fr));
+      gap: 5px;
+    }
+
+    .chair-btn {
+      background: var(--chair-empty-bg);
+      border: 1.5px solid var(--chair-empty-border);
+      border-radius: 9px;
+      padding: 5px 4px;
+      min-height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.08s ease;
+    }
+
+    .chair-btn:active {
+      transform: scale(0.96);
+    }
+
+    .chair-btn.has-money {
+      background: var(--chair-active-bg);
+      border-color: var(--chair-active-border);
+      color: #92400e;
+    }
+
+    .chair-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .chair-btn.has-money .chair-lbl {
+      color: #b45309;
+    }
+
+    .chair-amt {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .chair-btn.has-money .chair-amt {
+      color: #d97706;
+    }
+
+    /* Mặt bàn trung tâm - luôn nổi bật hơn ghế */
+    .table-surface {
+      background: var(--table-empty-bg);
+      border: 2px solid var(--table-empty-border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      min-height: 76px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    .table-surface:active {
+      transform: scale(0.98);
+    }
+
+    .table-surface.has-money {
+      background: var(--table-active-bg);
+      border-color: var(--table-active-border);
+      color: #ffffff;
+    }
+
+    .table-top-meta {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .coord-tag {
+      opacity: 0.75;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .table-surface.has-money .coord-tag {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ccfbf1;
+    }
+
+    .time-badge {
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .time-badge.overdue {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .table-name {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .table-amount {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .table-sub-note {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .table-edit-tools {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding-top: 2px;
+      border-top: 1px dashed #e7e5e4;
+    }
+
+    .mini-tool-btn {
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid #d6d3d1;
+      background: #fafaf9;
+      color: #44403c;
+    }
+
+    /* ==========================================================================
+       4. MÀN HÌNH BẾP KDS (KITCHEN DISPLAY SYSTEM)
+       ========================================================================== */
+    .kitchen-wrapper {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px;
+      padding-bottom: 84px;
+    }
+
+    .kitchen-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .kitchen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 12px;
+    }
+
+    .kds-card {
+      background: #ffffff;
+      border: 2px solid #0f766e;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .kds-card.overdue {
+      border-color: #dc2626;
+    }
+
+    .kds-card-head {
+      background: #0f766e;
+      color: #ffffff;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .kds-card.overdue .kds-card-head {
+      background: #dc2626;
+    }
+
+    .kds-items-list {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .kds-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .kds-item.done {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      opacity: 0.55;
+      text-decoration: line-through;
+    }
+
+    .kds-qty {
+      background: #0f766e;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 16px;
+      padding: 4px 10px;
+      border-radius: 9px;
+      flex-shrink: 0;
+    }
+
+    .kds-item.done .kds-qty {
+      background: #64748b;
+    }
+
+    .kds-dish-info {
+      flex: 1;
+    }
+
+    .kds-dish-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .kds-chair-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 7px;
+      border-radius: 6px;
+      margin-left: 5px;
+    }
+
+    .kds-note-box {
+      margin-top: 5px;
+      background: #fef3c7;
+      border: 1.5px solid #f59e0b;
+      color: #92400e;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .kds-card-foot {
+      padding: 8px 10px;
+      background: #f5f5f4;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    /* ==========================================================================
+       5. HỘP THOẠI CHUNG (MODALS) & KHUNG ORDER MÓN
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(28, 25, 23, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.22);
+    }
+
+    .modal-box.wide {
+      max-width: 780px;
+    }
+
+    .modal-header {
+      padding: 11px 14px;
+      background: #fafaf9;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      padding: 12px 14px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-footer {
+      padding: 10px 14px;
+      background: #fafaf9;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent-teal); border-color: var(--accent-teal); color: #ffffff; }
+    .btn-danger { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+    .btn-amber { background: #fffbeb; border-color: #fcd34d; color: #b45309; }
+    .btn-blue { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+
+    /* Khung hiển thị tiền & món đã chọn trong Modal tính tiền */
+    .calc-display-card {
+      background: #f0fdfa;
+      border: 1.5px solid #5eead4;
+      border-radius: 12px;
+      padding: 9px 12px;
+    }
+
+    .calc-amount-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .calc-amount-big {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f766e;
+    }
+
+    .selected-lines-wrap {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 84px;
+      overflow-y: auto;
+    }
+
+    .selected-line-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #ffffff;
+      border: 1px solid #99f6e4;
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #115e59;
+      cursor: pointer;
+    }
+
+    /* Chuyển đổi tab Chọn món nhanh / Bàn phím số */
+    .calc-mode-tabs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mode-pill-group {
+      display: inline-flex;
+      background: #f5f5f4;
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mode-pill {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .mode-pill.active {
+      background: #ffffff;
+      color: var(--accent-teal);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Lưới thẻ món ăn co giãn tối đa trên 1 màn hình */
+    .menu-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 7px;
+      max-height: 44vh;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .dish-card {
+      background: #ffffff;
+      border: 1.5px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      position: relative;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .dish-card.selected {
+      background: #f0fdfa;
+      border-color: #0f766e;
+    }
+
+    .dish-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .dish-name {
+      font-weight: 800;
+      font-size: 13px;
+      color: #1c1917;
+      line-height: 1.25;
+    }
+
+    .dish-price {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f766e;
+      margin-top: 2px;
+    }
+
+    .dish-line-subtotal {
+      font-size: 11px;
+      font-weight: 800;
+      color: #b45309;
+    }
+
+    .dish-card-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .dish-step-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-weight: 900;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dish-step-btn.plus {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #ffffff;
+    }
+
+    .dish-qty-badge {
+      font-weight: 900;
+      font-size: 14px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Bàn phím số nhập tay */
+    .numpad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .num-btn {
+      padding: 13px 8px;
+      border-radius: 11px;
+      border: 1px solid #d6d3d1;
+      background: #ffffff;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .num-btn:active { background: #e7e5e4; }
+    .num-btn.op { background: #f0fdfa; border-color: #99f6e4; color: #0f766e; }
+    .num-btn.warn { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+
+    /* Form controls trong Cài đặt */
+    .settings-section {
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .settings-section-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: #0f766e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid #d6d3d1;
+      background: #ffffff;
+      font-size: 13px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #0f766e;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .preset-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .preset-chip.active {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+
+    /* ==========================================================================
+       6. THANH TRẠNG THÁI NGHE RẢNH TAY (HANDS-FREE HUD) & TOAST
+       ========================================================================== */
+    .handsfree-hud {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 70;
+      width: calc(100% - 24px);
+      max-width: 680px;
+      background: rgba(28, 25, 23, 0.94);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(6px);
+    }
+
+    .hud-status-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hud-pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      animation: pulseSoft 1.4s infinite;
+    }
+
+    .hud-pulse-dot.busy { background: #f59e0b; }
+
+    .hud-text {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hud-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .hud-btn {
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .toast-banner {
+      position: fixed;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 120;
+      background: #1c1917;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      max-width: 92vw;
+    }
+
+    /* ==========================================================================
+       7. ĐỊNH DẠNG IN HÓA ĐƠN POS (80MM / 58MM KHÔNG KẺ BẢNG)
+       ========================================================================== */
+    #printReceiptArea {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printReceiptArea, #printReceiptArea * {
+        visibility: visible !important;
+      }
+      #printReceiptArea {
+        display: block !important;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 80mm;
+        padding: 4mm;
+        background: #ffffff;
+        color: #000000;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app-header { padding: 6px 8px; }
+      .btn-top { padding: 6px 8px; font-size: 12px; }
+      .menu-cards-grid { grid-template-columns: repeat(2, 1fr); max-height: 42vh; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========================================================================
+       THANH TIÊU ĐỀ CHÍNH
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="role-switcher" role="tablist" aria-label="Chuyển đổi giao diện Order và Bếp">
+        <button type="button" id="tabRoleOrder" class="role-tab active" data-action="switch-role" data-role="order">🧑‍💼 Order</button>
+        <button type="button" id="tabRoleKitchen" class="role-tab" data-action="switch-role" data-role="kitchen">👨‍🍳 Bếp <span id="kitchenPendingBadge" style="font-size:11px;"></span></button>
+      </div>
+
+      <button type="button" id="btnGrandSummary" class="grand-total-pill" data-action="open-summary" title="Xem thống kê &amp; In gộp nhiều bàn">
+        <span>Tổng:</span>
+        <span id="grandTotalValue" class="val">0₫</span>
+      </button>
+
+      <div id="syncStatusBadge" class="sync-badge" title="Trạng thái đồng bộ dữ liệu">
+        <span class="sync-dot"></span>
+        <span id="syncStatusText">Cục bộ</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button type="button" id="btnHandsFreeToggle" class="btn-top btn-handsfree-toggle" data-action="toggle-handsfree" title="Bật/Tắt chế độ nghe rảnh tay liên tục">
+        <span>🎧 Rảnh tay</span>
+      </button>
+
+      <button type="button" id="btnTtsAnnounceToggle" class="btn-top" data-action="toggle-tts-announce" title="Bật/Tắt đọc thông báo đơn mới cho Bếp &amp; số tiền thanh toán">
+        <span id="ttsAnnounceIcon">🔊</span>
+        <span id="ttsAnnounceLabel">Loa báo</span>
+      </button>
+
+      <button type="button" id="btnOpenVoiceAi" class="btn-top btn-ai-trigger" data-action="open-voice-ai" title="Order bằng giọng nói AI (Phím tắt: Space / F2)">
+        <span>🎙️ Order AI</span>
+        <span class="kbd-hint">Space</span>
+      </button>
+
+      <button type="button" id="btnToggleLayoutEdit" class="btn-top" data-action="toggle-layout-edit" title="Bật/Tắt sửa tên bàn, số ghế và sơ đồ">
+        <span>✏️ Sửa sơ đồ</span>
+      </button>
+
+      <button type="button" id="btnOpenSettings" class="btn-top" data-action="open-settings" title="Cài đặt thực đơn, AI, đồng bộ &amp; lịch sử">
+        <span id="settingsLockIcon">🔒</span>
+        <span>Cài đặt</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Thanh công cụ sửa sơ đồ (hiện khi bật Sửa sơ đồ) -->
+  <div id="layoutEditToolbar" class="hidden" style="background:#fffbeb; border-bottom:1px solid #fcd34d; padding:8px 12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px;">
+    <div style="font-weight:800; color:#92400e; font-size:13px;">
+      🛠️ Chế độ chỉnh sửa sơ đồ bàn (<span id="gridDimLabel">3 cột × 3 hàng</span>)
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      <button type="button" class="btn" data-action="col-dec">− Cột</button>
+      <button type="button" class="btn" data-action="col-inc">+ Cột</button>
+      <button type="button" class="btn" data-action="add-table-end">+ Thêm bàn mới</button>
+      <button type="button" class="btn btn-primary" data-action="toggle-layout-edit">✓ Xong sơ đồ</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       KHU VỰC CHÍNH: SƠ ĐỒ BÀN GHẾ (ORDER)
+       ======================================================================== -->
+  <main id="mapContainer" class="map-wrapper">
+    <div id="tablesGrid" class="map-grid"></div>
+  </main>
+
+  <!-- ========================================================================
+       KHU VỰC BẾP KDS (HIỂN THỊ KHI CHỌN TAB BẾP)
+       ======================================================================== -->
+  <section id="kitchenContainer" class="kitchen-wrapper hidden">
+    <div class="kitchen-header-bar">
+      <div>
+        <div style="font-size:16px; font-weight:900; color:#0f766e;">👨‍🍳 MÀN HÌNH CHẾ BIẾN BẾP (KDS)</div>
+        <div style="font-size:12px; color:#57534e;">Sắp xếp theo thứ tự gọi trước – làm trước. Chạm từng món để đánh dấu hoàn thành.</div>
+      </div>
+      <div id="kitchenSummaryStats" style="font-weight:800; font-size:13px; color:#b45309;"></div>
+    </div>
+    <div id="kitchenCardsGrid" class="kitchen-grid"></div>
+  </section>
+
+  <!-- ========================================================================
+       THANH TRẠNG THÁI NGHE RẢNH TAY (HANDS-FREE HUD)
+       ======================================================================== -->
+  <div id="handsFreeHud" class="handsfree-hud hidden">
+    <div class="hud-status-wrap">
+      <span id="hudPulseDot" class="hud-pulse-dot"></span>
+      <span id="hudStatusText" class="hud-text">Đang lắng nghe từ khóa gọi lệnh...</span>
+    </div>
+    <div class="hud-actions">
+      <button type="button" id="btnHudInputMode" class="hud-btn" data-action="toggle-ai-input-mode" title="Đổi chế độ gửi Text (tiết kiệm token) hoặc gửi Audio trực tiếp">💬 Text</button>
+      <button type="button" class="hud-btn" data-action="open-wake-modal">🎯 Từ khóa</button>
+      <button type="button" class="hud-btn" data-action="toggle-handsfree">🔇 Tắt</button>
+    </div>
+  </div>
+
+  <!-- Thông báo Toast -->
+  <div id="toastBanner" class="toast-banner hidden">
+    <span id="toastMessage"></span>
+    <button type="button" id="btnToastUndo" class="hud-btn hidden" data-action="undo-last-voice">↶ Hoàn tác</button>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 1: CHỌN MÓN & TÍNH TIỀN BÀN / GHẾ
+       ======================================================================== -->
+  <div id="calcModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div id="calcTargetTitle" class="modal-title">Bàn 1A</div>
+          <div id="calcTargetSub" style="font-size:11px; color:#57534e;">Chạm món để cộng, chạmchip món để sửa ghi chú/giá</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn btn-blue" data-action="print-current-target">🖨️ In bill</button>
+          <button type="button" class="btn" data-action="close-calc">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="calc-display-card">
+          <div class="calc-amount-row">
+            <span style="font-size:12px; font-weight:700; color:#115e59;">Tạm tính (<span id="calcPendingExpr">0</span>):</span>
+            <span id="calcAmountDisplay" class="calc-amount-big">0₫</span>
+          </div>
+          <div id="calcSelectedLines" class="selected-lines-wrap"></div>
+        </div>
+
+        <div class="calc-mode-tabs">
+          <div class="mode-pill-group">
+            <button type="button" id="tabCalcMenu" class="mode-pill active" data-action="switch-calc-tab" data-tab="menu">🍜 Chọn món</button>
+            <button type="button" id="tabCalcNumpad" class="mode-pill" data-action="switch-calc-tab" data-tab="numpad">🔢 Nhập số</button>
+          </div>
+          <button type="button" id="btnToggleNotePriceMode" class="btn" data-action="toggle-note-price-mode" style="padding:6px 10px; font-size:12px;">
+            📝 Ghi chú / Giá
+          </button>
+        </div>
+
+        <!-- Tab Chọn món -->
+        <div id="calcMenuPanel">
+          <div id="calcMenuGrid" class="menu-cards-grid"></div>
+        </div>
+
+        <!-- Tab Bàn phím số -->
+        <div id="calcNumpadPanel" class="hidden">
+          <div class="numpad-grid">
+            <button type="button" class="num-btn" data-num="7">7</button>
+            <button type="button" class="num-btn" data-num="8">8</button>
+            <button type="button" class="num-btn" data-num="9">9</button>
+            <button type="button" class="num-btn op" data-num="+">+</button>
+
+            <button type="button" class="num-btn" data-num="4">4</button>
+            <button type="button" class="num-btn" data-num="5">5</button>
+            <button type="button" class="num-btn" data-num="6">6</button>
+            <button type="button" class="num-btn op" data-num="-">−</button>
+
+            <button type="button" class="num-btn" data-num="1">1</button>
+            <button type="button" class="num-btn" data-num="2">2</button>
+            <button type="button" class="num-btn" data-num="3">3</button>
+            <button type="button" class="num-btn warn" data-num="BACK">⌫</button>
+
+            <button type="button" class="num-btn" data-num="0">0</button>
+            <button type="button" class="num-btn" data-num="00">00</button>
+            <button type="button" class="num-btn op" data-num="=">=</button>
+            <button type="button" class="num-btn warn" data-num="C">C</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-action="clear-target-money">🗑️ Thanh toán / Xóa tiền</button>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn" data-action="close-calc">Hủy</button>
+          <button type="button" class="btn btn-primary" data-action="save-calc">✓ Lưu cập nhật</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 2: GHI CHÚ BẾP & SỬA GIÁ RIÊNG CHO TỪNG MÓN
+       ======================================================================== -->
+  <div id="dishNotePriceModal" class="modal-backdrop hidden" style="z-index:95;">
+    <div class="modal-box" style="max-width:440px;">
+      <div class="modal-header">
+        <div id="dishModalTitle" class="modal-title">Ghi chú &amp; Giá món</div>
+        <button type="button" class="btn" data-action="close-dish-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Đơn giá (nghìn đồng, VD: 35 = 35.000₫)</label>
+            <input type="number" id="dishCustomPriceInput" class="form-input" step="0.5" min="0" />
+          </div>
+          <div class="form-group" style="max-width:110px;">
+            <label class="form-label">Số lượng</label>
+            <input type="number" id="dishCustomQtyInput" class="form-input" min="1" value="1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ghi chú gửi Bếp (không hành, ít bánh, mang về...)</label>
+          <input type="text" id="dishCustomNoteInput" class="form-input" placeholder="Nhập yêu cầu riêng cho bếp..." />
+        </div>
+
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="form-label">Chọn nhanh ghi chú:</span>
+            <button type="button" class="mini-tool-btn" data-action="open-note-presets-editor">⚙️ Sửa danh sách nhanh</button>
+          </div>
+          <div id="dishNoteQuickChips" class="preset-chips"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnDeleteDishLine" class="btn btn-danger hidden" data-action="delete-dish-line">🗑️ Xóa dòng</button>
+        <div style="display:flex; gap:6px; margin-left:auto;">
+          <button type="button" class="btn" data-action="close-dish-modal">Đóng</button>
+          <button type="button" class="btn btn-primary" data-action="confirm-dish-modal">✓ Áp dụng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 3: ORDER BẰNG GIỌNG NÓI AI (GEMINI)
+       ======================================================================== -->
+  <div id="voiceAiModal" class="modal-backdrop hidden">
+    <div class="modal-box" style="max-width:500px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">🎙️ Order Bằng Giọng Nói AI</div>
+          <div id="voiceAiModelBadge" style="font-size:11px; color:#1d4ed8; font-weight:700;">Model: gemini-3.8-flash</div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button type="button" id="btnModalInputMode" class="btn" data-action="toggle-ai-input-mode" style="padding:5px 9px; font-size:12px;">💬 Gửi Text</button>
+          <button type="button" class="btn" data-action="close-voice-ai">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div style="text-align:center; padding:12px; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:14px;">
+          <button type="button" id="btnVoiceMicCircle" data-action="toggle-voice-recording" style="width:68px; height:68px; border-radius:50%; border:none; background:#1d4ed8; color:#ffffff; font-size:28px; box-shadow:0 6px 16px rgba(29,78,216,0.3);">
+            🎙️
+          </button>
+          <div id="voiceStatusLine" style="margin-top:8px; font-weight:800; color:#1e3a8a; font-size:13px;">
+            Chạm micro để nói (tự dừng sau 0.95s im lặng)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nội dung lệnh (có thể sửa tay hoặc gõ trực tiếp):</label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="voiceTranscriptInput" class="form-input" placeholder="VD: Bàn 1A 2 phở bò không hành, 1 trà đá" />
+            <button type="button" class="btn btn-primary" data-action="analyze-voice-text">Gửi AI</button>
+          </div>
+        </div>
+
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:#0f766e; cursor:pointer;">
+          <input type="checkbox" id="voiceAutoConfirmCheck" style="width:16px; height:16px; accent-color:#0f766e;" />
+          <span>⚡ Tự động xác nhận &amp; áp dụng ngay vào bàn sau khi nói</span>
+        </label>
+
+        <!-- Khung xem trước kết quả AI khi tắt tự động xác nhận -->
+        <div id="voicePreviewCard" class="hidden" style="background:#f0fdfa; border:1.5px solid #5eead4; border-radius:12px; padding:10px;">
+          <div id="voicePreviewSummary" style="font-weight:800; color:#0f766e; margin-bottom:8px;"></div>
+          <div style="display:flex; gap:6px; justify-content:flex-end;">
+            <button type="button" class="btn" data-action="cancel-voice-preview">Bỏ qua</button>
+            <button type="button" class="btn btn-primary" data-action="confirm-voice-preview">✓ Áp dụng vào bàn</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 4: TÙY CHỈNH TỪ KHÓA GỌI AI RẢNH TAY (CHIA 3 TÍNH NĂNG)
+       ======================================================================== -->
+  <div id="wakeKeywordsModal" class="modal-backdrop hidden" style="z-index:95;">
+    <div class="modal-box" style="max-width:480px;">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Từ Khóa Gọi AI Rảnh Tay</div>
+        <button type="button" class="btn" data-action="close-wake-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:12px; color:#57534e;">
+          Phân tách rõ từ khóa từng tính năng (cách nhau bởi dấu phẩy) để tránh nhầm giữa gọi món, thanh toán và in bill.
+        </div>
+        <div class="form-group">
+          <label class="form-label">🍜 1. Từ khóa Gọi món / Thêm món:</label>
+          <input type="text" id="wakeOrderKeywordsInput" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">💰 2. Từ khóa Thanh toán / Xóa bàn:</label>
+          <input type="text" id="wakePayKeywordsInput" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">🖨️ 3. Từ khóa In bill / Xuất hóa đơn:</label>
+          <input type="text" id="wakePrintKeywordsInput" class="form-input" />
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; cursor:pointer;">
+          <input type="checkbox" id="wakeStrictCheck" style="width:16px; height:16px; accent-color:#0f766e;" />
+          <span>Bắt buộc nói kèm từ khóa mới kích hoạt AI (chống nhiễu quán ồn)</span>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="reset-wake-keywords">Khôi phục mặc định</button>
+        <button type="button" class="btn btn-primary" data-action="save-wake-keywords">✓ Lưu từ khóa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 5: THỐNG KÊ DOANH THU & IN GỘP NHIỀU BÀN
+       ======================================================================== -->
+  <div id="summaryModal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">📊 Tổng Hợp Bàn Đang Có Khách</div>
+        <button type="button" class="btn" data-action="close-summary">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="summaryActiveTablesList" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-action="confirm-reset-all-money">🗑️ Xóa hết tiền các bàn</button>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn btn-blue" data-action="print-merged-selected">🖨️ In bill gộp đã chọn</button>
+          <button type="button" class="btn" data-action="close-summary">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 6: NHẬP MÃ PIN QUẢN LÝ
+       ======================================================================== -->
+  <div id="pinModal" class="modal-backdrop hidden">
+    <div class="modal-box" style="max-width:360px;">
+      <div class="modal-header">
+        <div class="modal-title">🔒 Xác Thực Mã PIN Quản Lý</div>
+        <button type="button" class="btn" data-action="close-pin">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:12px; color:#57534e;">Nhập mã PIN để mở cài đặt hệ thống (mặc định: <b>1234</b>).</div>
+        <input type="password" id="pinVerifyInput" class="form-input" inputmode="numeric" maxlength="12" placeholder="Nhập mã PIN..." style="font-size:18px; text-align:center; letter-spacing:4px;" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="close-pin">Hủy</button>
+        <button type="button" class="btn btn-primary" data-action="submit-pin">Mở khóa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 7: CÀI ĐẶT HỆ THỐNG (MENU, AI, LOA THÔNG BÁO, ĐỒNG BỘ, LỊCH SỬ)
+       ======================================================================== -->
+  <div id="settingsModal" class="modal-backdrop hidden">
+    <div class="modal-box wide">
+      <div class="modal-header">
+        <div class="modal-title">⚙️ Cài Đặt Hệ Thống Quán Ăn</div>
+        <button type="button" class="btn" data-action="close-settings">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1. Bảo mật & Cảnh báo thời gian ngồi -->
+        <div class="settings-section">
+          <div class="settings-section-title">1. Bảo Mật &amp; Cảnh Báo Bàn Ngồi Lâu</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Đổi mã PIN Quản lý (4–12 số):</label>
+              <div style="display:flex; gap:6px;">
+                <input type="password" id="newPinInput" class="form-input" placeholder="PIN mới..." />
+                <button type="button" class="btn btn-primary" data-action="save-new-pin">Đổi PIN</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">⏱️ Cảnh báo bàn order quá (phút, 0 = tắt):</label>
+              <div style="display:flex; gap:6px;">
+                <input type="number" id="overdueMinutesInput" class="form-input" min="0" max="600" value="30" />
+                <button type="button" class="btn btn-primary" data-action="save-overdue-minutes">Lưu</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Gemini AI Giọng Nói -->
+        <div class="settings-section">
+          <div class="settings-section-title">
+            <span>2. Cấu Hình Gemini AI (Order Giọng Nói)</span>
+            <button type="button" class="mini-tool-btn" data-action="open-wake-modal">🎯 Sửa từ khóa rảnh tay</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:2;">
+              <label class="form-label">Gemini API Key (lưu riêng trên trình duyệt máy này):</label>
+              <div style="display:flex; gap:6px;">
+                <input type="password" id="geminiApiKeyInput" class="form-input" placeholder="AIzaSy..." />
+                <button type="button" class="btn" data-action="toggle-api-key-vis">👁️</button>
+                <button type="button" class="btn btn-blue" data-action="test-gemini-key">⚡ Thử Key</button>
+                <button type="button" class="btn btn-primary" data-action="save-gemini-key">✓ Lưu</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Model AI ưu tiên:</label>
+              <select id="geminiModelSelect" class="form-input">
+                <option value="gemini-3.8-flash">gemini-3.8-flash (Mới nhất, siêu nhanh)</option>
+                <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Tiết kiệm token)</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash (Ổn định cao)</option>
+                <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+                <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dữ liệu gửi AI:</label>
+              <select id="voiceAiInputModeSelect" class="form-input">
+                <option value="text">💬 Gửi Text (Tiết kiệm 85% token)</option>
+                <option value="audio">🎙️ Gửi Audio trực tiếp (Nghe giọng gốc)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Tùy chỉnh Hóa Đơn POS -->
+        <div class="settings-section">
+          <div class="settings-section-title">3. Mẫu In Hóa Đơn POS (80mm / 58mm)</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tên quán ăn / Nhà hàng:</label>
+              <input type="text" id="billRestaurantInput" class="form-input" placeholder="QUÁN ĂN GIA ĐÌNH" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lời cảm ơn cuối hóa đơn:</label>
+              <input type="text" id="billFooterInput" class="form-input" placeholder="Cảm ơn quý khách &amp; Hẹn gặp lại!" />
+            </div>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary" data-action="save-bill-settings">✓ Lưu thông tin hóa đơn</button>
+          </div>
+        </div>
+
+        <!-- 3B. Phát thông báo bằng giọng nói (TTS) -->
+        <div class="settings-section">
+          <div class="settings-section-title">
+            <span>🔊 Phát Thông Báo Giọng Nói (Đơn Mới Bếp &amp; Thanh Toán)</span>
+            <label style="display:inline-flex; align-items:center; gap:5px; font-size:12px; cursor:pointer;">
+              <input type="checkbox" id="ttsEnabledCheck" style="width:16px; height:16px; accent-color:#0f766e;" />
+              <span>Bật loa đọc</span>
+            </label>
+          </div>
+          <div style="font-size:11px; color:#57534e;">
+            Biến hỗ trợ: <b>{ban}</b> (tên bàn), <b>{ghe}</b> (tên ghế nếu có), <b>{mon}</b> (danh sách món mới), <b>{tien}</b> (số tiền VNĐ).
+          </div>
+          <div class="form-group">
+            <label class="form-label">🍜 Mẫu câu đọc khi nhận đơn mới (Bếp):</label>
+            <input type="text" id="ttsOrderTemplateInput" class="form-input" placeholder="Đơn mới {ban} {ghe}: {mon}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">💰 Mẫu câu đọc khi gọi thanh toán:</label>
+            <input type="text" id="ttsPayTemplateInput" class="form-input" placeholder="Thanh toán {ban} {ghe}, tổng cộng {tien}" />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:8px; align-items:end;">
+            <div class="form-group">
+              <label class="form-label">⚡ Tốc độ giọng đọc (<span id="ttsRateValLabel">1.05</span>x):</label>
+              <input type="range" id="ttsRateInput" min="0.75" max="1.4" step="0.05" value="1.05" style="width:100%; accent-color:#0f766e;" />
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn" data-action="test-tts-announce">🔊 Nghe thử</button>
+              <button type="button" class="btn btn-primary" data-action="save-tts-settings">✓ Lưu mẫu câu</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Đồng bộ Firebase / Wi-Fi LAN -->
+        <div class="settings-section">
+          <div class="settings-section-title">
+            <span>4. Đồng Bộ Nhiều Thiết Bị (Firebase Cloud / Wi-Fi LAN)</span>
+            <button type="button" class="btn btn-blue" data-action="copy-invite-link" style="padding:5px 9px; font-size:12px;">📋 Sao chép link mời nhân viên</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Firebase Realtime Database URL (tùy chọn):</label>
+              <input type="text" id="firebaseUrlInput" class="form-input" placeholder="https://ten-du-an.firebaseio.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Firebase Web API Key (tùy chọn):</label>
+              <input type="text" id="firebaseKeyInput" class="form-input" placeholder="AIzaSy..." />
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" data-action="save-firebase-settings">✓ Lưu &amp; Kết nối Cloud</button>
+            <button type="button" class="btn" data-action="sync-now">🔄 Đồng bộ ngay</button>
+          </div>
+        </div>
+
+        <!-- 5. Quản lý Thực đơn & Ghi chú Bếp -->
+        <div class="settings-section">
+          <div class="settings-section-title">
+            <span>5. Thực Đơn Quán Ăn &amp; Ghi Chú Nhanh Cho Bếp</span>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn" data-action="open-note-presets-editor" style="padding:5px 9px; font-size:12px;">📝 Sửa ghi chú Bếp</button>
+              <button type="button" class="btn btn-primary" data-action="add-menu-dish" style="padding:5px 9px; font-size:12px;">+ Thêm món</button>
+            </div>
+          </div>
+          <div id="menuEditorList" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto;"></div>
+        </div>
+
+        <!-- 6. Lịch sử Order - Thanh toán & Sao lưu JSON -->
+        <div class="settings-section">
+          <div class="settings-section-title">
+            <span>6. Lịch Sử Thanh Toán &amp; Sao Lưu Dữ Liệu</span>
+            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary" data-action="export-history-csv" style="padding:5px 9px; font-size:12px;">📊 Xuất Excel (CSV)</button>
+              <button type="button" class="btn" data-action="export-history-json" style="padding:5px 9px; font-size:12px;">📄 Xuất Lịch sử JSON</button>
+            </div>
+          </div>
+          <div id="historySummaryLine" style="font-size:12px; color:#57534e;"></div>
+          <div style="max-height:160px; overflow:auto; border:1px solid #e7e5e4; border-radius:8px; background:#ffffff;">
+            <table style="width:100%; border-collapse:collapse; font-size:11px;">
+              <thead>
+                <tr style="background:#f5f5f4; text-align:left;">
+                  <th style="padding:6px;">Bàn/Ghế</th>
+                  <th style="padding:6px;">Vào → Ra</th>
+                  <th style="padding:6px;">Chi tiết món</th>
+                  <th style="padding:6px; text-align:right;">Tổng tiền</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+            <button type="button" class="btn" data-action="export-setup-json">💾 Tải cấu hình JSON</button>
+            <label class="btn" style="cursor:pointer;">
+              📂 Nhập cấu hình JSON
+              <input type="file" id="jsonImportFileInput" accept=".json,application/json" class="hidden" />
+            </label>
+            <button type="button" class="btn" data-action="download-clean-html">⬇️ Tải file HTML về máy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-action="lock-settings">🔒 Khóa cài đặt</button>
+        <button type="button" class="btn btn-primary" data-action="close-settings">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HỘP THOẠI 8: CHỈNH SỬA DANH SÁCH GHI CHÚ NHANH CHO BẾP
+       ======================================================================== -->
+  <div id="notePresetsModal" class="modal-backdrop hidden" style="z-index:100;">
+    <div class="modal-box" style="max-width:440px;">
+      <div class="modal-header">
+        <div class="modal-title">📝 Danh Sách Ghi Chú Nhanh Cho Bếp</div>
+        <button type="button" class="btn" data-action="close-note-presets-editor">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="newNotePresetInput" class="form-input" placeholder="Thêm ghi chú mới (VD: Ít đường, Không đá...)" />
+          <button type="button" class="btn btn-primary" data-action="add-note-preset-item">+ Thêm</button>
+        </div>
+        <div id="notePresetsEditorList" style="display:flex; flex-direction:column; gap:6px; max-height:260px; overflow-y:auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-action="reset-note-presets">Khôi phục mặc định</button>
+        <button type="button" class="btn btn-primary" data-action="close-note-presets-editor">✓ Xong</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vùng in hóa đơn POS -->
+  <div id="printReceiptArea"></div>
+
+  <!-- ========================================================================
+       MÃ NGUỒN JAVASCRIPT HOÀN CHỈNH
+       ======================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ======================================================================
+         1. HẰNG SỐ LƯU TRỮ & DỮ LIỆU MẶC ĐỊNH
+         ====================================================================== */
+      const STORAGE_KEY_STATE = "pos_quan_an_state_v4";
+      const STORAGE_KEY_PIN = "pos_quan_an_pin_v1";
+      const STORAGE_KEY_GEMINI_KEY = "pos_gemini_api_key_v1";
+      const STORAGE_KEY_GEMINI_MODEL = "pos_gemini_model_v1";
+      const STORAGE_KEY_VOICE_AUTOCONFIRM = "pos_voice_autoconfirm_v1";
+      const STORAGE_KEY_AI_INPUT_MODE = "pos_voice_ai_input_mode_v1";
+      const STORAGE_KEY_UI_ROLE = "pos_ui_role_v1";
+      const STORAGE_KEY_HANDSFREE = "pos_handsfree_enabled_v1";
+      const STORAGE_KEY_WAKE_CFG = "pos_wake_keywords_cfg_v2";
+      const STORAGE_KEY_TTS_CFG = "pos_tts_announce_cfg_v1";
+      const STORAGE_KEY_FB_URL = "pos_firebase_url_v1";
+      const STORAGE_KEY_FB_KEY = "pos_firebase_api_key_v1";
+
+      const DEFAULT_TTS_CONFIG = {
+        enabled: true,
+        orderTemplate: "Đơn mới {ban} {ghe}: {mon}",
+        payTemplate: "Thanh toán {ban} {ghe}, tổng cộng {tien}",
+        rate: 1.05
+      };
+
+      const DEFAULT_WAKE_CONFIG = {
+        orderKeywords: ["order", "gọi món", "thêm món", "lấy thêm"],
+        payKeywords: ["thanh toán", "xóa bàn", "tính tiền xong", "đã thu tiền"],
+        printKeywords: ["in bill", "in hóa đơn", "xuất bill", "lấy bill"],
+        strictMode: true
+      };
+
+      const DEFAULT_NOTE_PRESETS = [
+        "Không hành",
+        "Ít bánh",
+        "Nhiều nước",
+        "Không cay",
+        "Ít cay",
+        "Mang về",
+        "Tái chín",
+        "Nước béo"
+      ];
+
+      const DEFAULT_MENU = [
+        { id: "m1", name: "Phở bò", price: 35 },
+        { id: "m2", name: "Bún chả", price: 35 },
+        { id: "m3", name: "Cơm rang", price: 35 },
+        { id: "m4", name: "Mì xào", price: 35 },
+        { id: "m5", name: "Trà đá", price: 5 },
+        { id: "m6", name: "Nước ngọt", price: 15 },
+        { id: "m7", name: "Bia lon", price: 20 },
+        { id: "m8", name: "Khăn lạnh", price: 3 }
+      ];
+
+      /* ======================================================================
+         2. CÁC HÀM TIỆN ÍCH CƠ BẢN & QUẢN LÝ CẤU HÌNH CỤC BỘ
+         ====================================================================== */
+      function el(id) {
+        return document.getElementById(id);
+      }
+
+      function uid(prefix) {
+        return (prefix || "id") + "_" + Math.random().toString(36).slice(2, 9);
+      }
+
+      function escapeHtml(str) {
+        return String(str == null ? "" : str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function formatMoney(amountInThousands) {
+        const val = Math.round((Number(amountInThousands) || 0) * 100) / 100;
+        if (val === 0) return "0₫";
+        return val.toLocaleString("vi-VN") + "k";
+      }
+
+      function formatBillVnd(amountInThousands) {
+        const vnd = Math.round((Number(amountInThousands) || 0) * 1000);
+        return vnd.toLocaleString("vi-VN") + "đ";
+      }
+
+      function colIndexToLetter(colIdx) {
+        return String.fromCharCode(65 + (colIdx % 26));
+      }
+
+      function getCoordLabel(slotIndex, cols) {
+        const safeCols = Math.max(1, Number(cols) || 3);
+        const r = Math.floor(slotIndex / safeCols) + 1;
+        const c = colIndexToLetter(slotIndex % safeCols);
+        return r + c;
+      }
+
+      function createDefaultChairs(count) {
+        const chairs = [];
+        const n = Math.max(0, Math.min(12, Number(count) || 0));
+        for (let i = 0; i < n; i++) {
+          chairs.push({
+            id: uid("ch"),
+            label: "G" + (i + 1),
+            amount: 0,
+            items: {}
+          });
+        }
+        return chairs;
+      }
+
+      function createTableSlot(slotIndex, cols, customName, chairCount) {
+        const coord = getCoordLabel(slotIndex, cols);
+        return {
+          id: uid("tbl"),
+          isEmpty: false,
+          name: customName || ("Bàn " + coord),
+          amount: 0,
+          items: {},
+          chairs: createDefaultChairs(chairCount != null ? chairCount : 4),
+          orderStartedAt: null,
+          kitchenDoneKeys: {}
+        };
+      }
+
+      function getSavedPin() {
+        return localStorage.getItem(STORAGE_KEY_PIN) || "1234";
+      }
+
+      function savePin(pin) {
+        localStorage.setItem(STORAGE_KEY_PIN, String(pin || "1234"));
+      }
+
+      function getSavedGeminiApiKey() {
+        return (localStorage.getItem(STORAGE_KEY_GEMINI_KEY) || "").trim();
+      }
+
+      function saveGeminiApiKey(key) {
+        localStorage.setItem(STORAGE_KEY_GEMINI_KEY, String(key || "").trim());
+      }
+
+      function getSavedGeminiModel() {
+        return localStorage.getItem(STORAGE_KEY_GEMINI_MODEL) || "gemini-3.8-flash";
+      }
+
+      function saveGeminiModel(m) {
+        localStorage.setItem(STORAGE_KEY_GEMINI_MODEL, String(m || "gemini-3.8-flash"));
+      }
+
+      function getVoiceAutoConfirm() {
+        const v = localStorage.getItem(STORAGE_KEY_VOICE_AUTOCONFIRM);
+        return v === null ? true : v === "1";
+      }
+
+      function setVoiceAutoConfirm(flag) {
+        localStorage.setItem(STORAGE_KEY_VOICE_AUTOCONFIRM, flag ? "1" : "0");
+      }
+
+      function getSavedVoiceAiInputMode() {
+        return localStorage.getItem(STORAGE_KEY_AI_INPUT_MODE) || "text";
+      }
+
+      function setSavedVoiceAiInputMode(mode) {
+        localStorage.setItem(STORAGE_KEY_AI_INPUT_MODE, mode === "audio" ? "audio" : "text");
+      }
+
+      function getSavedUiRole() {
+        return localStorage.getItem(STORAGE_KEY_UI_ROLE) || "order";
+      }
+
+      function setSavedUiRole(role) {
+        localStorage.setItem(STORAGE_KEY_UI_ROLE, role === "kitchen" ? "kitchen" : "order");
+      }
+
+      function getWakeConfig() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEY_WAKE_CFG) || "null");
+          if (raw && typeof raw === "object") {
+            return {
+              orderKeywords: Array.isArray(raw.orderKeywords) && raw.orderKeywords.length ? raw.orderKeywords : DEFAULT_WAKE_CONFIG.orderKeywords.slice(),
+              payKeywords: Array.isArray(raw.payKeywords) && raw.payKeywords.length ? raw.payKeywords : DEFAULT_WAKE_CONFIG.payKeywords.slice(),
+              printKeywords: Array.isArray(raw.printKeywords) && raw.printKeywords.length ? raw.printKeywords : DEFAULT_WAKE_CONFIG.printKeywords.slice(),
+              strictMode: raw.strictMode !== false
+            };
+          }
+        } catch (e) {}
+        return {
+          orderKeywords: DEFAULT_WAKE_CONFIG.orderKeywords.slice(),
+          payKeywords: DEFAULT_WAKE_CONFIG.payKeywords.slice(),
+          printKeywords: DEFAULT_WAKE_CONFIG.printKeywords.slice(),
+          strictMode: true
+        };
+      }
+
+      function saveWakeConfig(cfg) {
+        localStorage.setItem(STORAGE_KEY_WAKE_CFG, JSON.stringify(cfg));
+      }
+
+      function getTtsConfig() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEY_TTS_CFG) || "null");
+          if (raw && typeof raw === "object") {
+            return {
+              enabled: raw.enabled !== false,
+              orderTemplate: String(raw.orderTemplate || DEFAULT_TTS_CONFIG.orderTemplate),
+              payTemplate: String(raw.payTemplate || DEFAULT_TTS_CONFIG.payTemplate),
+              rate: Math.max(0.7, Math.min(1.5, Number(raw.rate) || 1.05))
+            };
+          }
+        } catch (e) {}
+        return Object.assign({}, DEFAULT_TTS_CONFIG);
+      }
+
+      function saveTtsConfig(cfg) {
+        localStorage.setItem(STORAGE_KEY_TTS_CFG, JSON.stringify(cfg));
+        updateTtsToggleButtonUI();
+      }
+
+      function updateTtsToggleButtonUI() {
+        const cfg = getTtsConfig();
+        const btn = el("btnTtsAnnounceToggle");
+        const icon = el("ttsAnnounceIcon");
+        if (btn) {
+          btn.style.background = cfg.enabled ? "#f0fdfa" : "#ffffff";
+          btn.style.borderColor = cfg.enabled ? "#5eead4" : "#d6d3d1";
+          btn.style.color = cfg.enabled ? "#0f766e" : "#78716c";
+        }
+        if (icon) {
+          icon.textContent = cfg.enabled ? "🔊" : "🔇";
+        }
+      }
+
+      function formatAmountForSpeech(amountInThousands) {
+        const vnd = Math.round((Number(amountInThousands) || 0) * 1000);
+        if (vnd <= 0) return "0 đồng";
+        return vnd.toLocaleString("vi-VN") + " đồng";
+      }
+
+      function renderTtsTemplate(template, vars) {
+        return String(template || "")
+          .replace(/\{ban\}/gi, vars.ban || "")
+          .replace(/\{ghe\}/gi, vars.ghe || "")
+          .replace(/\{mon\}/gi, vars.mon || "")
+          .replace(/\{tien\}/gi, vars.tien || "")
+          .replace(/\s+/g, " ")
+          .replace(/\s+,/g, ",")
+          .replace(/\s+:/g, ":")
+          .trim();
+      }
+
+      function speakVietnameseText(text, forceSpeak) {
+        const cfg = getTtsConfig();
+        if (!forceSpeak && !cfg.enabled) return;
+        const clean = String(text || "").trim();
+        if (!clean || !("speechSynthesis" in window)) return;
+
+        // Tạm dừng nhận diện Text rảnh tay trong lúc loa đang đọc để tránh máy tự nghe giọng mình
+        const wasTextHandsFree = handsFreeState && handsFreeState.enabled && getSavedVoiceAiInputMode() === "text";
+        if (wasTextHandsFree && handsFreeState.recognition) {
+          try { handsFreeState.recognition.stop(); } catch (e) {}
+        }
+
+        try {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(clean);
+          utter.lang = "vi-VN";
+          utter.rate = cfg.rate || 1.05;
+          utter.pitch = 1.0;
+
+          const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+          const viVoice = voices.find(function (v) { return (v.lang || "").toLowerCase().indexOf("vi") !== -1; });
+          if (viVoice) utter.voice = viVoice;
+
+          window.speechSynthesis.speak(utter);
+        } catch (e) {}
+      }
+
+      function announceNewOrderTts(tableName, chairLabel, addedLines) {
+        if (!addedLines || addedLines.length === 0) return;
+        const cfg = getTtsConfig();
+        const dishesText = addedLines.map(function (ln) {
+          return ln.qty + " " + ln.name + (ln.note ? ", " + ln.note : "");
+        }).join(", ");
+        const msg = renderTtsTemplate(cfg.orderTemplate, {
+          ban: tableName || "",
+          ghe: chairLabel ? ("ghế " + chairLabel) : "",
+          mon: dishesText,
+          tien: ""
+        });
+        speakVietnameseText(msg, false);
+      }
+
+      function announcePaymentTts(tableName, chairLabel, amountInThousands) {
+        const amt = Number(amountInThousands) || 0;
+        if (amt <= 0) return;
+        const cfg = getTtsConfig();
+        const msg = renderTtsTemplate(cfg.payTemplate, {
+          ban: tableName || "",
+          ghe: chairLabel ? ("ghế " + chairLabel) : "",
+          mon: "",
+          tien: formatAmountForSpeech(amt)
+        });
+        speakVietnameseText(msg, false);
+      }
+
+      function getFirebaseConfig() {
+        return {
+          url: (localStorage.getItem(STORAGE_KEY_FB_URL) || "").trim().replace(/\/+$/, ""),
+          apiKey: (localStorage.getItem(STORAGE_KEY_FB_KEY) || "").trim()
+        };
+      }
+
+      function saveFirebaseConfig(url, apiKey) {
+        localStorage.setItem(STORAGE_KEY_FB_URL, String(url || "").trim().replace(/\/+$/, ""));
+        localStorage.setItem(STORAGE_KEY_FB_KEY, String(apiKey || "").trim());
+      }
+
+      /* ======================================================================
+         3. QUẢN LÝ TRẠNG THÁI ỨNG DỤNG & SANITIZE DỮ LIỆU
+         ====================================================================== */
+      function createInitialState() {
+        const cols = 3;
+        const tables = [];
+        for (let i = 0; i < 9; i++) {
+          tables.push(createTableSlot(i, cols));
+        }
+        return {
+          cols: cols,
+          tables: tables,
+          menu: DEFAULT_MENU.map(function (m) { return Object.assign({}, m); }),
+          notePresets: DEFAULT_NOTE_PRESETS.slice(),
+          overdueMinutes: 30,
+          billRestaurant: "QUÁN ĂN GIA ĐÌNH",
+          billFooter: "Cảm ơn quý khách & Hẹn gặp lại!",
+          history: [],
+          updatedAt: Date.now()
+        };
+      }
+
+      function sanitizeItemsMap(rawMap) {
+        const clean = {};
+        if (!rawMap || typeof rawMap !== "object") return clean;
+        Object.keys(rawMap).forEach(function (k) {
+          const q = Number(rawMap[k]) || 0;
+          if (q > 0) clean[k] = q;
+        });
+        return clean;
+      }
+
+      function sanitizeState(raw) {
+        const base = createInitialState();
+        if (!raw || typeof raw !== "object") return base;
+
+        const cols = Math.max(1, Math.min(8, Number(raw.cols) || 3));
+        const tables = Array.isArray(raw.tables) && raw.tables.length > 0
+          ? raw.tables.map(function (t, idx) {
+              if (!t || t.isEmpty) {
+                return { id: (t && t.id) || uid("emp"), isEmpty: true };
+              }
+              return {
+                id: t.id || uid("tbl"),
+                isEmpty: false,
+                name: String(t.name || ("Bàn " + getCoordLabel(idx, cols))),
+                amount: Math.max(0, Number(t.amount) || 0),
+                items: sanitizeItemsMap(t.items),
+                chairs: Array.isArray(t.chairs)
+                  ? t.chairs.map(function (c, cIdx) {
+                      return {
+                        id: (c && c.id) || uid("ch"),
+                        label: (c && c.label) || ("G" + (cIdx + 1)),
+                        amount: Math.max(0, Number(c && c.amount) || 0),
+                        items: sanitizeItemsMap(c && c.items)
+                      };
+                    })
+                  : [],
+                orderStartedAt: t.orderStartedAt ? Number(t.orderStartedAt) : null,
+                kitchenDoneKeys: (t.kitchenDoneKeys && typeof t.kitchenDoneKeys === "object") ? Object.assign({}, t.kitchenDoneKeys) : {}
+              };
+            })
+          : base.tables;
+
+        const menu = Array.isArray(raw.menu) && raw.menu.length > 0
+          ? raw.menu.map(function (m, i) {
+              return {
+                id: (m && m.id) || ("m" + (i + 1)),
+                name: String((m && m.name) || ("Món " + (i + 1))),
+                price: Math.max(0, Number(m && m.price) || 0)
+              };
+            })
+          : base.menu;
+
+        const notePresets = Array.isArray(raw.notePresets) && raw.notePresets.length > 0
+          ? raw.notePresets.map(function (s) { return String(s || "").trim(); }).filter(Boolean)
+          : DEFAULT_NOTE_PRESETS.slice();
+
+        return {
+          cols: cols,
+          tables: tables,
+          menu: menu,
+          notePresets: notePresets,
+          overdueMinutes: raw.overdueMinutes != null ? Math.max(0, Number(raw.overdueMinutes) || 0) : 30,
+          billRestaurant: String(raw.billRestaurant || "QUÁN ĂN GIA ĐÌNH"),
+          billFooter: String(raw.billFooter || "Cảm ơn quý khách & Hẹn gặp lại!"),
+          history: Array.isArray(raw.history) ? raw.history.slice(0, 500) : [],
+          updatedAt: Number(raw.updatedAt) || Date.now()
+        };
+      }
+
+      let appState = createInitialState();
+      let isLayoutEditMode = false;
+      let isSettingsUnlocked = false;
+      let lastRemoteVersion = 0;
+      let toastTimer = null;
+      let lastVoiceUndoSnapshot = null;
+
+      function loadLocalState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_STATE);
+          if (raw) {
+            appState = sanitizeState(JSON.parse(raw));
+          }
+        } catch (e) {
+          appState = createInitialState();
+        }
+      }
+
+      function saveState(skipRemote) {
+        appState.updatedAt = Date.now();
+        localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(appState));
+        renderAll();
+        if (!skipRemote) {
+          pushStateToRemote();
+        }
+      }
+
+      /* ======================================================================
+         4. MÃ HÓA DÒNG MÓN (DISHID + CUSTOMPRICE + NOTE) & TÍNH TỔNG TIỀN
+         ====================================================================== */
+      function buildLineKey(dishId, customPrice, note) {
+        const cleanNote = String(note || "").trim().replace(/\|/g, "/");
+        const hasPrice = customPrice !== null && customPrice !== undefined && !isNaN(Number(customPrice));
+        if (!hasPrice && !cleanNote) return String(dishId);
+        return String(dishId) + "|" + (hasPrice ? Number(customPrice) : "") + "|" + cleanNote;
+      }
+
+      function parseLineKey(lineKey) {
+        const parts = String(lineKey || "").split("|");
+        const dishId = parts[0] || "";
+        const customPrice = (parts.length > 1 && parts[1] !== "") ? Number(parts[1]) : null;
+        const note = parts.length > 2 ? parts.slice(2).join("|") : "";
+        return { dishId: dishId, customPrice: customPrice, note: note };
+      }
+
+      function getMenuDishById(dishId) {
+        return appState.menu.find(function (m) { return m.id === dishId; }) || null;
+      }
+
+      function getLineDisplayInfo(lineKey, qty) {
+        const parsed = parseLineKey(lineKey);
+        const dish = getMenuDishById(parsed.dishId);
+        const name = dish ? dish.name : parsed.dishId;
+        const unitPrice = parsed.customPrice !== null ? parsed.customPrice : (dish ? dish.price : 0);
+        const subtotal = Math.round(unitPrice * (Number(qty) || 0) * 100) / 100;
+        return {
+          dishId: parsed.dishId,
+          name: name,
+          unitPrice: unitPrice,
+          customPrice: parsed.customPrice,
+          note: parsed.note,
+          qty: Number(qty) || 0,
+          subtotal: subtotal
+        };
+      }
+
+      function getChairsTotal(slot) {
+        if (!slot || slot.isEmpty || !Array.isArray(slot.chairs)) return 0;
+        return slot.chairs.reduce(function (sum, c) {
+          return sum + (Number(c.amount) || 0);
+        }, 0);
+      }
+
+      function getTableTotal(slot) {
+        if (!slot || slot.isEmpty) return 0;
+        return Math.round(((Number(slot.amount) || 0) + getChairsTotal(slot)) * 100) / 100;
+      }
+
+      function getGrandSummary() {
+        let totalMoney = 0;
+        let activeTables = 0;
+        appState.tables.forEach(function (t) {
+          if (!t || t.isEmpty) return;
+          const tot = getTableTotal(t);
+          if (tot > 0) {
+            totalMoney += tot;
+            activeTables++;
+          }
+        });
+        return {
+          totalMoney: Math.round(totalMoney * 100) / 100,
+          activeTables: activeTables
+        };
+      }
+
+      /* ======================================================================
+         5. ĐỒNG BỘ FIREBASE CLOUD & MÁY CHỦ WI-FI LAN (SERVER.PY)
+         ====================================================================== */
+      function updateSyncBadge(status, label) {
+        const badge = el("syncStatusBadge");
+        const txt = el("syncStatusText");
+        if (!badge || !txt) return;
+        badge.classList.remove("ok", "warn", "err");
+        if (status) badge.classList.add(status);
+        txt.textContent = label;
+      }
+
+      function detectAndAnnounceRemoteNewOrders(oldTables, newTables) {
+        if (!Array.isArray(oldTables) || !Array.isArray(newTables)) return;
+        const oldById = {};
+        oldTables.forEach(function (t) {
+          if (t && !t.isEmpty && t.id) oldById[t.id] = t;
+        });
+
+        newTables.forEach(function (nt) {
+          if (!nt || nt.isEmpty || !nt.id) return;
+          const ot = oldById[nt.id];
+          const addedTableLines = [];
+          const oldTblItems = (ot && ot.items) || {};
+          Object.keys(nt.items || {}).forEach(function (k) {
+            const diff = (Number(nt.items[k]) || 0) - (Number(oldTblItems[k]) || 0);
+            if (diff > 0) {
+              const info = getLineDisplayInfo(k, diff);
+              addedTableLines.push({ name: info.name, qty: diff, note: info.note });
+            }
+          });
+          if (addedTableLines.length > 0) {
+            announceNewOrderTts(nt.name, "", addedTableLines);
+          }
+
+          (nt.chairs || []).forEach(function (nch) {
+            const och = ot && Array.isArray(ot.chairs)
+              ? ot.chairs.find(function (c) { return c.id === nch.id; })
+              : null;
+            const oldChItems = (och && och.items) || {};
+            const addedChairLines = [];
+            Object.keys(nch.items || {}).forEach(function (k) {
+              const diff = (Number(nch.items[k]) || 0) - (Number(oldChItems[k]) || 0);
+              if (diff > 0) {
+                const info = getLineDisplayInfo(k, diff);
+                addedChairLines.push({ name: info.name, qty: diff, note: info.note });
+              }
+            });
+            if (addedChairLines.length > 0) {
+              announceNewOrderTts(nt.name, nch.label, addedChairLines);
+            }
+          });
+        });
+      }
+
+      async function pushStateToRemote() {
+        const fb = getFirebaseConfig();
+        if (fb.url) {
+          try {
+            const endpoint = fb.url + "/pos_shared_state.json" + (fb.apiKey ? ("?auth=" + encodeURIComponent(fb.apiKey)) : "");
+            const res = await fetch(endpoint, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(appState)
+            });
+            if (res.ok) {
+              updateSyncBadge("ok", "Cloud đã đồng bộ");
+            } else {
+              updateSyncBadge("err", "Lỗi Cloud (" + res.status + ")");
+            }
+          } catch (e) {
+            updateSyncBadge("warn", "Mất mạng Cloud");
+          }
+          return;
+        }
+
+        // Thử đồng bộ qua LAN Python Server nếu chạy qua HTTP
+        if (location.protocol.startsWith("http")) {
+          try {
+            const res = await fetch("/api/state", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ state: appState })
+            });
+            if (res.ok) {
+              const d = await res.json();
+              if (d && d.version) lastRemoteVersion = d.version;
+              updateSyncBadge("ok", "Wi-Fi LAN");
+            }
+          } catch (e) {
+            updateSyncBadge("", "Cục bộ");
+          }
+        }
+      }
+
+      async function pullStateFromRemote(isPolling) {
+        const fb = getFirebaseConfig();
+        if (fb.url) {
+          try {
+            const endpoint = fb.url + "/pos_shared_state.json" + (fb.apiKey ? ("?auth=" + encodeURIComponent(fb.apiKey)) : "");
+            const res = await fetch(endpoint, { cache: "no-store" });
+            if (res.ok) {
+              const remoteData = await res.json();
+              if (remoteData && typeof remoteData === "object" && (Number(remoteData.updatedAt) || 0) > (Number(appState.updatedAt) || 0)) {
+                const prevTablesSnapshot = appState.tables;
+                appState = sanitizeState(remoteData);
+                localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(appState));
+                renderAll();
+                detectAndAnnounceRemoteNewOrders(prevTablesSnapshot, appState.tables);
+              }
+              updateSyncBadge("ok", "Cloud đã đồng bộ");
+            }
+          } catch (e) {
+            if (!isPolling) updateSyncBadge("warn", "Offline");
+          }
+          return;
+        }
+
+        if (location.protocol.startsWith("http")) {
+          try {
+            const vRes = await fetch("/api/version", { cache: "no-store" });
+            if (!vRes.ok) return;
+            const vData = await vRes.json();
+            if (vData && vData.ok) {
+              updateSyncBadge("ok", "Wi-Fi LAN");
+              if (vData.hasState && vData.version > lastRemoteVersion) {
+                const sRes = await fetch("/api/state", { cache: "no-store" });
+                if (sRes.ok) {
+                  const sData = await sRes.json();
+                  if (sData && sData.state) {
+                    const prevTablesSnapshot = appState.tables;
+                    lastRemoteVersion = sData.version;
+                    appState = sanitizeState(sData.state);
+                    localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(appState));
+                    renderAll();
+                    detectAndAnnounceRemoteNewOrders(prevTablesSnapshot, appState.tables);
+                  }
+                }
+              } else if (!vData.hasState) {
+                pushStateToRemote();
+              }
+            }
+          } catch (e) {
+            if (!isPolling) updateSyncBadge("", "Cục bộ");
+          }
+        }
+      }
+
+      function applyInviteParamsFromUrl() {
+        try {
+          const params = new URLSearchParams(location.search);
+          const fbUrl = params.get("fbUrl");
+          const fbKey = params.get("fbKey");
+          const aiKey = params.get("aiKey");
+          if (fbUrl) saveFirebaseConfig(fbUrl, fbKey || "");
+          if (aiKey) saveGeminiApiKey(aiKey);
+          if (fbUrl || aiKey) {
+            history.replaceState({}, document.title, location.pathname);
+          }
+        } catch (e) {}
+      }
+
+      /* ======================================================================
+         6. LỊCH SỬ THANH TOÁN & XUẤT BÁO CÁO EXCEL (CSV) / JSON
+         ====================================================================== */
+      function formatTimeShort(ts) {
+        if (!ts) return "--:--";
+        const d = new Date(Number(ts));
+        return d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+      }
+
+      function buildItemsSummaryText(itemsMap) {
+        if (!itemsMap || typeof itemsMap !== "object") return "Nhập tay";
+        const parts = [];
+        Object.keys(itemsMap).forEach(function (k) {
+          const qty = Number(itemsMap[k]) || 0;
+          if (qty <= 0) return;
+          const info = getLineDisplayInfo(k, qty);
+          parts.push(qty + "x " + info.name + (info.note ? " (" + info.note + ")" : ""));
+        });
+        return parts.length > 0 ? parts.join(", ") : "Nhập tay";
+      }
+
+      function recordPaymentHistory(targetLabel, coord, startedAt, amountInThousands, itemsMap) {
+        const amt = Number(amountInThousands) || 0;
+        if (amt <= 0) return;
+        const paidAt = Date.now();
+        const start = startedAt ? Number(startedAt) : paidAt;
+        const durationMin = Math.max(0, Math.round((paidAt - start) / 60000));
+
+        appState.history.unshift({
+          id: uid("his"),
+          target: targetLabel,
+          coord: coord || "",
+          orderAt: start,
+          paidAt: paidAt,
+          durationMin: durationMin,
+          itemsText: buildItemsSummaryText(itemsMap),
+          amountK: amt,
+          amountVnd: Math.round(amt * 1000)
+        });
+        if (appState.history.length > 500) {
+          appState.history = appState.history.slice(0, 500);
+        }
+      }
+
+      function exportHistoryToCsv() {
+        const rows = [
+          ["Bàn / Ghế", "Vị trí", "Giờ Order", "Giờ Thanh Toán", "Thời gian ngồi (phút)", "Chi tiết món", "Tiền (nghìn)", "Thành tiền (VNĐ)"]
+        ];
+        appState.history.forEach(function (h) {
+          rows.push([
+            h.target,
+            h.coord,
+            new Date(h.orderAt).toLocaleString("vi-VN"),
+            new Date(h.paidAt).toLocaleString("vi-VN"),
+            h.durationMin,
+            h.itemsText,
+            h.amountK,
+            h.amountVnd
+          ]);
+        });
+        const csvContent = "\uFEFF" + rows.map(function (r) {
+          return r.map(function (cell) {
+            return '"' + String(cell == null ? "" : cell).replace(/"/g, '""') + '"';
+          }).join(",");
+        }).join("\r\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lich-su-order-" + new Date().toISOString().slice(0, 10) + ".csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportHistoryToJson() {
+        const blob = new Blob([JSON.stringify(appState.history, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "lich-su-order-" + new Date().toISOString().slice(0, 10) + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      /* ======================================================================
+         7. DỰNG GIAO DIỆN SƠ ĐỒ BÀN GHẾ & MÀN HÌNH BẾP KDS
+         ====================================================================== */
+      function showToast(msg, allowUndo) {
+        const banner = el("toastBanner");
+        const msgEl = el("toastMessage");
+        const undoBtn = el("btnToastUndo");
+        if (!banner || !msgEl) return;
+
+        msgEl.textContent = msg;
+        if (undoBtn) {
+          if (allowUndo && lastVoiceUndoSnapshot) {
+            undoBtn.classList.remove("hidden");
+          } else {
+            undoBtn.classList.add("hidden");
+          }
+        }
+        banner.classList.remove("hidden");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          banner.classList.add("hidden");
+        }, allowUndo ? 4200 : 2800);
+      }
+
+      function renderRoleTabs() {
+        const role = getSavedUiRole();
+        const tabOrder = el("tabRoleOrder");
+        const tabKitchen = el("tabRoleKitchen");
+        const mapCont = el("mapContainer");
+        const kitCont = el("kitchenContainer");
+        const btnEdit = el("btnToggleLayoutEdit");
+
+        if (tabOrder) tabOrder.classList.toggle("active", role === "order");
+        if (tabKitchen) tabKitchen.classList.toggle("active", role === "kitchen");
+        if (mapCont) mapCont.classList.toggle("hidden", role !== "order");
+        if (kitCont) kitCont.classList.toggle("hidden", role !== "kitchen");
+        if (btnEdit) btnEdit.classList.toggle("hidden", role !== "order");
+      }
+
+      function renderMap() {
+        const grid = el("tablesGrid");
+        if (!grid) return;
+
+        const cols = appState.cols || 3;
+        grid.style.gridTemplateColumns = "repeat(" + cols + ", minmax(0, 1fr))";
+
+        const rows = Math.ceil(appState.tables.length / cols);
+        if (el("gridDimLabel")) {
+          el("gridDimLabel").textContent = cols + " cột × " + rows + " hàng";
+        }
+        if (el("layoutEditToolbar")) {
+          el("layoutEditToolbar").classList.toggle("hidden", !isLayoutEditMode);
+        }
+        if (el("btnToggleLayoutEdit")) {
+          el("btnToggleLayoutEdit").style.background = isLayoutEditMode ? "#fef3c7" : "#ffffff";
+        }
+
+        const now = Date.now();
+        const limitMin = Number(appState.overdueMinutes) || 0;
+
+        grid.innerHTML = appState.tables.map(function (slot, idx) {
+          const coord = getCoordLabel(idx, cols);
+          if (!slot || slot.isEmpty) {
+            return (
+              '<div class="slot-empty">' +
+                '<span>Ô trống (' + coord + ')</span>' +
+                (isLayoutEditMode
+                  ? '<button type="button" class="mini-tool-btn" data-action="restore-slot" data-index="' + idx + '">+ Đặt bàn vào đây</button>'
+                  : '') +
+              '</div>'
+            );
+          }
+
+          const tableOwnAmt = Number(slot.amount) || 0;
+          const totalAmt = getTableTotal(slot);
+          const chairsAmt = getChairsTotal(slot);
+          const hasGuests = totalAmt > 0;
+
+          let elapsedMin = 0;
+          let isOverdue = false;
+          if (hasGuests && slot.orderStartedAt) {
+            elapsedMin = Math.max(0, Math.floor((now - Number(slot.orderStartedAt)) / 60000));
+            if (limitMin > 0 && elapsedMin >= limitMin) {
+              isOverdue = true;
+            }
+          }
+
+          const half = Math.ceil(slot.chairs.length / 2);
+          const topChairs = slot.chairs.slice(0, half);
+          const bottomChairs = slot.chairs.slice(half);
+
+          function renderChairHtml(ch) {
+            const cAmt = Number(ch.amount) || 0;
+            return (
+              '<button type="button" class="chair-btn ' + (cAmt > 0 ? 'has-money' : '') + '" ' +
+                'data-target-type="chair" data-table-index="' + idx + '" data-chair-id="' + ch.id + '">' +
+                '<span class="chair-lbl">' + escapeHtml(ch.label) + '</span>' +
+                '<span class="chair-amt">' + (cAmt > 0 ? formatMoney(cAmt) : '0') + '</span>' +
+              '</button>'
+            );
+          }
+
+          return (
+            '<div class="table-unit ' + (hasGuests ? 'has-guests ' : '') + (isOverdue ? 'overdue-alert' : '') + '">' +
+              (topChairs.length > 0 ? '<div class="chairs-row">' + topChairs.map(renderChairHtml).join("") + '</div>' : '') +
+              '<button type="button" class="table-surface ' + (hasGuests ? 'has-money' : '') + '" ' +
+                'data-target-type="table" data-table-index="' + idx + '">' +
+                '<div class="table-top-meta">' +
+                  '<span class="coord-tag">' + coord + '</span>' +
+                  (hasGuests && slot.orderStartedAt
+                    ? '<span class="time-badge ' + (isOverdue ? 'overdue' : '') + '">' + (isOverdue ? '⏰ ' : '⏱ ') + elapsedMin + 'p</span>'
+                    : '<span></span>') +
+                '</div>' +
+                '<div class="table-name">' + escapeHtml(slot.name) + '</div>' +
+                '<div class="table-amount">' + formatMoney(totalAmt) + '</div>' +
+                (chairsAmt > 0
+                  ? '<div class="table-sub-note">Bàn: ' + formatMoney(tableOwnAmt) + ' | Ghế: ' + formatMoney(chairsAmt) + '</div>'
+                  : '') +
+              '</button>' +
+              (bottomChairs.length > 0 ? '<div class="chairs-row">' + bottomChairs.map(renderChairHtml).join("") + '</div>' : '') +
+              (isLayoutEditMode
+                ? '<div class="table-edit-tools">' +
+                    '<button type="button" class="mini-tool-btn" data-action="rename-table" data-index="' + idx + '">✏️ Tên</button>' +
+                    '<button type="button" class="mini-tool-btn" data-action="chair-dec" data-index="' + idx + '">− Ghế</button>' +
+                    '<button type="button" class="mini-tool-btn" data-action="chair-inc" data-index="' + idx + '">+ Ghế</button>' +
+                    '<button type="button" class="mini-tool-btn" data-action="remove-table" data-index="' + idx + '" style="color:#dc2626;">✕ Xóa</button>' +
+                  '</div>'
+                : '') +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function renderKitchenView() {
+        const grid = el("kitchenCardsGrid");
+        const badge = el("kitchenPendingBadge");
+        const stats = el("kitchenSummaryStats");
+        if (!grid) return;
+
+        const now = Date.now();
+        const limitMin = Number(appState.overdueMinutes) || 0;
+        const activeTickets = [];
+        let pendingDishCount = 0;
+
+        appState.tables.forEach(function (slot, idx) {
+          if (!slot || slot.isEmpty) return;
+          const lines = [];
+
+          Object.keys(slot.items || {}).forEach(function (k) {
+            const q = Number(slot.items[k]) || 0;
+            if (q <= 0) return;
+            const info = getLineDisplayInfo(k, q);
+            const doneKey = "tbl::" + k;
+            const isDone = Boolean(slot.kitchenDoneKeys && slot.kitchenDoneKeys[doneKey]);
+            if (!isDone) pendingDishCount += q;
+            lines.push({
+              doneKey: doneKey,
+              isDone: isDone,
+              chairLabel: "",
+              name: info.name,
+              qty: q,
+              note: info.note
+            });
+          });
+
+          (slot.chairs || []).forEach(function (ch) {
+            Object.keys(ch.items || {}).forEach(function (k) {
+              const q = Number(ch.items[k]) || 0;
+              if (q <= 0) return;
+              const info = getLineDisplayInfo(k, q);
+              const doneKey = "ch::" + ch.id + "::" + k;
+              const isDone = Boolean(slot.kitchenDoneKeys && slot.kitchenDoneKeys[doneKey]);
+              if (!isDone) pendingDishCount += q;
+              lines.push({
+                doneKey: doneKey,
+                isDone: isDone,
+                chairLabel: ch.label,
+                name: info.name,
+                qty: q,
+                note: info.note
+              });
+            });
+          });
+
+          if (lines.length > 0) {
+            const startedAt = slot.orderStartedAt || now;
+            const elapsedMin = Math.max(0, Math.floor((now - startedAt) / 60000));
+            const allDone = lines.every(function (l) { return l.isDone; });
+            activeTickets.push({
+              tableIndex: idx,
+              tableName: slot.name,
+              startedAt: startedAt,
+              elapsedMin: elapsedMin,
+              isOverdue: limitMin > 0 && elapsedMin >= limitMin && !allDone,
+              allDone: allDone,
+              lines: lines
+            });
+          }
+        });
+
+        activeTickets.sort(function (a, b) {
+          if (a.allDone !== b.allDone) return a.allDone ? 1 : -1;
+          return a.startedAt - b.startedAt;
+        });
+
+        if (badge) {
+          badge.textContent = pendingDishCount > 0 ? "(" + pendingDishCount + ")" : "";
+        }
+        if (stats) {
+          stats.textContent = activeTickets.length + " bàn đang gọi • " + pendingDishCount + " phần chờ làm";
+        }
+
+        if (activeTickets.length === 0) {
+          grid.innerHTML = '<div style="padding:24px; text-align:center; color:#78716c; background:#ffffff; border-radius:14px; border:1px dashed #d6d3d1;">Hiện chưa có đơn món nào chờ chế biến.</div>';
+          return;
+        }
+
+        grid.innerHTML = activeTickets.map(function (tk) {
+          return (
+            '<div class="kds-card ' + (tk.isOverdue ? 'overdue' : '') + '">' +
+              '<div class="kds-card-head">' +
+                '<span>' + escapeHtml(tk.tableName) + '</span>' +
+                '<span style="font-size:13px;">⏱ ' + tk.elapsedMin + ' phút</span>' +
+              '</div>' +
+              '<div class="kds-items-list">' +
+                tk.lines.map(function (ln) {
+                  return (
+                    '<div class="kds-item ' + (ln.isDone ? 'done' : '') + '" ' +
+                      'data-action="toggle-kds-item" data-table-index="' + tk.tableIndex + '" data-done-key="' + escapeHtml(ln.doneKey) + '">' +
+                      '<div class="kds-qty">x' + ln.qty + '</div>' +
+                      '<div class="kds-dish-info">' +
+                        '<div class="kds-dish-name">' +
+                          escapeHtml(ln.name) +
+                          (ln.chairLabel ? '<span class="kds-chair-tag">' + escapeHtml(ln.chairLabel) + '</span>' : '') +
+                        '</div>' +
+                        (ln.note ? '<div class="kds-note-box">📝 ' + escapeHtml(ln.note) + '</div>' : '') +
+                      '</div>' +
+                    '</div>'
+                  );
+                }).join("") +
+              '</div>' +
+              '<div class="kds-card-foot">' +
+                '<button type="button" class="btn btn-primary" style="width:100%;" data-action="complete-kds-table" data-table-index="' + tk.tableIndex + '">' +
+                  (tk.allDone ? '✓ Đã xong toàn bộ món' : '✓ Ra đủ món ' + escapeHtml(tk.tableName)) +
+                '</button>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function renderAll() {
+        const grand = getGrandSummary();
+        if (el("grandTotalValue")) {
+          el("grandTotalValue").textContent = formatMoney(grand.totalMoney);
+        }
+        renderRoleTabs();
+        renderMap();
+        renderKitchenView();
+      }
+
+      /* ======================================================================
+         8. LOGIC CHỌN MÓN, TÍNH TIỀN BÀN/GHẾ & GHI CHÚ BẾP
+         ====================================================================== */
+      let calcState = {
+        tableIndex: -1,
+        targetType: "table",
+        chairId: null,
+        amount: 0,
+        items: {},
+        pendingOp: null,
+        pendingDigits: "",
+        notePriceMode: false,
+        openedAt: 0
+      };
+
+      let dishModalState = {
+        dishId: null,
+        existingLineKey: null
+      };
+
+      function getTargetObject(tableIndex, targetType, chairId) {
+        const slot = appState.tables[tableIndex];
+        if (!slot || slot.isEmpty) return null;
+        if (targetType === "chair") {
+          const ch = (slot.chairs || []).find(function (c) { return c.id === chairId; });
+          if (!ch) return null;
+          return { slot: slot, chair: ch, obj: ch };
+        }
+        return { slot: slot, chair: null, obj: slot };
+      }
+
+      function cleanKitchenDoneKeysForTarget(slot, targetType, chairId) {
+        if (!slot || !slot.kitchenDoneKeys) return;
+        const prefix = targetType === "chair" ? ("ch::" + chairId + "::") : "tbl::";
+        Object.keys(slot.kitchenDoneKeys).forEach(function (k) {
+          if (k.indexOf(prefix) === 0) delete slot.kitchenDoneKeys[k];
+        });
+      }
+
+      function openCalcModal(tableIndex, targetType, chairId) {
+        const found = getTargetObject(tableIndex, targetType, chairId);
+        if (!found) return;
+
+        calcState = {
+          tableIndex: tableIndex,
+          targetType: targetType,
+          chairId: chairId || null,
+          amount: Number(found.obj.amount) || 0,
+          items: sanitizeItemsMap(found.obj.items),
+          pendingOp: null,
+          pendingDigits: "",
+          notePriceMode: false,
+          openedAt: Date.now()
+        };
+
+        if (el("calcTargetTitle")) {
+          el("calcTargetTitle").textContent = targetType === "chair"
+            ? (found.slot.name + " — Ghế " + found.chair.label)
+            : found.slot.name;
+        }
+        switchCalcTab("menu");
+        renderCalcModal();
+        el("calcModal").classList.remove("hidden");
+      }
+
+      function closeCalcModal() {
+        el("calcModal").classList.add("hidden");
+      }
+
+      function switchCalcTab(tab) {
+        const isMenu = tab === "menu";
+        el("tabCalcMenu").classList.toggle("active", isMenu);
+        el("tabCalcNumpad").classList.toggle("active", !isMenu);
+        el("calcMenuPanel").classList.toggle("hidden", !isMenu);
+        el("calcNumpadPanel").classList.toggle("hidden", isMenu);
+      }
+
+      function renderCalcModal() {
+        if (el("calcAmountDisplay")) {
+          el("calcAmountDisplay").textContent = formatMoney(calcState.amount);
+        }
+        if (el("calcPendingExpr")) {
+          el("calcPendingExpr").textContent = calcState.pendingOp
+            ? (formatMoney(calcState.amount) + " " + calcState.pendingOp + " " + (calcState.pendingDigits || "0"))
+            : formatMoney(calcState.amount);
+        }
+        if (el("btnToggleNotePriceMode")) {
+          el("btnToggleNotePriceMode").style.background = calcState.notePriceMode ? "#fef3c7" : "#ffffff";
+          el("btnToggleNotePriceMode").style.borderColor = calcState.notePriceMode ? "#f59e0b" : "#d6d3d1";
+        }
+
+        // Render các dòng món đã chọn
+        const linesWrap = el("calcSelectedLines");
+        if (linesWrap) {
+          const keys = Object.keys(calcState.items);
+          if (keys.length === 0) {
+            linesWrap.innerHTML = '<span style="font-size:11px; color:#57534e;">Chưa chọn món nào</span>';
+          } else {
+            linesWrap.innerHTML = keys.map(function (k) {
+              const q = Number(calcState.items[k]) || 0;
+              const info = getLineDisplayInfo(k, q);
+              return (
+                '<button type="button" class="selected-line-chip" data-action="edit-selected-line" data-line-key="' + escapeHtml(k) + '">' +
+                  '<span>' + q + 'x ' + escapeHtml(info.name) + '</span>' +
+                  (info.note ? '<span style="color:#b45309;">[' + escapeHtml(info.note) + ']</span>' : '') +
+                  '<span>= ' + formatMoney(info.subtotal) + '</span>' +
+                '</button>'
+              );
+            }).join("");
+          }
+        }
+
+        // Render lưới thẻ món ăn
+        const menuGrid = el("calcMenuGrid");
+        if (menuGrid) {
+          menuGrid.innerHTML = appState.menu.map(function (dish) {
+            let totalDishQty = 0;
+            let totalDishSub = 0;
+            Object.keys(calcState.items).forEach(function (k) {
+              const parsed = parseLineKey(k);
+              if (parsed.dishId === dish.id) {
+                const q = Number(calcState.items[k]) || 0;
+                const info = getLineDisplayInfo(k, q);
+                totalDishQty += q;
+                totalDishSub += info.subtotal;
+              }
+            });
+
+            return (
+              '<div class="dish-card ' + (totalDishQty > 0 ? 'selected' : '') + '">' +
+                '<div class="dish-card-top" data-action="dish-card-tap" data-dish-id="' + dish.id + '">' +
+                  '<div>' +
+                    '<div class="dish-name">' + escapeHtml(dish.name) + '</div>' +
+                    '<div class="dish-price">' + formatMoney(dish.price) + '</div>' +
+                    (totalDishQty > 1 ? '<div class="dish-line-subtotal">= ' + formatMoney(totalDishSub) + '</div>' : '') +
+                  '</div>' +
+                  '<button type="button" class="mini-tool-btn" data-action="open-dish-note-modal" data-dish-id="' + dish.id + '" title="Ghi chú bếp / Đổi giá">✎</button>' +
+                '</div>' +
+                '<div class="dish-card-controls">' +
+                  '<button type="button" class="dish-step-btn" data-action="dish-minus" data-dish-id="' + dish.id + '">−</button>' +
+                  '<span class="dish-qty-badge">' + totalDishQty + '</span>' +
+                  '<button type="button" class="dish-step-btn plus" data-action="dish-plus" data-dish-id="' + dish.id + '">+</button>' +
+                '</div>' +
+              '</div>'
+            );
+          }).join("");
+        }
+      }
+
+      function addDishToCalc(dishId, deltaQty, customPrice, note) {
+        const dish = getMenuDishById(dishId);
+        if (!dish) return;
+        const unitPrice = (customPrice !== null && customPrice !== undefined) ? Number(customPrice) : dish.price;
+        const lineKey = buildLineKey(dishId, customPrice, note);
+        const cur = Number(calcState.items[lineKey]) || 0;
+        const next = Math.max(0, cur + deltaQty);
+        const actualDelta = next - cur;
+
+        if (next === 0) {
+          delete calcState.items[lineKey];
+        } else {
+          calcState.items[lineKey] = next;
+        }
+        calcState.amount = Math.max(0, Math.round((calcState.amount + unitPrice * actualDelta) * 100) / 100);
+        renderCalcModal();
+      }
+
+      function minusDishInCalc(dishId) {
+        // Ưu tiên trừ dòng mặc định trước, nếu không có thì trừ dòng gần nhất của món đó
+        const defaultKey = buildLineKey(dishId, null, "");
+        let targetKey = calcState.items[defaultKey] ? defaultKey : null;
+        if (!targetKey) {
+          const matchingKeys = Object.keys(calcState.items).filter(function (k) {
+            return parseLineKey(k).dishId === dishId;
+          });
+          if (matchingKeys.length > 0) targetKey = matchingKeys[matchingKeys.length - 1];
+        }
+        if (!targetKey) return;
+        const parsed = parseLineKey(targetKey);
+        addDishToCalc(dishId, -1, parsed.customPrice, parsed.note);
+      }
+
+      function handleNumpadInput(token) {
+        if (token === "C") {
+          calcState.amount = 0;
+          calcState.items = {};
+          calcState.pendingOp = null;
+          calcState.pendingDigits = "";
+          renderCalcModal();
+          return;
+        }
+        if (token === "BACK") {
+          if (calcState.pendingDigits.length > 0) {
+            calcState.pendingDigits = calcState.pendingDigits.slice(0, -1);
+          } else if (calcState.pendingOp) {
+            calcState.pendingOp = null;
+          } else {
+            calcState.amount = Math.floor(calcState.amount / 10);
+          }
+          renderCalcModal();
+          return;
+        }
+        if (token === "+" || token === "-") {
+          if (calcState.pendingOp && calcState.pendingDigits) {
+            const val = Number(calcState.pendingDigits) || 0;
+            calcState.amount = calcState.pendingOp === "+"
+              ? calcState.amount + val
+              : Math.max(0, calcState.amount - val);
+          }
+          calcState.pendingOp = token;
+          calcState.pendingDigits = "";
+          renderCalcModal();
+          return;
+        }
+        if (token === "=") {
+          if (calcState.pendingOp && calcState.pendingDigits) {
+            const val = Number(calcState.pendingDigits) || 0;
+            calcState.amount = calcState.pendingOp === "+"
+              ? calcState.amount + val
+              : Math.max(0, calcState.amount - val);
+          }
+          calcState.pendingOp = null;
+          calcState.pendingDigits = "";
+          renderCalcModal();
+          return;
+        }
+
+        // Nhập chữ số
+        if (calcState.pendingOp) {
+          calcState.pendingDigits += token;
+        } else {
+          const combined = (calcState.amount === 0 ? "" : String(calcState.amount)) + token;
+          calcState.amount = Number(combined) || 0;
+        }
+        renderCalcModal();
+      }
+
+      function saveCalcModal() {
+        if (calcState.pendingOp && calcState.pendingDigits) {
+          handleNumpadInput("=");
+        }
+        const found = getTargetObject(calcState.tableIndex, calcState.targetType, calcState.chairId);
+        if (!found) return;
+
+        const prevAmount = Number(found.obj.amount) || 0;
+        const prevItems = Object.assign({}, found.obj.items || {});
+        const nextAmount = Math.max(0, Number(calcState.amount) || 0);
+
+        // Nếu đang có tiền mà đặt về 0₫ thì ghi nhận lịch sử thanh toán
+        if (prevAmount > 0 && nextAmount === 0) {
+          const label = calcState.targetType === "chair"
+            ? found.slot.name + " (" + found.chair.label + ")"
+            : found.slot.name;
+          recordPaymentHistory(label, getCoordLabel(calcState.tableIndex, appState.cols), found.slot.orderStartedAt, prevAmount, prevItems);
+          cleanKitchenDoneKeysForTarget(found.slot, calcState.targetType, calcState.chairId);
+          announcePaymentTts(found.slot.name, calcState.targetType === "chair" ? found.chair.label : "", prevAmount);
+        }
+
+        found.obj.amount = nextAmount;
+        found.obj.items = sanitizeItemsMap(calcState.items);
+
+        // Thu thập các món mới gọi thêm để đọc thông báo cho Bếp
+        const newlyAddedLines = [];
+        Object.keys(found.obj.items).forEach(function (k) {
+          const oldQ = Number(prevItems[k]) || 0;
+          const newQ = Number(found.obj.items[k]) || 0;
+          if (newQ > oldQ) {
+            const diffQ = newQ - oldQ;
+            const info = getLineDisplayInfo(k, diffQ);
+            newlyAddedLines.push({ name: info.name, qty: diffQ, note: info.note });
+            if (found.slot.kitchenDoneKeys) {
+              const prefix = calcState.targetType === "chair" ? ("ch::" + calcState.chairId + "::" + k) : ("tbl::" + k);
+              delete found.slot.kitchenDoneKeys[prefix];
+            }
+          }
+        });
+
+        const totalAfter = getTableTotal(found.slot);
+        if (totalAfter > 0 && !found.slot.orderStartedAt) {
+          found.slot.orderStartedAt = Date.now();
+        } else if (totalAfter === 0) {
+          found.slot.orderStartedAt = null;
+          found.slot.kitchenDoneKeys = {};
+        }
+
+        saveState();
+        if (newlyAddedLines.length > 0) {
+          announceNewOrderTts(found.slot.name, calcState.targetType === "chair" ? found.chair.label : "", newlyAddedLines);
+        }
+        closeCalcModal();
+      }
+
+      function clearTargetMoneyDirect(tableIndex, targetType, chairId) {
+        const found = getTargetObject(tableIndex, targetType, chairId);
+        if (!found) return;
+        const prevAmt = Number(found.obj.amount) || 0;
+        const prevItems = Object.assign({}, found.obj.items || {});
+
+        if (prevAmt > 0) {
+          const label = targetType === "chair"
+            ? found.slot.name + " (" + found.chair.label + ")"
+            : found.slot.name;
+          recordPaymentHistory(label, getCoordLabel(tableIndex, appState.cols), found.slot.orderStartedAt, prevAmt, prevItems);
+          announcePaymentTts(found.slot.name, targetType === "chair" ? found.chair.label : "", prevAmt);
+        }
+
+        found.obj.amount = 0;
+        found.obj.items = {};
+        cleanKitchenDoneKeysForTarget(found.slot, targetType, chairId);
+
+        if (getTableTotal(found.slot) === 0) {
+          found.slot.orderStartedAt = null;
+          found.slot.kitchenDoneKeys = {};
+        }
+        saveState();
+        showToast("✓ Đã thanh toán & xóa tiền " + (targetType === "chair" ? found.chair.label : found.slot.name));
+      }
+
+      /* ======================================================================
+         9. HỘP THOẠI GHI CHÚ BẾP & GIÁ RIÊNG CHO TỪNG MÓN
+         ====================================================================== */
+      function openDishNotePriceModal(dishId, existingLineKey) {
+        const dish = getMenuDishById(dishId);
+        if (!dish) return;
+
+        dishModalState = {
+          dishId: dishId,
+          existingLineKey: existingLineKey || null
+        };
+
+        el("dishModalTitle").textContent = "Ghi chú & Giá: " + dish.name;
+        if (existingLineKey && calcState.items[existingLineKey]) {
+          const parsed = parseLineKey(existingLineKey);
+          el("dishCustomPriceInput").value = parsed.customPrice !== null ? parsed.customPrice : dish.price;
+          el("dishCustomQtyInput").value = calcState.items[existingLineKey];
+          el("dishCustomNoteInput").value = parsed.note || "";
+          el("btnDeleteDishLine").classList.remove("hidden");
+        } else {
+          el("dishCustomPriceInput").value = dish.price;
+          el("dishCustomQtyInput").value = 1;
+          el("dishCustomNoteInput").value = "";
+          el("btnDeleteDishLine").classList.add("hidden");
+        }
+
+        renderDishQuickNoteChips();
+        el("dishNotePriceModal").classList.remove("hidden");
+      }
+
+      function renderDishQuickNoteChips() {
+        const wrap = el("dishNoteQuickChips");
+        if (!wrap) return;
+        const currentNote = (el("dishCustomNoteInput").value || "").toLowerCase();
+        wrap.innerHTML = appState.notePresets.map(function (preset) {
+          const isActive = currentNote.indexOf(preset.toLowerCase()) !== -1;
+          return '<button type="button" class="preset-chip ' + (isActive ? 'active' : '') + '" data-action="toggle-preset-chip" data-preset="' + escapeHtml(preset) + '">' + escapeHtml(preset) + '</button>';
+        }).join("");
+      }
+
+      function confirmDishPriceModal() {
+        const dish = getMenuDishById(dishModalState.dishId);
+        if (!dish) return;
+
+        const priceVal = Math.max(0, Number(el("dishCustomPriceInput").value) || 0);
+        const qtyVal = Math.max(1, Math.round(Number(el("dishCustomQtyInput").value) || 1));
+        const noteVal = (el("dishCustomNoteInput").value || "").trim();
+        const customPrice = priceVal !== dish.price ? priceVal : null;
+
+        if (dishModalState.existingLineKey && calcState.items[dishModalState.existingLineKey]) {
+          const oldKey = dishModalState.existingLineKey;
+          const oldQty = Number(calcState.items[oldKey]) || 0;
+          const oldInfo = getLineDisplayInfo(oldKey, oldQty);
+          calcState.amount = Math.max(0, Math.round((calcState.amount - oldInfo.subtotal) * 100) / 100);
+          delete calcState.items[oldKey];
+        }
+
+        addDishToCalc(dish.id, qtyVal, customPrice, noteVal);
+        el("dishNotePriceModal").classList.add("hidden");
+      }
+
+      function deleteEditingDishLine() {
+        if (dishModalState.existingLineKey && calcState.items[dishModalState.existingLineKey]) {
+          const oldKey = dishModalState.existingLineKey;
+          const oldQty = Number(calcState.items[oldKey]) || 0;
+          const oldInfo = getLineDisplayInfo(oldKey, oldQty);
+          calcState.amount = Math.max(0, Math.round((calcState.amount - oldInfo.subtotal) * 100) / 100);
+          delete calcState.items[oldKey];
+          renderCalcModal();
+        }
+        el("dishNotePriceModal").classList.add("hidden");
+      }
+
+      /* ======================================================================
+         10. IN HÓA ĐƠN POS (KHÔNG KẺ BẢNG, TÙY CHỈNH TÊN QUÁN & CẢM ƠN)
+         ====================================================================== */
+      function buildReceiptHtml(titleLabel, lines, totalThousands) {
+        const nowStr = new Date().toLocaleString("vi-VN");
+        const rowsHtml = lines.length > 0
+          ? lines.map(function (ln) {
+              return (
+                '<div style="display:flex; justify-content:space-between; margin:3px 0;">' +
+                  '<span style="flex:1; padding-right:4px;">' + escapeHtml(ln.name) + (ln.note ? ' (' + escapeHtml(ln.note) + ')' : '') + '</span>' +
+                  '<span style="width:32px; text-align:center;">x' + ln.qty + '</span>' +
+                  '<span style="width:76px; text-align:right;">' + formatBillVnd(ln.subtotal) + '</span>' +
+                '</div>'
+              );
+            }).join("")
+          : '<div style="display:flex; justify-content:space-between; margin:3px 0;">' +
+              '<span>Tổng tạm tính</span>' +
+              '<span>' + formatBillVnd(totalThousands) + '</span>' +
+            '</div>';
+
+        return (
+          '<div style="text-align:center; font-weight:bold; font-size:15px;">' + escapeHtml(appState.billRestaurant) + '</div>' +
+          '<div style="text-align:center; font-size:12px; margin-bottom:6px;">PHIẾU THANH TOÁN</div>' +
+          '<div style="font-size:12px;">Bàn: <b>' + escapeHtml(titleLabel) + '</b></div>' +
+          '<div style="font-size:11px; margin-bottom:6px;">Giờ in: ' + nowStr + '</div>' +
+          '<div style="border-top:1px dashed #000; margin:4px 0;"></div>' +
+          '<div style="display:flex; justify-content:space-between; font-weight:bold; font-size:12px;">' +
+            '<span style="flex:1;">Món ăn</span>' +
+            '<span style="width:32px; text-align:center;">SL</span>' +
+            '<span style="width:76px; text-align:right;">T.Tiền</span>' +
+          '</div>' +
+          '<div style="border-top:1px dashed #000; margin:4px 0;"></div>' +
+          rowsHtml +
+          '<div style="border-top:1px dashed #000; margin:6px 0;"></div>' +
+          '<div style="display:flex; justify-content:space-between; font-weight:bold; font-size:15px;">' +
+            '<span>TỔNG CỘNG:</span>' +
+            '<span>' + formatBillVnd(totalThousands) + '</span>' +
+          '</div>' +
+          '<div style="text-align:center; font-size:12px; margin-top:10px;">' + escapeHtml(appState.billFooter) + '</div>'
+        );
+      }
+
+      function collectTableReceiptLines(slot) {
+        const lines = [];
+        Object.keys(slot.items || {}).forEach(function (k) {
+          const q = Number(slot.items[k]) || 0;
+          if (q > 0) lines.push(getLineDisplayInfo(k, q));
+        });
+        (slot.chairs || []).forEach(function (ch) {
+          Object.keys(ch.items || {}).forEach(function (k) {
+            const q = Number(ch.items[k]) || 0;
+            if (q > 0) {
+              const info = getLineDisplayInfo(k, q);
+              info.name = info.name + " [" + ch.label + "]";
+              lines.push(info);
+            }
+          });
+        });
+        return lines;
+      }
+
+      function triggerPrintReceipt(titleLabel, lines, totalThousands) {
+        const area = el("printReceiptArea");
+        if (!area) return;
+        area.innerHTML = buildReceiptHtml(titleLabel, lines, totalThousands);
+        setTimeout(function () {
+          window.print();
+        }, 80);
+      }
+
+      function printTableByIndex(tableIndex) {
+        const slot = appState.tables[tableIndex];
+        if (!slot || slot.isEmpty) return;
+        const total = getTableTotal(slot);
+        const lines = collectTableReceiptLines(slot);
+        triggerPrintReceipt(slot.name, lines, total);
+      }
+
+      /* ======================================================================
+         11. TRỢ LÝ ORDER GIỌNG NÓI AI (GEMINI + NGHE RẢNH TAY SIÊU TIẾT KIỆM TOKEN)
+         ====================================================================== */
+      let pendingVoiceCommand = null;
+      let modalRecorder = null;
+      let modalAudioChunks = [];
+      let modalAudioStream = null;
+      let modalSpeechRec = null;
+      let isModalListening = false;
+
+      let handsFreeState = {
+        enabled: localStorage.getItem(STORAGE_KEY_HANDSFREE) === "1",
+        recognition: null,
+        audioStream: null,
+        mediaRecorder: null,
+        rollingChunks: [],
+        isBusy: false,
+        accumulatedText: "",
+        silenceTimer: null
+      };
+
+      function normalizeVietnameseForMatch(str) {
+        return String(str || "")
+          .toLowerCase()
+          .replace(/một\s*a\b|một\s*á\b/g, "1a")
+          .replace(/một\s*b\b|một\s*bê\b/g, "1b")
+          .replace(/hai\s*a\b/g, "2a")
+          .replace(/hai\s*b\b/g, "2b")
+          .replace(/ba\s*a\b/g, "3a")
+          .replace(/ba\s*b\b/g, "3b")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function classifyIntentByKeywords(rawText) {
+        const norm = normalizeVietnameseForMatch(rawText);
+        const cfg = getWakeConfig();
+
+        const hasPrint = cfg.printKeywords.some(function (kw) { return norm.indexOf(kw.toLowerCase()) !== -1; });
+        if (hasPrint) return { matched: true, forcedAction: "print_bill" };
+
+        const hasPay = cfg.payKeywords.some(function (kw) { return norm.indexOf(kw.toLowerCase()) !== -1; });
+        if (hasPay) return { matched: true, forcedAction: "clear_table" };
+
+        const hasOrder = cfg.orderKeywords.some(function (kw) { return norm.indexOf(kw.toLowerCase()) !== -1; });
+        if (hasOrder) return { matched: true, forcedAction: "add_items" };
+
+        // Khớp cấu trúc lệnh trực tiếp nếu tắt strictMode
+        if (!cfg.strictMode && /(bàn|ghế)\s*[0-9a-h]+/i.test(norm)) {
+          return { matched: true, forcedAction: null };
+        }
+        return { matched: false, forcedAction: null };
+      }
+
+      function findTableIndexByVoiceName(tableQuery) {
+        const q = normalizeVietnameseForMatch(tableQuery).replace(/^bàn\s+/, "").trim();
+        if (!q) return -1;
+
+        for (let i = 0; i < appState.tables.length; i++) {
+          const t = appState.tables[i];
+          if (!t || t.isEmpty) continue;
+          const tName = normalizeVietnameseForMatch(t.name).replace(/^bàn\s+/, "").trim();
+          const coord = getCoordLabel(i, appState.cols).toLowerCase();
+          if (tName === q || coord === q) return i;
+        }
+        for (let i = 0; i < appState.tables.length; i++) {
+          const t = appState.tables[i];
+          if (!t || t.isEmpty) continue;
+          const tName = normalizeVietnameseForMatch(t.name);
+          if (tName.indexOf(q) !== -1) return i;
+        }
+        return -1;
+      }
+
+      /* Fast-Path cục bộ 0 token cho lệnh thanh toán / in bill rõ ràng */
+      function tryLocalFastPathCommand(rawText, forcedAction) {
+        const norm = normalizeVietnameseForMatch(rawText);
+        const tableMatch = norm.match(/bàn\s*([0-9]+\s*[a-h]?|[a-h]\s*[0-9]+)/i);
+        if (!tableMatch) return null;
+
+        const tIdx = findTableIndexByVoiceName(tableMatch[1]);
+        if (tIdx < 0) return null;
+        const slot = appState.tables[tIdx];
+
+        if (forcedAction === "print_bill") {
+          return {
+            action: "print_bill",
+            tableIndex: tIdx,
+            tableName: slot.name,
+            chairLabel: "",
+            items: [],
+            heardText: rawText
+          };
+        }
+        if (forcedAction === "clear_table") {
+          return {
+            action: "clear_table",
+            tableIndex: tIdx,
+            tableName: slot.name,
+            chairLabel: "",
+            items: [],
+            heardText: rawText
+          };
+        }
+        return null;
+      }
+
+      function buildCompactPromptContext() {
+        const tablesCsv = appState.tables.map(function (t, i) {
+          if (!t || t.isEmpty) return "";
+          return i + ":" + t.name + "(" + getCoordLabel(i, appState.cols) + ")";
+        }).filter(Boolean).join("|");
+
+        const menuCsv = appState.menu.map(function (m) {
+          return m.id + ":" + m.name + ":" + m.price;
+        }).join("|");
+
+        return (
+          "Bạn là trợ lý POS quán ăn Việt Nam. Phân tích lệnh giọng nói và trả về JSON duy nhất:\n" +
+          '{"action":"add_items"|"clear_table"|"print_bill","tableIndex":number,"chairLabel":string,"items":[{"dishId":string,"qty":number,"unitPrice":number|null,"note":string}],"heardText":string}\n' +
+          "Quy tắc: Sửa lỗi phát âm tiếng Việt (một a/á->1A, phở bỏ->Phở bò, bún trả->Bún chả). Nếu nói 'bớt/giảm' thì qty âm. Giá tính theo nghìn đồng (VD: 50k -> 50).\n" +
+          "Danh sách bàn: " + tablesCsv + "\n" +
+          "Thực đơn: " + menuCsv
+        );
+      }
+
+      async function callGeminiParseOrder(textInput, audioBase64, audioMime, forcedAction) {
+        const apiKey = getSavedGeminiApiKey();
+        if (!apiKey) {
+          throw new Error("Chưa nhập Gemini API Key trong Cài đặt.");
+        }
+
+        const primaryModel = getSavedGeminiModel();
+        const modelsToTry = [primaryModel, "gemini-2.5-flash", "gemini-2.0-flash"].filter(function (v, i, arr) {
+          return v && arr.indexOf(v) === i;
+        });
+
+        const parts = [{ text: buildCompactPromptContext() }];
+        if (forcedAction) {
+          parts.push({ text: "Hành động bắt buộc theo từ khóa: " + forcedAction });
+        }
+        if (textInput) {
+          parts.push({ text: "Câu lệnh: " + textInput });
+        }
+        if (audioBase64) {
+          parts.push({
+            inlineData: {
+              mimeType: audioMime || "audio/webm",
+              data: audioBase64
+            }
+          });
+        }
+
+        let lastErr = null;
+        for (let i = 0; i < modelsToTry.length; i++) {
+          const modelName = modelsToTry[i];
+          try {
+            const url = "https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(modelName) + ":generateContent?key=" + encodeURIComponent(apiKey);
+            const res = await fetch(url, {
+              method: "POST",
+              mode: "cors",
+              credentials: "omit",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [{ role: "user", parts: parts }],
+                generationConfig: {
+                  temperature: 0.05,
+                  responseMimeType: "application/json"
+                }
+              })
+            });
+
+            if (!res.ok) {
+              const errBody = await res.text();
+              throw new Error("HTTP " + res.status + ": " + errBody.slice(0, 140));
+            }
+
+            const json = await res.json();
+            const rawReply = json && json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0]
+              ? json.candidates[0].content.parts[0].text
+              : "";
+
+            const cleanJson = rawReply.replace(/```json|```/gi, "").trim();
+            const parsed = JSON.parse(cleanJson);
+            if (forcedAction) parsed.action = forcedAction;
+            return parsed;
+          } catch (err) {
+            lastErr = err;
+          }
+        }
+        throw lastErr || new Error("Không thể kết nối Gemini AI");
+      }
+
+      function executeParsedVoiceCommand(cmd) {
+        if (!cmd) return false;
+        const tIdx = Number(cmd.tableIndex);
+        const slot = appState.tables[tIdx];
+        if (!slot || slot.isEmpty) {
+          showToast("⚠️ Không tìm thấy bàn phù hợp trong lệnh");
+          return false;
+        }
+
+        // Lưu snapshot để Hoàn tác nếu cần
+        lastVoiceUndoSnapshot = JSON.stringify(appState);
+
+        if (cmd.action === "print_bill") {
+          printTableByIndex(tIdx);
+          showToast("🖨️ Đang in bill " + slot.name, true);
+          return true;
+        }
+
+        if (cmd.action === "clear_table") {
+          const totalBefore = getTableTotal(slot);
+          if (totalBefore <= 0) {
+            showToast("ℹ️ " + slot.name + " hiện đang 0₫");
+            return false;
+          }
+          recordPaymentHistory(slot.name, getCoordLabel(tIdx, appState.cols), slot.orderStartedAt, totalBefore, slot.items);
+          slot.amount = 0;
+          slot.items = {};
+          (slot.chairs || []).forEach(function (c) {
+            c.amount = 0;
+            c.items = {};
+          });
+          slot.orderStartedAt = null;
+          slot.kitchenDoneKeys = {};
+          saveState();
+          announcePaymentTts(slot.name, "", totalBefore);
+          showToast("💰 Đã thanh toán & xóa tiền " + slot.name + " (" + formatMoney(totalBefore) + ")", true);
+          return true;
+        }
+
+        // Mặc định: add_items (cộng/trừ món vào bàn hoặc ghế)
+        const itemsList = Array.isArray(cmd.items) ? cmd.items : [];
+        if (itemsList.length === 0) {
+          showToast("⚠️ AI chưa nhận diện được món ăn trong câu nói");
+          return false;
+        }
+
+        let targetObj = slot;
+        let isChair = false;
+        let chairId = null;
+        let targetLabel = slot.name;
+
+        if (cmd.chairLabel) {
+          const chNorm = String(cmd.chairLabel).toLowerCase().replace(/ghế\s*/g, "").trim();
+          const foundChair = (slot.chairs || []).find(function (c) {
+            return c.label.toLowerCase().replace(/^g/, "") === chNorm.replace(/^g/, "");
+          });
+          if (foundChair) {
+            targetObj = foundChair;
+            isChair = true;
+            chairId = foundChair.id;
+            targetLabel = slot.name + " (" + foundChair.label + ")";
+          }
+        }
+
+        const summaryParts = [];
+        const newlyAddedTtsLines = [];
+        itemsList.forEach(function (it) {
+          const dish = getMenuDishById(it.dishId);
+          if (!dish) return;
+          const qty = Number(it.qty) || 0;
+          if (qty === 0) return;
+
+          const customPrice = (it.unitPrice !== null && it.unitPrice !== undefined && Number(it.unitPrice) >= 0) ? Number(it.unitPrice) : null;
+          const unitPrice = customPrice !== null ? customPrice : dish.price;
+          const note = String(it.note || "").trim();
+          const lineKey = buildLineKey(dish.id, customPrice, note);
+
+          const curQty = Number(targetObj.items[lineKey]) || 0;
+          const nextQty = Math.max(0, curQty + qty);
+          const actualDelta = nextQty - curQty;
+
+          if (nextQty === 0) {
+            delete targetObj.items[lineKey];
+          } else {
+            targetObj.items[lineKey] = nextQty;
+          }
+
+          targetObj.amount = Math.max(0, Math.round(((Number(targetObj.amount) || 0) + unitPrice * actualDelta) * 100) / 100);
+
+          if (actualDelta > 0) {
+            newlyAddedTtsLines.push({ name: dish.name, qty: actualDelta, note: note });
+            if (slot.kitchenDoneKeys) {
+              const kPrefix = isChair ? ("ch::" + chairId + "::" + lineKey) : ("tbl::" + lineKey);
+              delete slot.kitchenDoneKeys[kPrefix];
+            }
+          }
+
+          summaryParts.push((qty > 0 ? "+" : "") + qty + " " + dish.name + (note ? " [" + note + "]" : ""));
+        });
+
+        if (getTableTotal(slot) > 0 && !slot.orderStartedAt) {
+          slot.orderStartedAt = Date.now();
+        } else if (getTableTotal(slot) === 0) {
+          slot.orderStartedAt = null;
+          slot.kitchenDoneKeys = {};
+        }
+
+        saveState();
+        if (newlyAddedTtsLines.length > 0) {
+          announceNewOrderTts(slot.name, isChair ? targetObj.label : "", newlyAddedTtsLines);
+        }
+        showToast("✓ " + targetLabel + ": " + summaryParts.join(", "), true);
+        return true;
+      }
+
+      async function processVoicePayload(textInput, audioBase64, audioMime, fromHandsFree) {
+        const intent = textInput ? classifyIntentByKeywords(textInput) : { matched: true, forcedAction: null };
+
+        // 1. Thử Fast-Path cục bộ 0 token trước
+        if (textInput) {
+          const fastCmd = tryLocalFastPathCommand(textInput, intent.forcedAction);
+          if (fastCmd) {
+            executeParsedVoiceCommand(fastCmd);
+            if (!fromHandsFree) closeVoiceAiModal();
+            return;
+          }
+        }
+
+        // 2. Gọi Gemini AI
+        if (fromHandsFree) {
+          updateHudStatus("🤖 AI đang phân tích lệnh...", true);
+        } else {
+          el("voiceStatusLine").textContent = "🤖 AI đang phân tích lệnh...";
+        }
+
+        try {
+          const parsed = await callGeminiParseOrder(textInput, audioBase64, audioMime, intent.forcedAction);
+          if (parsed && parsed.heardText && el("voiceTranscriptInput")) {
+            el("voiceTranscriptInput").value = parsed.heardText;
+          }
+
+          if (fromHandsFree || getVoiceAutoConfirm()) {
+            executeParsedVoiceCommand(parsed);
+            if (!fromHandsFree) closeVoiceAiModal();
+          } else {
+            pendingVoiceCommand = parsed;
+            const slot = appState.tables[Number(parsed.tableIndex)];
+            const bName = slot ? slot.name : "Không rõ bàn";
+            const itemsDesc = (parsed.items || []).map(function (it) {
+              const d = getMenuDishById(it.dishId);
+              return (it.qty > 0 ? "+" : "") + it.qty + " " + (d ? d.name : it.dishId) + (it.note ? " [" + it.note + "]" : "");
+            }).join(", ");
+            el("voicePreviewSummary").textContent = bName + " → " + (parsed.action === "clear_table" ? "Thanh toán & Xóa tiền" : parsed.action === "print_bill" ? "In hóa đơn" : itemsDesc);
+            el("voicePreviewCard").classList.remove("hidden");
+            el("voiceStatusLine").textContent = "✓ Đã phân tích xong, mời xác nhận";
+          }
+        } catch (err) {
+          const msg = String(err && err.message ? err.message : err);
+          if (msg.indexOf("Failed to fetch") !== -1 || msg.indexOf("Load failed") !== -1) {
+            showToast("⚠️ Lỗi mạng/CORS: Kiểm tra kết nối hoặc tắt giới hạn Website trên Google Cloud Key");
+          } else {
+            showToast("⚠️ Lỗi AI: " + msg);
+          }
+          if (!fromHandsFree && el("voiceStatusLine")) {
+            el("voiceStatusLine").textContent = "⚠️ " + msg;
+          }
+        } finally {
+          if (fromHandsFree && handsFreeState.enabled) {
+            updateHudStatus("Đang lắng nghe từ khóa gọi lệnh...", false);
+          }
+        }
+      }
+
+      /* ======================================================================
+         12. GHI ÂM TRỰC TIẾP & NHẬN DIỆN GIỌNG NÓI TRONG HỘP THOẠI ORDER AI
+         ====================================================================== */
+      function updateVoiceInputModeUI() {
+        const mode = getSavedVoiceAiInputMode();
+        const label = mode === "audio" ? "🎙️ Audio" : "💬 Text";
+        if (el("btnHudInputMode")) el("btnHudInputMode").textContent = label;
+        if (el("btnModalInputMode")) el("btnModalInputMode").textContent = mode === "audio" ? "🎙️ Gửi Audio" : "💬 Gửi Text";
+        if (el("voiceAiInputModeSelect")) el("voiceAiInputModeSelect").value = mode;
+      }
+
+      function stopModalVoiceCapture() {
+        isModalListening = false;
+        if (el("btnVoiceMicCircle")) {
+          el("btnVoiceMicCircle").style.background = "#1d4ed8";
+        }
+        if (modalSpeechRec) {
+          try { modalSpeechRec.stop(); } catch (e) {}
+          modalSpeechRec = null;
+        }
+        if (modalRecorder && modalRecorder.state !== "inactive") {
+          try { modalRecorder.stop(); } catch (e) {}
+        }
+        if (modalAudioStream) {
+          modalAudioStream.getTracks().forEach(function (tr) { tr.stop(); });
+          modalAudioStream = null;
+        }
+      }
+
+      async function startModalVoiceCapture() {
+        stopModalVoiceCapture();
+        isModalListening = true;
+        if (el("btnVoiceMicCircle")) el("btnVoiceMicCircle").style.background = "#dc2626";
+        el("voicePreviewCard").classList.add("hidden");
+
+        const mode = getSavedVoiceAiInputMode();
+        if (mode === "audio" && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          try {
+            el("voiceStatusLine").textContent = "🔴 Đang thu âm trực tiếp (tự dừng sau 0.95s im lặng)...";
+            modalAudioStream = await navigator.mediaDevices.getUserMedia({
+              audio: { channelCount: 1, sampleRate: 16000, echoCancellation: true, noiseSuppression: true }
+            });
+            modalAudioChunks = [];
+            modalRecorder = new MediaRecorder(modalAudioStream, { audioBitsPerSecond: 20000 });
+
+            // RMS VAD tự động ngắt sau 0.95s im lặng
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const src = audioCtx.createMediaStreamSource(modalAudioStream);
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 512;
+            src.connect(analyser);
+            const dataArr = new Uint8Array(analyser.fftSize);
+            let spokeDetected = false;
+            let silenceStart = 0;
+
+            const vadInterval = setInterval(function () {
+              if (!isModalListening || !modalRecorder || modalRecorder.state !== "recording") {
+                clearInterval(vadInterval);
+                audioCtx.close().catch(function () {});
+                return;
+              }
+              analyser.getByteTimeDomainData(dataArr);
+              let sumSq = 0;
+              for (let i = 0; i < dataArr.length; i++) {
+                const v = (dataArr[i] - 128) / 128;
+                sumSq += v * v;
+              }
+              const rms = Math.sqrt(sumSq / dataArr.length);
+              if (rms > 0.032) {
+                spokeDetected = true;
+                silenceStart = 0;
+              } else if (spokeDetected) {
+                if (!silenceStart) silenceStart = Date.now();
+                else if (Date.now() - silenceStart >= 950) {
+                  clearInterval(vadInterval);
+                  stopModalVoiceCapture();
+                }
+              }
+            }, 100);
+
+            modalRecorder.ondataavailable = function (e) {
+              if (e.data && e.data.size > 0) modalAudioChunks.push(e.data);
+            };
+            modalRecorder.onstop = function () {
+              clearInterval(vadInterval);
+              audioCtx.close().catch(function () {});
+              if (modalAudioChunks.length === 0) return;
+              const blob = new Blob(modalAudioChunks, { type: modalRecorder.mimeType || "audio/webm" });
+              const reader = new FileReader();
+              reader.onloadend = function () {
+                const b64 = String(reader.result || "").split(",")[1] || "";
+                if (b64) {
+                  processVoicePayload(el("voiceTranscriptInput").value.trim(), b64, blob.type, false);
+                }
+              };
+              reader.readAsDataURL(blob);
+            };
+            modalRecorder.start();
+            return;
+          } catch (err) {
+            el("voiceStatusLine").textContent = "⚠️ Không mở được micro, chuyển sang nhận diện chữ...";
+          }
+        }
+
+        // Chế độ Text SpeechRecognition
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+          el("voiceStatusLine").textContent = "⚠️ Trình duyệt không hỗ trợ micro, mời gõ lệnh bên dưới";
+          isModalListening = false;
+          return;
+        }
+        el("voiceStatusLine").textContent = "🔴 Đang nghe tiếng Việt...";
+        modalSpeechRec = new SpeechRec();
+        modalSpeechRec.lang = "vi-VN";
+        modalSpeechRec.interimResults = true;
+        modalSpeechRec.continuous = false;
+
+        let finalStr = "";
+        modalSpeechRec.onresult = function (ev) {
+          let interim = "";
+          for (let i = ev.resultIndex; i < ev.results.length; i++) {
+            if (ev.results[i].isFinal) finalStr += ev.results[i][0].transcript;
+            else interim += ev.results[i][0].transcript;
+          }
+          el("voiceTranscriptInput").value = (finalStr + " " + interim).trim();
+        };
+        modalSpeechRec.onend = function () {
+          isModalListening = false;
+          if (el("btnVoiceMicCircle")) el("btnVoiceMicCircle").style.background = "#1d4ed8";
+          const txt = el("voiceTranscriptInput").value.trim();
+          if (txt) {
+            processVoicePayload(txt, null, null, false);
+          } else {
+            el("voiceStatusLine").textContent = "Chạm micro để nói lại";
+          }
+        };
+        modalSpeechRec.onerror = function () {
+          isModalListening = false;
+          if (el("btnVoiceMicCircle")) el("btnVoiceMicCircle").style.background = "#1d4ed8";
+        };
+        modalSpeechRec.start();
+      }
+
+      function openVoiceAiModal() {
+        // Tạm ngắt rảnh tay để nhường micro cho hộp thoại
+        if (handsFreeState.enabled) {
+          stopHandsFreeInternal(true);
+        }
+        el("voiceAiModelBadge").textContent = "Model: " + getSavedGeminiModel();
+        el("voiceAutoConfirmCheck").checked = getVoiceAutoConfirm();
+        el("voiceTranscriptInput").value = "";
+        el("voicePreviewCard").classList.add("hidden");
+        updateVoiceInputModeUI();
+        el("voiceAiModal").classList.remove("hidden");
+        startModalVoiceCapture();
+      }
+
+      function closeVoiceAiModal() {
+        stopModalVoiceCapture();
+        el("voiceAiModal").classList.add("hidden");
+        if (handsFreeState.enabled) {
+          startHandsFreeInternal();
+        }
+      }
+
+      /* ======================================================================
+         13. CHẾ ĐỘ NGHE RẢNH TAY LIÊN TỤC (HANDS-FREE)
+         ====================================================================== */
+      function updateHudStatus(text, isBusy) {
+        const hud = el("handsFreeHud");
+        const txt = el("hudStatusText");
+        const dot = el("hudPulseDot");
+        const btn = el("btnHandsFreeToggle");
+
+        if (btn) btn.classList.toggle("active", handsFreeState.enabled);
+        if (!hud) return;
+        hud.classList.toggle("hidden", !handsFreeState.enabled);
+        if (txt && text) txt.textContent = text;
+        if (dot) dot.classList.toggle("busy", Boolean(isBusy));
+        updateVoiceInputModeUI();
+      }
+
+      function stopHandsFreeInternal(keepEnabledFlag) {
+        if (!keepEnabledFlag) {
+          handsFreeState.enabled = false;
+          localStorage.setItem(STORAGE_KEY_HANDSFREE, "0");
+        }
+        if (handsFreeState.silenceTimer) {
+          clearTimeout(handsFreeState.silenceTimer);
+          handsFreeState.silenceTimer = null;
+        }
+        if (handsFreeState.recognition) {
+          try { handsFreeState.recognition.onend = null; handsFreeState.recognition.stop(); } catch (e) {}
+          handsFreeState.recognition = null;
+        }
+        if (handsFreeState.mediaRecorder && handsFreeState.mediaRecorder.state !== "inactive") {
+          try { handsFreeState.mediaRecorder.stop(); } catch (e) {}
+        }
+        handsFreeState.mediaRecorder = null;
+        if (handsFreeState.audioStream) {
+          handsFreeState.audioStream.getTracks().forEach(function (t) { t.stop(); });
+          handsFreeState.audioStream = null;
+        }
+        updateHudStatus("Đã tắt nghe rảnh tay", false);
+      }
+
+      function startHandsFreeInternal() {
+        stopHandsFreeInternal(true);
+        handsFreeState.enabled = true;
+        localStorage.setItem(STORAGE_KEY_HANDSFREE, "1");
+        updateHudStatus("Đang lắng nghe từ khóa gọi lệnh...", false);
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+          updateHudStatus("⚠️ Trình duyệt không hỗ trợ nghe rảnh tay", false);
+          return;
+        }
+
+        const rec = new SpeechRec();
+        rec.lang = "vi-VN";
+        rec.continuous = true;
+        rec.interimResults = true;
+        handsFreeState.recognition = rec;
+        handsFreeState.accumulatedText = "";
+
+        rec.onresult = function (ev) {
+          let interim = "";
+          for (let i = ev.resultIndex; i < ev.results.length; i++) {
+            const piece = ev.results[i][0].transcript;
+            if (ev.results[i].isFinal) {
+              handsFreeState.accumulatedText = (handsFreeState.accumulatedText + " " + piece).trim();
+            } else {
+              interim += piece;
+            }
+          }
+          const fullNow = (handsFreeState.accumulatedText + " " + interim).trim();
+          if (fullNow) {
+            updateHudStatus("👂 " + fullNow, false);
+          }
+
+          if (handsFreeState.silenceTimer) clearTimeout(handsFreeState.silenceTimer);
+          handsFreeState.silenceTimer = setTimeout(function () {
+            const sentence = (handsFreeState.accumulatedText + " " + interim).trim();
+            handsFreeState.accumulatedText = "";
+            if (!sentence) return;
+
+            const check = classifyIntentByKeywords(sentence);
+            if (check.matched) {
+              processVoicePayload(sentence, null, null, true);
+            } else {
+              updateHudStatus("Đang lắng nghe từ khóa gọi lệnh...", false);
+            }
+          }, 1350);
+        };
+
+        rec.onerror = function (ev) {
+          if (ev && (ev.error === "not-allowed" || ev.error === "audio-capture")) {
+            stopHandsFreeInternal(false);
+            showToast("⚠️ Không có quyền truy cập micro");
+          }
+        };
+
+        rec.onend = function () {
+          if (handsFreeState.enabled && el("voiceAiModal").classList.contains("hidden")) {
+            setTimeout(function () {
+              if (handsFreeState.enabled) startHandsFreeInternal();
+            }, 350);
+          }
+        };
+
+        try {
+          rec.start();
+        } catch (e) {}
+      }
+
+      function toggleHandsFreeMode() {
+        if (handsFreeState.enabled) {
+          stopHandsFreeInternal(false);
+          showToast("🔇 Đã tắt chế độ nghe rảnh tay");
+        } else {
+          startHandsFreeInternal();
+          showToast("🎧 Đã bật nghe rảnh tay (nói 'Order bàn ...')");
+        }
+      }
+
+      /* ======================================================================
+         14. CÀI ĐẶT HỆ THỐNG, CHỈNH SỬA MENU & GHI CHÚ NHANH
+         ====================================================================== */
+      function openSettingsModal() {
+        if (!isSettingsUnlocked) {
+          el("pinVerifyInput").value = "";
+          el("pinModal").classList.remove("hidden");
+          setTimeout(function () { el("pinVerifyInput").focus(); }, 60);
+          return;
+        }
+        populateSettingsFields();
+        el("settingsModal").classList.remove("hidden");
+      }
+
+      function populateSettingsFields() {
+        if (el("overdueMinutesInput")) el("overdueMinutesInput").value = appState.overdueMinutes;
+        if (el("geminiApiKeyInput")) el("geminiApiKeyInput").value = getSavedGeminiApiKey();
+        if (el("geminiModelSelect")) el("geminiModelSelect").value = getSavedGeminiModel();
+        if (el("voiceAiInputModeSelect")) el("voiceAiInputModeSelect").value = getSavedVoiceAiInputMode();
+        if (el("billRestaurantInput")) el("billRestaurantInput").value = appState.billRestaurant;
+        if (el("billFooterInput")) el("billFooterInput").value = appState.billFooter;
+
+        const tts = getTtsConfig();
+        if (el("ttsEnabledCheck")) el("ttsEnabledCheck").checked = tts.enabled;
+        if (el("ttsOrderTemplateInput")) el("ttsOrderTemplateInput").value = tts.orderTemplate;
+        if (el("ttsPayTemplateInput")) el("ttsPayTemplateInput").value = tts.payTemplate;
+        if (el("ttsRateInput")) el("ttsRateInput").value = String(tts.rate);
+        if (el("ttsRateValLabel")) el("ttsRateValLabel").textContent = String(tts.rate);
+
+        const fb = getFirebaseConfig();
+        if (el("firebaseUrlInput")) el("firebaseUrlInput").value = fb.url;
+        if (el("firebaseKeyInput")) el("firebaseKeyInput").value = fb.apiKey;
+
+        renderMenuEditorList();
+        renderHistoryTable();
+      }
+
+      function renderMenuEditorList() {
+        const wrap = el("menuEditorList");
+        if (!wrap) return;
+        wrap.innerHTML = appState.menu.map(function (dish, idx) {
+          return (
+            '<div style="display:flex; gap:6px; align-items:center;">' +
+              '<input type="text" class="form-input" data-menu-edit-name="' + idx + '" value="' + escapeHtml(dish.name) + '" style="flex:2;" />' +
+              '<input type="number" class="form-input" data-menu-edit-price="' + idx + '" value="' + dish.price + '" step="0.5" min="0" style="width:90px;" />' +
+              '<button type="button" class="mini-tool-btn" data-action="move-menu-up" data-index="' + idx + '">▲</button>' +
+              '<button type="button" class="mini-tool-btn" data-action="move-menu-down" data-index="' + idx + '">▼</button>' +
+              '<button type="button" class="mini-tool-btn" data-action="delete-menu-dish" data-index="' + idx + '" style="color:#dc2626;">✕</button>' +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function renderNotePresetsEditor() {
+        const wrap = el("notePresetsEditorList");
+        if (!wrap) return;
+        wrap.innerHTML = appState.notePresets.map(function (item, idx) {
+          return (
+            '<div style="display:flex; gap:6px; align-items:center;">' +
+              '<input type="text" class="form-input" data-preset-edit-index="' + idx + '" value="' + escapeHtml(item) + '" />' +
+              '<button type="button" class="mini-tool-btn" data-action="move-preset-up" data-index="' + idx + '">▲</button>' +
+              '<button type="button" class="mini-tool-btn" data-action="move-preset-down" data-index="' + idx + '">▼</button>' +
+              '<button type="button" class="mini-tool-btn" data-action="delete-preset-item" data-index="' + idx + '" style="color:#dc2626;">✕</button>' +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function renderHistoryTable() {
+        const tbody = el("historyTableBody");
+        const sumLine = el("historySummaryLine");
+        if (!tbody) return;
+
+        const totalVnd = appState.history.reduce(function (s, h) { return s + (Number(h.amountVnd) || 0); }, 0);
+        if (sumLine) {
+          sumLine.textContent = "Tổng cộng " + appState.history.length + " lượt thanh toán • Doanh thu đã thu: " + totalVnd.toLocaleString("vi-VN") + "đ";
+        }
+
+        tbody.innerHTML = appState.history.slice(0, 80).map(function (h) {
+          return (
+            '<tr style="border-top:1px solid #e7e5e4;">' +
+              '<td style="padding:6px; font-weight:700;">' + escapeHtml(h.target) + '</td>' +
+              '<td style="padding:6px;">' + formatTimeShort(h.orderAt) + ' → ' + formatTimeShort(h.paidAt) + ' (' + h.durationMin + 'p)</td>' +
+              '<td style="padding:6px;">' + escapeHtml(h.itemsText) + '</td>' +
+              '<td style="padding:6px; text-align:right; font-weight:800; color:#0f766e;">' + Number(h.amountVnd).toLocaleString("vi-VN") + 'đ</td>' +
+            '</tr>'
+          );
+        }).join("");
+      }
+
+      function renderSummaryModal() {
+        const list = el("summaryActiveTablesList");
+        if (!list) return;
+        const active = [];
+        appState.tables.forEach(function (t, i) {
+          if (!t || t.isEmpty) return;
+          const tot = getTableTotal(t);
+          if (tot > 0) active.push({ index: i, slot: t, total: tot });
+        });
+
+        if (active.length === 0) {
+          list.innerHTML = '<div style="text-align:center; padding:18px; color:#78716c;">Tất cả các bàn hiện đang trống (0₫).</div>';
+          return;
+        }
+
+        list.innerHTML = active.map(function (item) {
+          return (
+            '<label style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid #e7e5e4; border-radius:10px; background:#fafaf9; cursor:pointer;">' +
+              '<div style="display:flex; align-items:center; gap:8px;">' +
+                '<input type="checkbox" class="merge-table-check" value="' + item.index + '" checked style="width:17px; height:17px; accent-color:#0f766e;" />' +
+                '<span style="font-weight:800;">' + escapeHtml(item.slot.name) + '</span>' +
+              '</div>' +
+              '<span style="font-weight:900; color:#0f766e; font-size:15px;">' + formatMoney(item.total) + '</span>' +
+            '</label>'
+          );
+        }).join("");
+      }
+
+      async function testGeminiApiKeyConnection() {
+        const key = (el("geminiApiKeyInput").value || "").trim();
+        if (!key) {
+          showToast("⚠️ Vui lòng dán Gemini API Key trước");
+          return;
+        }
+        saveGeminiApiKey(key);
+        showToast("⏳ Đang kiểm tra kết nối Gemini AI...");
+        try {
+          const res = await callGeminiParseOrder("Order bàn 1A 1 phở bò", null, null, "add_items");
+          showToast("✅ Kết nối Gemini AI thành công! (" + (res.heardText || "OK") + ")");
+        } catch (err) {
+          showToast("❌ Lỗi Key: " + (err && err.message ? err.message : err));
+        }
+      }
+
+      function downloadCleanHtmlSnapshot() {
+        const clone = document.documentElement.cloneNode(true);
+        const clearIds = ["tablesGrid", "kitchenCardsGrid", "calcMenuGrid", "calcSelectedLines", "menuEditorList", "notePresetsEditorList", "historyTableBody", "printReceiptArea"];
+        clearIds.forEach(function (id) {
+          const node = clone.querySelector("#" + id);
+          if (node) node.innerHTML = "";
+        });
+        const htmlText = "<!DOCTYPE html>\n" + clone.outerHTML;
+        const blob = new Blob([htmlText], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "tinh-tien-quan-an.html";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      /* ======================================================================
+         15. BỘ LẮNG NGHE SỰ KIỆN TẬP TRUNG (CHẠM, NHẤN ĐÚP, PHÍM TẮT)
+         ====================================================================== */
+      let lastTapInfo = { key: "", time: 0 };
+
+      function initEventListeners() {
+        document.addEventListener("click", function (ev) {
+          const target = ev.target.closest("[data-action], [data-target-type], [data-num]");
+          if (!target) return;
+
+          // 1. Chạm vào mặt bàn hoặc ghế trên sơ đồ
+          if (target.hasAttribute("data-target-type")) {
+            const tType = target.getAttribute("data-target-type");
+            const tIdx = Number(target.getAttribute("data-table-index"));
+            const cId = target.getAttribute("data-chair-id") || null;
+            const tapKey = tType + ":" + tIdx + ":" + (cId || "");
+            const now = Date.now();
+
+            // Nhấn đúp nhanh (< 320ms) vào bàn/ghế có tiền để thanh toán & xóa tiền nhanh
+            if (lastTapInfo.key === tapKey && (now - lastTapInfo.time) < 320) {
+              lastTapInfo = { key: "", time: 0 };
+              const found = getTargetObject(tIdx, tType, cId);
+              if (found && (Number(found.obj.amount) || 0) > 0) {
+                clearTargetMoneyDirect(tIdx, tType, cId);
+                return;
+              }
+            }
+            lastTapInfo = { key: tapKey, time: now };
+            openCalcModal(tIdx, tType, cId);
+            return;
+          }
+
+          // 2. Bàn phím số trong modal tính tiền
+          if (target.hasAttribute("data-num")) {
+            handleNumpadInput(target.getAttribute("data-num"));
+            return;
+          }
+
+          // 3. Các hành động qua data-action
+          const action = target.getAttribute("data-action");
+          switch (action) {
+            case "switch-role":
+              setSavedUiRole(target.getAttribute("data-role"));
+              renderRoleTabs();
+              break;
+            case "toggle-layout-edit":
+              isLayoutEditMode = !isLayoutEditMode;
+              renderMap();
+              break;
+            case "col-dec":
+              appState.cols = Math.max(1, (appState.cols || 3) - 1);
+              saveState();
+              break;
+            case "col-inc":
+              appState.cols = Math.min(8, (appState.cols || 3) + 1);
+              saveState();
+              break;
+            case "add-table-end":
+              appState.tables.push(createTableSlot(appState.tables.length, appState.cols));
+              saveState();
+              break;
+            case "restore-slot": {
+              const idx = Number(target.getAttribute("data-index"));
+              appState.tables[idx] = createTableSlot(idx, appState.cols);
+              saveState();
+              break;
+            }
+            case "rename-table": {
+              const idx = Number(target.getAttribute("data-index"));
+              const slot = appState.tables[idx];
+              if (slot && !slot.isEmpty) {
+                const nextName = window.prompt("Nhập tên mới cho bàn:", slot.name);
+                if (nextName && nextName.trim()) {
+                  slot.name = nextName.trim();
+                  saveState();
+                }
+              }
+              break;
+            }
+            case "chair-dec": {
+              const idx = Number(target.getAttribute("data-index"));
+              const slot = appState.tables[idx];
+              if (slot && !slot.isEmpty && slot.chairs.length > 0) {
+                slot.chairs.pop();
+                saveState();
+              }
+              break;
+            }
+            case "chair-inc": {
+              const idx = Number(target.getAttribute("data-index"));
+              const slot = appState.tables[idx];
+              if (slot && !slot.isEmpty && slot.chairs.length < 12) {
+                slot.chairs.push({
+                  id: uid("ch"),
+                  label: "G" + (slot.chairs.length + 1),
+                  amount: 0,
+                  items: {}
+                });
+                saveState();
+              }
+              break;
+            }
+            case "remove-table": {
+              const idx = Number(target.getAttribute("data-index"));
+              appState.tables[idx] = { id: uid("emp"), isEmpty: true };
+              saveState();
+              break;
+            }
+            case "toggle-kds-item": {
+              const idx = Number(target.getAttribute("data-table-index"));
+              const dKey = target.getAttribute("data-done-key");
+              const slot = appState.tables[idx];
+              if (slot && !slot.isEmpty && dKey) {
+                if (!slot.kitchenDoneKeys) slot.kitchenDoneKeys = {};
+                if (slot.kitchenDoneKeys[dKey]) delete slot.kitchenDoneKeys[dKey];
+                else slot.kitchenDoneKeys[dKey] = true;
+                saveState();
+              }
+              break;
+            }
+            case "complete-kds-table": {
+              const idx = Number(target.getAttribute("data-table-index"));
+              const slot = appState.tables[idx];
+              if (slot && !slot.isEmpty) {
+                if (!slot.kitchenDoneKeys) slot.kitchenDoneKeys = {};
+                Object.keys(slot.items || {}).forEach(function (k) {
+                  slot.kitchenDoneKeys["tbl::" + k] = true;
+                });
+                (slot.chairs || []).forEach(function (ch) {
+                  Object.keys(ch.items || {}).forEach(function (k) {
+                    slot.kitchenDoneKeys["ch::" + ch.id + "::" + k] = true;
+                  });
+                });
+                saveState();
+                showToast("✓ Đã hoàn thành toàn bộ món " + slot.name);
+              }
+              break;
+            }
+            case "switch-calc-tab":
+              switchCalcTab(target.getAttribute("data-tab"));
+              break;
+            case "toggle-note-price-mode":
+              calcState.notePriceMode = !calcState.notePriceMode;
+              renderCalcModal();
+              break;
+            case "dish-card-tap": {
+              if (Date.now() - calcState.openedAt < 140) return;
+              const dId = target.getAttribute("data-dish-id");
+              if (calcState.notePriceMode) {
+                openDishNotePriceModal(dId, null);
+              } else {
+                addDishToCalc(dId, 1, null, "");
+              }
+              break;
+            }
+            case "dish-plus":
+              addDishToCalc(target.getAttribute("data-dish-id"), 1, null, "");
+              break;
+            case "dish-minus":
+              minusDishInCalc(target.getAttribute("data-dish-id"));
+              break;
+            case "open-dish-note-modal":
+              ev.stopPropagation();
+              openDishNotePriceModal(target.getAttribute("data-dish-id"), null);
+              break;
+            case "edit-selected-line": {
+              const lk = target.getAttribute("data-line-key");
+              const parsed = parseLineKey(lk);
+              openDishNotePriceModal(parsed.dishId, lk);
+              break;
+            }
+            case "close-dish-modal":
+              el("dishNotePriceModal").classList.add("hidden");
+              break;
+            case "toggle-preset-chip": {
+              const preset = target.getAttribute("data-preset") || "";
+              const inp = el("dishCustomNoteInput");
+              const cur = (inp.value || "").trim();
+              if (!cur) inp.value = preset;
+              else if (cur.toLowerCase().indexOf(preset.toLowerCase()) === -1) inp.value = cur + ", " + preset;
+              renderDishQuickNoteChips();
+              break;
+            }
+            case "confirm-dish-modal":
+              confirmDishPriceModal();
+              break;
+            case "delete-dish-line":
+              deleteEditingDishLine();
+              break;
+            case "clear-target-money":
+              clearTargetMoneyDirect(calcState.tableIndex, calcState.targetType, calcState.chairId);
+              closeCalcModal();
+              break;
+            case "save-calc":
+              saveCalcModal();
+              break;
+            case "close-calc":
+              closeCalcModal();
+              break;
+            case "print-current-target": {
+              const found = getTargetObject(calcState.tableIndex, calcState.targetType, calcState.chairId);
+              if (found) {
+                const lines = Object.keys(calcState.items).map(function (k) {
+                  return getLineDisplayInfo(k, calcState.items[k]);
+                });
+                const title = calcState.targetType === "chair"
+                  ? (found.slot.name + " - " + found.chair.label)
+                  : found.slot.name;
+                triggerPrintReceipt(title, lines, calcState.amount);
+              }
+              break;
+            }
+            case "open-voice-ai":
+              openVoiceAiModal();
+              break;
+            case "close-voice-ai":
+              closeVoiceAiModal();
+              break;
+            case "toggle-voice-recording":
+              if (isModalListening) stopModalVoiceCapture();
+              else startModalVoiceCapture();
+              break;
+            case "analyze-voice-text": {
+              const txt = (el("voiceTranscriptInput").value || "").trim();
+              if (txt) processVoicePayload(txt, null, null, false);
+              break;
+            }
+            case "confirm-voice-preview":
+              if (pendingVoiceCommand) {
+                executeParsedVoiceCommand(pendingVoiceCommand);
+                pendingVoiceCommand = null;
+                closeVoiceAiModal();
+              }
+              break;
+            case "cancel-voice-preview":
+              pendingVoiceCommand = null;
+              el("voicePreviewCard").classList.add("hidden");
+              break;
+            case "undo-last-voice":
+              if (lastVoiceUndoSnapshot) {
+                appState = sanitizeState(JSON.parse(lastVoiceUndoSnapshot));
+                lastVoiceUndoSnapshot = null;
+                saveState();
+                showToast("↶ Đã hoàn tác thao tác AI vừa rồi");
+              }
+              break;
+            case "toggle-handsfree":
+              toggleHandsFreeMode();
+              break;
+            case "toggle-tts-announce": {
+              const curTts = getTtsConfig();
+              curTts.enabled = !curTts.enabled;
+              saveTtsConfig(curTts);
+              if (el("ttsEnabledCheck")) el("ttsEnabledCheck").checked = curTts.enabled;
+              if (curTts.enabled) {
+                speakVietnameseText("Đã bật loa thông báo", true);
+                showToast("🔊 Đã bật phát thông báo giọng nói");
+              } else {
+                if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+                showToast("🔇 Đã tắt phát thông báo giọng nói");
+              }
+              break;
+            }
+            case "save-tts-settings": {
+              const nextTts = {
+                enabled: el("ttsEnabledCheck") ? el("ttsEnabledCheck").checked : true,
+                orderTemplate: (el("ttsOrderTemplateInput") ? el("ttsOrderTemplateInput").value : "").trim() || DEFAULT_TTS_CONFIG.orderTemplate,
+                payTemplate: (el("ttsPayTemplateInput") ? el("ttsPayTemplateInput").value : "").trim() || DEFAULT_TTS_CONFIG.payTemplate,
+                rate: Number(el("ttsRateInput") ? el("ttsRateInput").value : 1.05) || 1.05
+              };
+              saveTtsConfig(nextTts);
+              showToast("✓ Đã lưu cài đặt mẫu câu thông báo giọng nói");
+              break;
+            }
+            case "test-tts-announce": {
+              const previewOrder = (el("ttsOrderTemplateInput") ? el("ttsOrderTemplateInput").value : "").trim() || DEFAULT_TTS_CONFIG.orderTemplate;
+              const previewPay = (el("ttsPayTemplateInput") ? el("ttsPayTemplateInput").value : "").trim() || DEFAULT_TTS_CONFIG.payTemplate;
+              const rateVal = Number(el("ttsRateInput") ? el("ttsRateInput").value : 1.05) || 1.05;
+              const sampleMsg =
+                renderTtsTemplate(previewOrder, { ban: "Bàn 1A", ghe: "", mon: "2 Phở bò, không hành", tien: "" }) +
+                ". " +
+                renderTtsTemplate(previewPay, { ban: "Bàn 2B", ghe: "", mon: "", tien: "70.000 đồng" });
+              saveTtsConfig({
+                enabled: el("ttsEnabledCheck") ? el("ttsEnabledCheck").checked : true,
+                orderTemplate: previewOrder,
+                payTemplate: previewPay,
+                rate: rateVal
+              });
+              speakVietnameseText(sampleMsg, true);
+              break;
+            }
+            case "toggle-ai-input-mode": {
+              const nextMode = getSavedVoiceAiInputMode() === "audio" ? "text" : "audio";
+              setSavedVoiceAiInputMode(nextMode);
+              updateVoiceInputModeUI();
+              showToast(nextMode === "audio" ? "🎙️ Đã chuyển sang gửi Audio trực tiếp" : "💬 Đã chuyển sang gửi Text (tiết kiệm token)");
+              break;
+            }
+            case "open-wake-modal": {
+              const cfg = getWakeConfig();
+              el("wakeOrderKeywordsInput").value = cfg.orderKeywords.join(", ");
+              el("wakePayKeywordsInput").value = cfg.payKeywords.join(", ");
+              el("wakePrintKeywordsInput").value = cfg.printKeywords.join(", ");
+              el("wakeStrictCheck").checked = cfg.strictMode;
+              el("wakeKeywordsModal").classList.remove("hidden");
+              break;
+            }
+            case "close-wake-modal":
+              el("wakeKeywordsModal").classList.add("hidden");
+              break;
+            case "reset-wake-keywords":
+              saveWakeConfig(DEFAULT_WAKE_CONFIG);
+              el("wakeOrderKeywordsInput").value = DEFAULT_WAKE_CONFIG.orderKeywords.join(", ");
+              el("wakePayKeywordsInput").value = DEFAULT_WAKE_CONFIG.payKeywords.join(", ");
+              el("wakePrintKeywordsInput").value = DEFAULT_WAKE_CONFIG.printKeywords.join(", ");
+              el("wakeStrictCheck").checked = true;
+              showToast("✓ Đã khôi phục từ khóa mặc định");
+              break;
+            case "save-wake-keywords": {
+              function splitKw(str, fallback) {
+                const arr = String(str || "").split(",").map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean);
+                return arr.length > 0 ? arr : fallback.slice();
+              }
+              saveWakeConfig({
+                orderKeywords: splitKw(el("wakeOrderKeywordsInput").value, DEFAULT_WAKE_CONFIG.orderKeywords),
+                payKeywords: splitKw(el("wakePayKeywordsInput").value, DEFAULT_WAKE_CONFIG.payKeywords),
+                printKeywords: splitKw(el("wakePrintKeywordsInput").value, DEFAULT_WAKE_CONFIG.printKeywords),
+                strictMode: el("wakeStrictCheck").checked
+              });
+              el("wakeKeywordsModal").classList.add("hidden");
+              showToast("✓ Đã lưu bộ từ khóa từng tính năng");
+              break;
+            }
+            case "open-summary":
+              renderSummaryModal();
+              el("summaryModal").classList.remove("hidden");
+              break;
+            case "close-summary":
+              el("summaryModal").classList.add("hidden");
+              break;
+            case "print-merged-selected": {
+              const checked = Array.from(document.querySelectorAll(".merge-table-check:checked")).map(function (cb) {
+                return Number(cb.value);
+              });
+              if (checked.length === 0) {
+                showToast("⚠️ Chưa chọn bàn nào để in gộp");
+                return;
+              }
+              const firstSlot = appState.tables[checked[0]];
+              let mergedTotal = 0;
+              let mergedLines = [];
+              checked.forEach(function (tIdx) {
+                const s = appState.tables[tIdx];
+                if (s && !s.isEmpty) {
+                  mergedTotal += getTableTotal(s);
+                  mergedLines = mergedLines.concat(collectTableReceiptLines(s));
+                }
+              });
+              el("summaryModal").classList.add("hidden");
+              triggerPrintReceipt(firstSlot ? firstSlot.name : "Hóa đơn gộp", mergedLines, mergedTotal);
+              break;
+            }
+            case "confirm-reset-all-money": {
+              appState.tables.forEach(function (slot, idx) {
+                if (!slot || slot.isEmpty) return;
+                const tot = getTableTotal(slot);
+                if (tot > 0) {
+                  recordPaymentHistory(slot.name, getCoordLabel(idx, appState.cols), slot.orderStartedAt, tot, slot.items);
+                }
+                slot.amount = 0;
+                slot.items = {};
+                (slot.chairs || []).forEach(function (c) {
+                  c.amount = 0;
+                  c.items = {};
+                });
+                slot.orderStartedAt = null;
+                slot.kitchenDoneKeys = {};
+              });
+              saveState();
+              el("summaryModal").classList.add("hidden");
+              showToast("✓ Đã thanh toán & xóa toàn bộ tiền các bàn");
+              break;
+            }
+            case "open-settings":
+              openSettingsModal();
+              break;
+            case "close-settings":
+              el("settingsModal").classList.add("hidden");
+              break;
+            case "close-pin":
+              el("pinModal").classList.add("hidden");
+              break;
+            case "submit-pin": {
+              const entered = (el("pinVerifyInput").value || "").trim();
+              if (entered === getSavedPin()) {
+                isSettingsUnlocked = true;
+                if (el("settingsLockIcon")) el("settingsLockIcon").textContent = "🔓";
+                el("pinModal").classList.add("hidden");
+                populateSettingsFields();
+                el("settingsModal").classList.remove("hidden");
+              } else {
+                showToast("❌ Sai mã PIN quản lý");
+              }
+              break;
+            }
+            case "lock-settings":
+              isSettingsUnlocked = false;
+              if (el("settingsLockIcon")) el("settingsLockIcon").textContent = "🔒";
+              el("settingsModal").classList.add("hidden");
+              showToast("🔒 Đã khóa cài đặt");
+              break;
+            case "save-new-pin": {
+              const np = (el("newPinInput").value || "").trim();
+              if (np.length >= 4 && np.length <= 12) {
+                savePin(np);
+                el("newPinInput").value = "";
+                showToast("✓ Đã đổi mã PIN quản lý");
+              } else {
+                showToast("⚠️ Mã PIN phải từ 4 đến 12 ký tự");
+              }
+              break;
+            }
+            case "save-overdue-minutes":
+              appState.overdueMinutes = Math.max(0, Number(el("overdueMinutesInput").value) || 0);
+              saveState();
+              showToast("✓ Đã lưu thời gian cảnh báo (" + appState.overdueMinutes + " phút)");
+              break;
+            case "toggle-api-key-vis": {
+              const inp = el("geminiApiKeyInput");
+              inp.type = inp.type === "password" ? "text" : "password";
+              break;
+            }
+            case "save-gemini-key":
+              saveGeminiApiKey(el("geminiApiKeyInput").value);
+              saveGeminiModel(el("geminiModelSelect").value);
+              showToast("✓ Đã lưu Gemini API Key & Model");
+              if (handsFreeState.enabled) startHandsFreeInternal();
+              break;
+            case "test-gemini-key":
+              testGeminiApiKeyConnection();
+              break;
+            case "save-bill-settings":
+              appState.billRestaurant = (el("billRestaurantInput").value || "").trim() || "QUÁN ĂN GIA ĐÌNH";
+              appState.billFooter = (el("billFooterInput").value || "").trim() || "Cảm ơn quý khách & Hẹn gặp lại!";
+              saveState();
+              showToast("✓ Đã lưu mẫu hóa đơn POS");
+              break;
+            case "save-firebase-settings":
+              saveFirebaseConfig(el("firebaseUrlInput").value, el("firebaseKeyInput").value);
+              showToast("✓ Đã lưu cấu hình Firebase, đang đồng bộ...");
+              pullStateFromRemote(false);
+              break;
+            case "sync-now":
+              pullStateFromRemote(false);
+              pushStateToRemote();
+              showToast("🔄 Đã đồng bộ dữ liệu");
+              break;
+            case "copy-invite-link": {
+              const fb = getFirebaseConfig();
+              const aiKey = getSavedGeminiApiKey();
+              const urlObj = new URL(location.href);
+              if (fb.url) urlObj.searchParams.set("fbUrl", fb.url);
+              if (fb.apiKey) urlObj.searchParams.set("fbKey", fb.apiKey);
+              if (aiKey) urlObj.searchParams.set("aiKey", aiKey);
+              const tmp = document.createElement("textarea");
+              tmp.value = urlObj.toString();
+              document.body.appendChild(tmp);
+              tmp.select();
+              document.execCommand("copy");
+              document.body.removeChild(tmp);
+              showToast("📋 Đã sao chép link mời nhân viên");
+              break;
+            }
+            case "add-menu-dish":
+              appState.menu.push({ id: uid("m"), name: "Món mới", price: 30 });
+              saveState();
+              renderMenuEditorList();
+              break;
+            case "move-menu-up": {
+              const i = Number(target.getAttribute("data-index"));
+              if (i > 0) {
+                const tmp = appState.menu[i - 1];
+                appState.menu[i - 1] = appState.menu[i];
+                appState.menu[i] = tmp;
+                saveState();
+                renderMenuEditorList();
+              }
+              break;
+            }
+            case "move-menu-down": {
+              const i = Number(target.getAttribute("data-index"));
+              if (i < appState.menu.length - 1) {
+                const tmp = appState.menu[i + 1];
+                appState.menu[i + 1] = appState.menu[i];
+                appState.menu[i] = tmp;
+                saveState();
+                renderMenuEditorList();
+              }
+              break;
+            }
+            case "delete-menu-dish": {
+              const i = Number(target.getAttribute("data-index"));
+              appState.menu.splice(i, 1);
+              saveState();
+              renderMenuEditorList();
+              break;
+            }
+            case "open-note-presets-editor":
+              renderNotePresetsEditor();
+              el("notePresetsModal").classList.remove("hidden");
+              break;
+            case "close-note-presets-editor":
+              el("notePresetsModal").classList.add("hidden");
+              if (!el("dishNotePriceModal").classList.contains("hidden")) {
+                renderDishQuickNoteChips();
+              }
+              break;
+            case "add-note-preset-item": {
+              const val = (el("newNotePresetInput").value || "").trim();
+              if (val) {
+                appState.notePresets.push(val);
+                el("newNotePresetInput").value = "";
+                saveState();
+                renderNotePresetsEditor();
+              }
+              break;
+            }
+            case "move-preset-up": {
+              const i = Number(target.getAttribute("data-index"));
+              if (i > 0) {
+                const tmp = appState.notePresets[i - 1];
+                appState.notePresets[i - 1] = appState.notePresets[i];
+                appState.notePresets[i] = tmp;
+                saveState();
+                renderNotePresetsEditor();
+              }
+              break;
+            }
+            case "move-preset-down": {
+              const i = Number(target.getAttribute("data-index"));
+              if (i < appState.notePresets.length - 1) {
+                const tmp = appState.notePresets[i + 1];
+                appState.notePresets[i + 1] = appState.notePresets[i];
+                appState.notePresets[i] = tmp;
+                saveState();
+                renderNotePresetsEditor();
+              }
+              break;
+            }
+            case "delete-preset-item": {
+              const i = Number(target.getAttribute("data-index"));
+              appState.notePresets.splice(i, 1);
+              saveState();
+              renderNotePresetsEditor();
+              break;
+            }
+            case "reset-note-presets":
+              appState.notePresets = DEFAULT_NOTE_PRESETS.slice();
+              saveState();
+              renderNotePresetsEditor();
+              break;
+            case "export-history-csv":
+              exportHistoryToCsv();
+              break;
+            case "export-history-json":
+              exportHistoryToJson();
+              break;
+            case "export-setup-json": {
+              const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "cau-hinh-quan-an.json";
+              a.click();
+              URL.revokeObjectURL(url);
+              break;
+            }
+            case "download-clean-html":
+              downloadCleanHtmlSnapshot();
+              break;
+          }
+        });
+
+        // Lắng nghe thay đổi input trong Cài đặt & Hộp thoại
+        document.addEventListener("change", function (ev) {
+          const target = ev.target;
+          if (!target) return;
+
+          if (target.id === "voiceAutoConfirmCheck") {
+            setVoiceAutoConfirm(target.checked);
+          } else if (target.id === "geminiModelSelect") {
+            saveGeminiModel(target.value);
+          } else if (target.id === "voiceAiInputModeSelect") {
+            setSavedVoiceAiInputMode(target.value);
+            updateVoiceInputModeUI();
+            if (handsFreeState.enabled) startHandsFreeInternal();
+          } else if (target.id === "ttsRateInput") {
+            if (el("ttsRateValLabel")) el("ttsRateValLabel").textContent = target.value;
+          } else if (target.hasAttribute("data-menu-edit-name")) {
+            const idx = Number(target.getAttribute("data-menu-edit-name"));
+            if (appState.menu[idx]) {
+              appState.menu[idx].name = target.value.trim() || "Món ăn";
+              saveState();
+            }
+          } else if (target.hasAttribute("data-menu-edit-price")) {
+            const idx = Number(target.getAttribute("data-menu-edit-price"));
+            if (appState.menu[idx]) {
+              appState.menu[idx].price = Math.max(0, Number(target.value) || 0);
+              saveState();
+            }
+          } else if (target.hasAttribute("data-preset-edit-index")) {
+            const idx = Number(target.getAttribute("data-preset-edit-index"));
+            if (appState.notePresets[idx] !== undefined && target.value.trim()) {
+              appState.notePresets[idx] = target.value.trim();
+              saveState();
+            }
+          } else if (target.id === "jsonImportFileInput" && target.files && target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function () {
+              try {
+                const parsed = JSON.parse(String(reader.result || "{}"));
+                appState = sanitizeState(parsed);
+                saveState();
+                populateSettingsFields();
+                showToast("✓ Đã nhập dữ liệu cấu hình JSON thành công");
+              } catch (e) {
+                showToast("❌ File JSON không hợp lệ");
+              }
+            };
+            reader.readAsText(target.files[0]);
+          }
+        });
+
+        // Phím tắt Space / F2 / Alt+V gọi nhanh AI và Enter / Esc
+        document.addEventListener("keydown", function (ev) {
+          const activeTag = document.activeElement ? document.activeElement.tagName : "";
+          const isTyping = activeTag === "INPUT" || activeTag === "TEXTAREA" || activeTag === "SELECT";
+
+          if (ev.key === "Escape") {
+            ["dishNotePriceModal", "wakeKeywordsModal", "notePresetsModal", "voiceAiModal", "calcModal", "summaryModal", "pinModal", "settingsModal"].forEach(function (id) {
+              if (el(id) && !el(id).classList.contains("hidden")) {
+                if (id === "voiceAiModal") closeVoiceAiModal();
+                else el(id).classList.add("hidden");
+              }
+            });
+            return;
+          }
+
+          if (ev.key === "Enter" && activeTag === "INPUT") {
+            if (document.activeElement.id === "voiceTranscriptInput") {
+              const txt = document.activeElement.value.trim();
+              if (txt) processVoicePayload(txt, null, null, false);
+            } else if (document.activeElement.id === "pinVerifyInput") {
+              el("pinModal").querySelector("[data-action='submit-pin']").click();
+            }
+            return;
+          }
+
+          const anyModalOpen = Array.from(document.querySelectorAll(".modal-backdrop")).some(function (m) {
+            return !m.classList.contains("hidden");
+          });
+
+          if ((!isTyping && !anyModalOpen && (ev.code === "Space" || ev.key === "F2")) || (ev.altKey && ev.key.toLowerCase() === "v")) {
+            ev.preventDefault();
+            openVoiceAiModal();
+          } else if (!el("voiceAiModal").classList.contains("hidden") && !isTyping && (ev.code === "Space" || ev.key === "F2")) {
+            ev.preventDefault();
+            if (isModalListening) stopModalVoiceCapture();
+            else startModalVoiceCapture();
+          }
+        });
+      }
+
+      /* ======================================================================
+         16. KHỞI ĐỘNG ỨNG DỤNG
+         ====================================================================== */
+      function bootstrapApp() {
+        applyInviteParamsFromUrl();
+        loadLocalState();
+        initEventListeners();
+        updateTtsToggleButtonUI();
+        renderAll();
+        pullStateFromRemote(false);
+
+        if (handsFreeState.enabled) {
+          startHandsFreeInternal();
+        }
+
+        // Cập nhật đồng hồ thời gian ngồi mỗi 15 giây & đồng bộ định kỳ mỗi 3 giây
+        setInterval(function () {
+          renderMap();
+          renderKitchenView();
+        }, 15000);
+
+        setInterval(function () {
+          pullStateFromRemote(true);
+        }, 3000);
+      }
+
+      window.addEventListener("load", bootstrapApp);
+    })();
+  </script>
+</body>
+</html>
